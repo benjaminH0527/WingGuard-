@@ -446,14 +446,16 @@
     </div>
 </div>
 
-<script>
+<script type="module">
+    import { DataAdapter } from '/src/DataAdapter.js';
+
     // 侧边栏 Toggle
-    function toggleSidebar() {
+    window.toggleSidebar = function() {
         const sidebar = document.getElementById('aiSidebar');
         sidebar.classList.toggle('open');
     }
 
-    function closeSidebar() {
+    window.closeSidebar = function() {
         const sidebar = document.getElementById('aiSidebar');
         sidebar.classList.remove('open');
     }
@@ -476,7 +478,7 @@
 
     // 点击地图任意处收起侧边栏
     map.on('click', function() {
-        closeSidebar();
+        window.closeSidebar();
     });
 
     map.plugin('AMap.Geolocation', function () {
@@ -510,7 +512,7 @@
     let chatHistory = []; // 对话上下文记忆
 
     // 重置对话
-    function resetChat() {
+    window.resetChat = function() {
         chatHistory = [];
         chatArea.innerHTML = `
             <div class="msg ai">
@@ -572,14 +574,14 @@
         reader.readAsDataURL(file);
     });
 
-    function setPrompt(text) {
+    window.setPrompt = function(text) {
         textInput.value = text;
         textInput.focus();
     }
 
-    function handleEnter(e) {
+    window.handleEnter = function(e) {
         if (e.key === 'Enter') {
-            sendMessage();
+            window.sendMessage();
         }
     }
 
@@ -652,7 +654,7 @@
         if (indicator) indicator.remove();
     }
 
-    async function sendMessage() {
+    window.sendMessage = async function() {
         const text = textInput.value.trim();
         if (!text && !currentBase64Image) return;
 
@@ -677,6 +679,20 @@
                 type: "image_url",
                 image_url: { url: currentBase64Image }
             });
+        }
+
+        // 获取最新位置 (如果没有)
+        let finalLocation = currentLocation;
+        if (!finalLocation && geolocation) {
+            console.log("正在重新获取定位...");
+            finalLocation = await new Promise((resolve) => {
+                geolocation.getCurrentPosition((status, result) => {
+                    resolve(status === 'complete' ? result.position : null);
+                });
+            });
+            if (finalLocation) {
+                currentLocation = finalLocation;
+            }
         }
 
         // 把本次用户输入推入上下文历史
@@ -708,9 +724,9 @@
             removeTypingIndicator();
             await addMessageTypewriter('AI', aiText);
             
-            // 简单逻辑：如果发了图片而且有定位，就在地图上打点
-            if (currentBase64Image && currentLocation) {
-                dropPin(currentLocation, "新发现鸟类", aiText);
+            // 简单逻辑：如果发了图片而且有定位，就在地图上打点并入库
+            if (currentBase64Image && finalLocation) {
+                await dropPin(finalLocation, "新发现鸟类", aiText, currentBase64Image);
             }
 
             // 清空当前图片状态
@@ -727,9 +743,10 @@
         }
     }
 
-    function dropPin(position, defaultTitle, description) {
-        // 获取当前用户信息（模拟从本地存储或默认社区观测者）
-        const currentUser = localStorage.getItem('wingguard_user') || '生态守护者';
+    async function dropPin(position, defaultTitle, description, photoUrl) {
+        // 获取当前用户信息
+        const user = await DataAdapter.getCurrentUser();
+        const currentUser = user ? (user.nickname || '守护使者') : '热心观测员';
 
         // 提取鸟类名称
         let shortName = "发现鸟类";
@@ -760,6 +777,23 @@
         
         map.add(marker);
         map.panTo(position);
+
+        // 正式入库
+        try {
+            await DataAdapter.submitObservation({
+                speciesId: "unknown",
+                commonName: shortName,
+                scientificName: shortName + " (AI识别)",
+                decimalLongitude: position.lng || (Array.isArray(position) ? position[0] : 114.05956),
+                decimalLatitude: position.lat || (Array.isArray(position) ? position[1] : 22.54286),
+                individualCount: 1,
+                note: "通过 WingGuard AI 自动识别并打点",
+                photoUrl: photoUrl || ""
+            });
+            console.log("记录已正式入库");
+        } catch (e) {
+            console.warn("自动入库失败，可能未登录或数据格式错误", e);
+        }
     }
 
 </script>

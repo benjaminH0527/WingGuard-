@@ -348,9 +348,9 @@ try {
 
       const record = {
         id: uid("obs"),
-        speciesId: data.speciesId,
-        scientificName: sp ? sp.scientificName : "Unknown",
-        commonName: sp ? sp.commonName : "未知鸟种",
+        speciesId: data.speciesId || "unknown",
+        scientificName: sp ? sp.scientificName : (data.scientificName || "Unknown"),
+        commonName: sp ? sp.commonName : (data.commonName || "未知鸟种"),
         userId: user.id,
         recordedBy: user.nickname || "热心观测员",
         eventDate: new Date().toISOString().slice(0, 10),
