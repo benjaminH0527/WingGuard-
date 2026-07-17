@@ -1,0 +1,887 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>翼守护 WingGuard · 鸟类生态保护双端平台</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600;9..144,700&family=Inter:wght@400;500;600;700;800&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+<script src="https://cdn.tailwindcss.com"></script>
+<script>
+  tailwind.config = {
+    theme: {
+      extend: {
+        colors: {
+          ink:    { DEFAULT: '#122A22', 900:'#0B1D17', 800:'#122A22', 700:'#1B3B30' },
+          canopy: { 50:'#EEF5EF', 100:'#D7E9DA', 300:'#84B492', 500:'#2F6B4F', 600:'#245A41', 700:'#1B4633', 800:'#123024' },
+          moss:   { 400:'#8DA891', 500:'#6E8F72' },
+          mist:   { DEFAULT:'#F6F3E9', 100:'#FBF9F2' },
+          amber:  { 400:'#E3A34D', 600:'#C6842E' },
+          coral:  { 500:'#D1482F', 600:'#B93A24' },
+          gold:   { 500:'#B8933B' }
+        },
+        fontFamily: {
+          display: ['Fraunces', 'serif'],
+          body: ['Inter', 'sans-serif'],
+          mono: ['IBM Plex Mono', 'monospace']
+        }
+      }
+    }
+  }
+</script>
+
+<style>
+  html { scroll-behavior: smooth; }
+  body { background: var(--bg, #F6F3E9); }
+
+  /* ---------- Glassmorphism system ---------- */
+  .glass {
+    background: rgba(255,255,255,0.60);
+    backdrop-filter: blur(18px) saturate(140%);
+    -webkit-backdrop-filter: blur(18px) saturate(140%);
+    border: 1px solid rgba(255,255,255,0.55);
+  }
+  .glass-strong {
+    background: rgba(255,255,255,0.78);
+    backdrop-filter: blur(22px) saturate(150%);
+    -webkit-backdrop-filter: blur(22px) saturate(150%);
+    border: 1px solid rgba(255,255,255,0.65);
+  }
+  .glass-dark {
+    background: rgba(11,29,23,0.55);
+    backdrop-filter: blur(20px) saturate(130%);
+    -webkit-backdrop-filter: blur(20px) saturate(130%);
+    border: 1px solid rgba(255,255,255,0.12);
+  }
+  .glass-nav {
+    background: rgba(246,243,233,0.72);
+    backdrop-filter: blur(22px) saturate(150%);
+    -webkit-backdrop-filter: blur(22px) saturate(150%);
+    border-bottom: 1px solid rgba(18,42,34,0.08);
+  }
+
+  /* ---------- Signature: field stamp badge ---------- */
+  .stamp {
+    display: inline-flex; align-items: center; justify-content: center;
+    border: 1.5px dashed currentColor;
+    border-radius: 999px;
+    transform: rotate(-4deg);
+    letter-spacing: 0.06em;
+  }
+
+  /* ---------- Topographic contour texture (B-end signature) ---------- */
+  .topo-bg {
+    background-image:
+      repeating-radial-gradient(circle at 20% 30%, rgba(47,107,79,0.10) 0, rgba(47,107,79,0.10) 1px, transparent 1px, transparent 22px),
+      repeating-radial-gradient(circle at 80% 70%, rgba(47,107,79,0.08) 0, rgba(47,107,79,0.08) 1px, transparent 1px, transparent 26px);
+  }
+
+  .no-scrollbar::-webkit-scrollbar { display: none; }
+  .no-scrollbar { -ms-overflow-style:none; scrollbar-width:none; }
+
+  .hairline { border-color: rgba(18,42,34,0.10); }
+
+  ::selection { background: #2F6B4F; color: #fff; }
+
+  /* fade-up on load */
+  @keyframes fadeUp { from { opacity:0; transform: translateY(14px);} to {opacity:1; transform:translateY(0);} }
+  .fade-up { animation: fadeUp .7s ease both; }
+
+  .eyebrow { letter-spacing: 0.22em; }
+
+  input:focus, select:focus, textarea:focus { outline: none; }
+</style>
+</head>
+
+<body class="font-body text-ink-800 antialiased" style="background:#F6F3E9;">
+
+<!-- ============================= NAV ============================= -->
+<header class="glass-nav sticky top-0 z-40">
+  <div class="max-w-7xl mx-auto px-5 md:px-8 py-3.5 flex items-center justify-between">
+    <button onclick="window.scrollTo({top:0,behavior:'smooth'})" class="flex items-center gap-2.5">
+      <span class="w-9 h-9 rounded-full bg-canopy-700 text-mist-100 flex items-center justify-center shadow-sm">
+        <i class="fa-solid fa-feather text-sm"></i>
+      </span>
+      <span class="leading-none text-left">
+        <span class="font-display font-semibold text-lg text-canopy-800 block">翼守护</span>
+        <span class="text-[9px] eyebrow uppercase text-moss-500 font-mono">WingGuard Field Network</span>
+      </span>
+    </button>
+
+    <nav class="hidden lg:flex items-center gap-8 text-[13px] font-medium text-ink-700/80">
+      <a href="#hero" class="hover:text-canopy-700 transition-colors">愿景</a>
+      <a href="#gallery" class="hover:text-canopy-700 transition-colors">物种图鉴</a>
+      <a href="#action" class="hover:text-canopy-700 transition-colors">参与守护</a>
+      <a href="#dashboard" class="hover:text-canopy-700 transition-colors flex items-center gap-1.5">
+        <i class="fa-solid fa-chart-simple text-[11px]"></i> 生态决策后台
+      </a>
+    </nav>
+
+    <div class="flex items-center gap-3">
+      <div id="navUserPill" class="hidden md:flex items-center gap-2 bg-white/70 border border-white/70 rounded-full pl-1 pr-3.5 py-1 text-[11px] shadow-sm">
+        <span class="w-6 h-6 rounded-full bg-canopy-100 text-canopy-700 flex items-center justify-center"><i class="fa-solid fa-user text-[10px]"></i></span>
+        <span id="navUserName" class="font-semibold text-ink-800">游客</span>
+        <span id="navUserPoints" class="font-mono text-canopy-700 font-semibold">0 pt</span>
+      </div>
+      <button id="navAuthBtn" onclick="openAuthModal('public')" class="bg-canopy-700 hover:bg-canopy-800 text-mist-100 text-[12px] font-semibold px-4 py-2 rounded-full shadow-sm transition-colors">
+        注册 / 登录
+      </button>
+    </div>
+  </div>
+</header>
+
+<!-- ============================= HERO ============================= -->
+<section id="hero" class="relative overflow-hidden">
+  <div class="absolute inset-0">
+    <img src="https://images.unsplash.com/photo-1500534623283-312aade485b7?auto=format&fit=crop&w=2000&q=80" class="w-full h-full object-cover" alt="晨雾湿地">
+    <div class="absolute inset-0 bg-gradient-to-b from-ink-900/55 via-ink-900/35 to-mist"></div>
+  </div>
+
+  <div class="relative max-w-7xl mx-auto px-5 md:px-8 pt-20 pb-28 md:pt-28 md:pb-40">
+    <div class="max-w-2xl fade-up">
+      <span class="stamp text-mist-100/90 text-[10px] font-mono px-4 py-1.5 mb-6">FIELD SEASON · 2026</span>
+      <h1 class="font-display text-white text-4xl md:text-6xl leading-[1.08] font-medium mt-5">
+        每一次抬头张望，<br>都是一次生态观测。
+      </h1>
+      <p class="text-mist-100/85 text-sm md:text-base mt-6 leading-relaxed max-w-lg">
+        翼守护连接公众的双眼与生态管理部门的决策台——用一次次真实的观测打卡，
+        绘出一张持续生长的区域鸟类分布地图。
+      </p>
+      <div class="flex flex-wrap gap-3 mt-9">
+        <a href="#action" class="bg-canopy-600 hover:bg-canopy-700 text-white text-[13px] font-semibold px-6 py-3.5 rounded-full shadow-lg shadow-black/20 transition-colors">
+          <i class="fa-solid fa-binoculars mr-1.5"></i> 开始观测打卡
+        </a>
+        <a href="#gallery" class="glass text-white text-[13px] font-semibold px-6 py-3.5 rounded-full hover:bg-white/20 transition-colors">
+          浏览物种图鉴
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <!-- stat strip -->
+  <div class="relative max-w-5xl mx-auto px-5 md:px-8 -mt-14 md:-mt-16">
+    <div class="glass-strong rounded-3xl px-6 md:px-10 py-6 grid grid-cols-3 gap-4 shadow-xl">
+      <div>
+        <div class="font-display text-2xl md:text-3xl text-canopy-800" id="heroStatSpecies">6</div>
+        <div class="text-[10px] eyebrow uppercase text-ink-700/60 font-mono mt-1">监测物种</div>
+      </div>
+      <div class="border-l hairline pl-4 md:pl-8">
+        <div class="font-display text-2xl md:text-3xl text-canopy-800" id="heroStatObs">--</div>
+        <div class="text-[10px] eyebrow uppercase text-ink-700/60 font-mono mt-1">累计观测</div>
+      </div>
+      <div class="border-l hairline pl-4 md:pl-8">
+        <div class="font-display text-2xl md:text-3xl text-coral-600" id="heroStatUrgent">--</div>
+        <div class="text-[10px] eyebrow uppercase text-ink-700/60 font-mono mt-1">待响应事件</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================= SPECIES GALLERY ============================= -->
+<section id="gallery" class="max-w-7xl mx-auto px-5 md:px-8 pt-24 pb-16">
+  <div class="flex flex-col md:flex-row md:items-end md:justify-between gap-3 mb-8">
+    <div>
+      <span class="text-[10px] eyebrow uppercase text-canopy-600 font-mono font-semibold">Species Field Guide</span>
+      <h2 class="font-display text-2xl md:text-4xl text-ink-800 mt-2">本地重点观测鸟种图鉴</h2>
+    </div>
+    <p class="text-xs text-ink-700/60 max-w-sm leading-relaxed">向右滑动，翻阅每一份保护等级档案 —— 每张卡片都是一份等待被更多人认领的守护契约。</p>
+  </div>
+
+  <div id="speciesGallery" class="flex gap-5 overflow-x-auto no-scrollbar pb-4 snap-x">
+    <!-- injected -->
+  </div>
+</section>
+
+<!-- ============================= C-END ACTION ============================= -->
+<section id="action" class="relative py-20 border-t border-b hairline">
+  <div class="absolute inset-0 -z-10">
+    <img src="https://images.unsplash.com/photo-1444464666168-49d633b86797?auto=format&fit=crop&w=2000&q=80" class="w-full h-full object-cover opacity-[0.08]" alt="">
+  </div>
+  <div class="max-w-7xl mx-auto px-5 md:px-8">
+    <div class="mb-10">
+      <span class="text-[10px] eyebrow uppercase text-canopy-600 font-mono font-semibold">Take Action</span>
+      <h2 class="font-display text-2xl md:text-4xl text-ink-800 mt-2">你的每一次上报，都会进入真实的审核流程</h2>
+    </div>
+
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+
+      <!-- guardian card -->
+      <div class="glass-strong rounded-[28px] p-7 flex flex-col justify-between min-h-[300px] shadow-sm">
+        <div>
+          <span class="w-11 h-11 rounded-2xl bg-canopy-100 text-canopy-700 flex items-center justify-center text-lg mb-5"><i class="fa-solid fa-seedling"></i></span>
+          <h3 class="font-display text-xl text-ink-800">缔结守护契约</h3>
+          <p class="text-[12.5px] text-ink-700/60 mt-2.5 leading-relaxed">
+            绑定一种你愿意持续关注的鸟类。围绕它上报的观测记录，审核通过后将获得额外成长加成。
+          </p>
+        </div>
+        <select id="guardianSelect" onchange="selectGuardian(this.value)" class="w-full bg-white border hairline rounded-2xl px-4 py-3 text-[12.5px] font-medium text-ink-800 mt-6 shadow-sm">
+          <option value="">选择我的守护物种…</option>
+        </select>
+      </div>
+
+      <!-- observation card -->
+      <div class="glass-strong rounded-[28px] p-7 flex flex-col justify-between min-h-[300px] shadow-sm border-l-4 border-l-canopy-500">
+        <div>
+          <span class="w-11 h-11 rounded-2xl bg-canopy-100 text-canopy-700 flex items-center justify-center text-lg mb-5"><i class="fa-solid fa-location-dot"></i></span>
+          <h3 class="font-display text-xl text-ink-800">提交现场观测</h3>
+          <p class="text-[12.5px] text-ink-700/60 mt-2.5 leading-relaxed">
+            记录物种、数量与坐标。提交后进入「待审核」状态，管理端通过后自动发放 100 积分。
+          </p>
+        </div>
+        <button onclick="openObsModal()" class="w-full bg-canopy-700 hover:bg-canopy-800 text-white text-[13px] font-semibold py-3.5 rounded-2xl mt-6 transition-colors shadow-sm">
+          填写观测表单
+        </button>
+      </div>
+
+      <!-- report card -->
+      <div class="glass-strong rounded-[28px] p-7 flex flex-col justify-between min-h-[300px] shadow-sm border-l-4 border-l-coral-500">
+        <div>
+          <span class="w-11 h-11 rounded-2xl bg-coral-500/10 text-coral-600 flex items-center justify-center text-lg mb-5"><i class="fa-solid fa-triangle-exclamation"></i></span>
+          <h3 class="font-display text-xl text-ink-800">紧急异常举报</h3>
+          <p class="text-[12.5px] text-ink-700/60 mt-2.5 leading-relaxed">
+            发现受伤鸟类、非法捕猎或鸟网？立即上报，事件将直接推送至管理端待办池。
+          </p>
+        </div>
+        <button onclick="openReportModal()" class="w-full bg-coral-600 hover:bg-coral-500 text-white text-[13px] font-semibold py-3.5 rounded-2xl mt-6 transition-colors shadow-sm">
+          发起紧急上报
+        </button>
+      </div>
+    </div>
+
+    <!-- profile + leaderboard -->
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mt-6">
+      <div class="lg:col-span-1 glass rounded-[28px] p-7 shadow-sm">
+        <span class="text-[10px] eyebrow uppercase text-canopy-600 font-mono font-semibold">My Field Record</span>
+        <h3 class="font-display text-lg text-ink-800 mt-2 mb-4" id="profileNameDisplay">我的守护档案</h3>
+        <div class="flex items-center gap-4 mb-5">
+          <div class="w-14 h-14 rounded-full bg-gold-500/15 text-gold-500 flex items-center justify-center font-display text-xl border-2 border-dashed border-gold-500/40">
+            <span id="profileLevel">1</span>
+          </div>
+          <div>
+            <div class="text-[10px] text-ink-700/50 uppercase eyebrow font-mono">积分累计</div>
+            <div class="font-mono text-xl text-canopy-800 font-semibold" id="profilePoints">0 pt</div>
+          </div>
+        </div>
+        <div id="myObsList" class="space-y-2 max-h-56 overflow-y-auto no-scrollbar pr-1"></div>
+      </div>
+      <div class="lg:col-span-2 glass rounded-[28px] p-7 shadow-sm">
+        <span class="text-[10px] eyebrow uppercase text-canopy-600 font-mono font-semibold">Community Leaderboard</span>
+        <h3 class="font-display text-lg text-ink-800 mt-2 mb-4">社区贡献榜</h3>
+        <div id="leaderboardList" class="grid grid-cols-1 md:grid-cols-2 gap-2"></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================= B-END DASHBOARD ============================= -->
+<section id="dashboard" class="max-w-7xl mx-auto px-5 md:px-8 py-24">
+  <div class="mb-10">
+    <span class="text-[10px] eyebrow uppercase text-canopy-600 font-mono font-semibold">Ecology Ops Console</span>
+    <h2 class="font-display text-2xl md:text-4xl text-ink-800 mt-2">生态管理部门数据决策后台</h2>
+  </div>
+
+  <!-- locked state -->
+  <div id="dashLocked" class="glass-dark rounded-[28px] p-10 md:p-14 max-w-2xl mx-auto text-center text-mist-100 shadow-xl">
+    <div class="w-14 h-14 rounded-2xl bg-coral-500/20 text-coral-400 flex items-center justify-center text-xl mx-auto border border-coral-400/30">
+      <i class="fa-solid fa-lock"></i>
+    </div>
+    <h3 class="font-display text-xl mt-5">该控制台仅限授权人员访问</h3>
+    <p class="text-[12.5px] text-mist-100/70 mt-3 leading-relaxed max-w-md mx-auto">
+      公众端账号不能注册为管理员——这是有意为之的安全设计：生态数据后台涉及敏感坐标与市民信息，
+      注册必须通过独立入口并持有邀请码，防止任何账号越权访问。
+    </p>
+    <button onclick="openAuthModal('admin')" class="bg-canopy-500 hover:bg-canopy-600 text-white text-[12.5px] font-semibold px-6 py-3 rounded-full mt-6 transition-colors">
+      管理员专属通道
+    </button>
+  </div>
+
+  <!-- unlocked state -->
+  <div id="dashUnlocked" class="hidden space-y-8">
+
+    <div class="flex flex-wrap items-center justify-between gap-3">
+      <div class="text-[12px] text-ink-700/60 font-mono">CONTROL ROOM · <span id="dashDate"></span></div>
+      <button onclick="exportCSV()" class="glass hover:bg-white/70 text-ink-800 text-[12px] font-semibold px-4 py-2.5 rounded-full flex items-center gap-2 transition-colors">
+        <i class="fa-solid fa-file-csv text-canopy-600"></i> 导出观测数据 CSV
+      </button>
+    </div>
+
+    <div class="grid grid-cols-2 lg:grid-cols-4 gap-4">
+      <div class="glass rounded-2xl p-5">
+        <div class="text-[10px] eyebrow uppercase text-ink-700/50 font-mono">有效观测</div>
+        <div class="font-display text-2xl text-ink-800 mt-1" id="statTotal">--</div>
+      </div>
+      <div class="glass rounded-2xl p-5">
+        <div class="text-[10px] eyebrow uppercase text-ink-700/50 font-mono">活跃物种</div>
+        <div class="font-display text-2xl text-ink-800 mt-1" id="statSpecies">--</div>
+      </div>
+      <div class="glass rounded-2xl p-5 border-l-4 border-l-amber-400">
+        <div class="text-[10px] eyebrow uppercase text-ink-700/50 font-mono">待审核</div>
+        <div class="font-display text-2xl text-amber-600 mt-1" id="statPending">--</div>
+      </div>
+      <div class="glass rounded-2xl p-5 border-l-4 border-l-coral-500">
+        <div class="text-[10px] eyebrow uppercase text-ink-700/50 font-mono">异常事件</div>
+        <div class="font-display text-2xl text-coral-600 mt-1" id="statReports">--</div>
+      </div>
+    </div>
+
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+      <div class="lg:col-span-2 space-y-6">
+        <div class="glass rounded-[28px] p-6">
+          <h3 class="font-display text-base text-ink-800 mb-4">月度观测趋势</h3>
+          <div class="h-60"><canvas id="trendChart"></canvas></div>
+        </div>
+
+        <div class="glass rounded-[28px] p-6 overflow-hidden">
+          <h3 class="font-display text-base text-ink-800 mb-4">待审核观测队列</h3>
+          <div class="overflow-x-auto no-scrollbar">
+            <table class="w-full text-left text-[12px]">
+              <thead class="text-ink-700/50 font-mono uppercase text-[10px]">
+                <tr>
+                  <th class="py-2 pr-3 font-medium">上报人</th>
+                  <th class="py-2 pr-3 font-medium">物种</th>
+                  <th class="py-2 pr-3 font-medium">数量</th>
+                  <th class="py-2 pr-3 font-medium">坐标</th>
+                  <th class="py-2 pr-3 font-medium">日期</th>
+                  <th class="py-2 pr-0 font-medium text-right">决策</th>
+                </tr>
+              </thead>
+              <tbody id="pendingTableBody" class="divide-y hairline"></tbody>
+            </table>
+          </div>
+        </div>
+
+        <div class="glass rounded-[28px] p-6 overflow-hidden">
+          <h3 class="font-display text-base text-ink-800 mb-4">异常举报处理</h3>
+          <div id="reportsQueue" class="space-y-3"></div>
+        </div>
+      </div>
+
+      <div class="space-y-6">
+        <div class="glass rounded-[28px] p-6">
+          <h3 class="font-display text-base text-ink-800 mb-4">保护等级分布</h3>
+          <div class="h-56 flex items-center justify-center"><canvas id="pieChart"></canvas></div>
+        </div>
+
+        <div class="glass rounded-[28px] p-6 topo-bg">
+          <h3 class="text-[10px] eyebrow uppercase text-ink-700/50 font-mono mb-3">采样网格 · SAMPLE GRID</h3>
+          <div id="scatterMap" class="relative h-44 rounded-2xl bg-canopy-50/60 border hairline overflow-hidden"></div>
+          <p class="text-[10px] text-ink-700/40 font-mono mt-3 text-center">31.230°N, 121.474°E · 校园湿地监测圈</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer class="border-t hairline py-10 bg-white/40">
+  <div class="max-w-7xl mx-auto px-5 md:px-8 flex flex-col md:flex-row items-center justify-between gap-3 text-[11px] text-ink-700/50">
+    <span>© 2026 翼守护 WingGuard · 高中项目式学习（PBL）科技创新演示系统</span>
+    <span class="font-mono">v1.0 · Darwin-Core aligned data schema</span>
+  </div>
+</footer>
+
+<!-- ============================= MODAL: AUTH ============================= -->
+<div id="authModal" class="hidden fixed inset-0 bg-ink-900/60 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+  <div class="glass-strong rounded-[28px] w-full max-w-sm p-7 relative shadow-2xl">
+    <button onclick="closeModal('authModal')" class="absolute right-5 top-5 text-ink-700/40 hover:text-ink-800"><i class="fa-solid fa-xmark text-lg"></i></button>
+
+    <div id="authRoleBanner" class="hidden text-[10px] font-mono text-coral-600 bg-coral-500/10 border border-coral-500/20 rounded-xl px-3 py-2 mb-4">
+      <i class="fa-solid fa-shield-halved mr-1"></i> 仅限授权生态管理人员注册
+    </div>
+
+    <div class="flex gap-6 border-b hairline pb-3 mb-5 text-[13px] font-semibold">
+      <button id="tabSignin" onclick="switchAuthTab('signin')" class="text-canopy-700 border-b-2 border-canopy-600 pb-2 -mb-[13px]">登录</button>
+      <button id="tabSignup" onclick="switchAuthTab('signup')" class="text-ink-700/40 pb-2">注册</button>
+    </div>
+
+    <form id="authForm" onsubmit="handleAuthSubmit(event)" class="space-y-3.5">
+      <input type="hidden" id="authRole" value="public">
+      <div>
+        <label class="text-[10px] font-mono text-ink-700/50 uppercase">邮箱</label>
+        <input type="email" id="authEmail" required class="w-full border hairline rounded-xl px-3.5 py-2.5 text-[13px] mt-1 bg-white/70">
+      </div>
+      <div>
+        <label class="text-[10px] font-mono text-ink-700/50 uppercase">密码（至少6位）</label>
+        <input type="password" id="authPassword" required minlength="6" class="w-full border hairline rounded-xl px-3.5 py-2.5 text-[13px] mt-1 bg-white/70">
+      </div>
+
+      <div id="authSignupFields" class="hidden space-y-3.5">
+        <div>
+          <label class="text-[10px] font-mono text-ink-700/50 uppercase">昵称</label>
+          <input type="text" id="authNickname" placeholder="给自己取一个观测代号" class="w-full border hairline rounded-xl px-3.5 py-2.5 text-[13px] mt-1 bg-white/70">
+        </div>
+        <div id="authInviteField" class="hidden">
+          <label class="text-[10px] font-mono text-coral-600 uppercase">管理员邀请码</label>
+          <input type="text" id="authInviteCode" placeholder="请输入部门颁发的邀请码" class="w-full border border-coral-500/30 rounded-xl px-3.5 py-2.5 text-[13px] mt-1 bg-white/70">
+        </div>
+      </div>
+
+      <button type="submit" id="authSubmitBtn" class="w-full bg-canopy-700 hover:bg-canopy-800 text-white text-[13px] font-semibold py-3 rounded-xl mt-2 transition-colors">登录</button>
+    </form>
+    <p id="backendNotice" class="hidden text-[10px] text-amber-600 font-mono mt-4 leading-relaxed"></p>
+  </div>
+</div>
+
+<!-- ============================= MODAL: OBSERVATION ============================= -->
+<div id="obsModal" class="hidden fixed inset-0 bg-ink-900/60 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+  <div class="glass-strong rounded-[28px] w-full max-w-md p-7 relative shadow-2xl max-h-[90vh] overflow-y-auto no-scrollbar">
+    <button onclick="closeModal('obsModal')" class="absolute right-5 top-5 text-ink-700/40 hover:text-ink-800"><i class="fa-solid fa-xmark text-lg"></i></button>
+    <h3 class="font-display text-xl text-ink-800 mb-5"><i class="fa-solid fa-feather text-canopy-600 mr-1.5"></i> 提交现场观测</h3>
+    <form id="obsForm" onsubmit="handleObsSubmit(event)" class="space-y-3.5">
+      <div>
+        <label class="text-[10px] font-mono text-ink-700/50 uppercase">观测物种</label>
+        <select id="obsSpecies" required class="w-full border hairline rounded-xl px-3.5 py-2.5 text-[13px] mt-1 bg-white/70"></select>
+      </div>
+      <div class="grid grid-cols-3 gap-2.5">
+        <div>
+          <label class="text-[10px] font-mono text-ink-700/50 uppercase">数量</label>
+          <input type="number" id="obsCount" value="1" min="1" required class="w-full border hairline rounded-xl px-2.5 py-2.5 text-[13px] mt-1 bg-white/70">
+        </div>
+        <div>
+          <label class="text-[10px] font-mono text-ink-700/50 uppercase">纬度</label>
+          <input type="number" step="0.0001" id="obsLat" value="31.2304" required class="w-full border hairline rounded-xl px-2.5 py-2.5 text-[13px] mt-1 bg-white/70">
+        </div>
+        <div>
+          <label class="text-[10px] font-mono text-ink-700/50 uppercase">经度</label>
+          <input type="number" step="0.0001" id="obsLng" value="121.4737" required class="w-full border hairline rounded-xl px-2.5 py-2.5 text-[13px] mt-1 bg-white/70">
+        </div>
+      </div>
+      <div>
+        <label class="text-[10px] font-mono text-ink-700/50 uppercase">现场备注</label>
+        <textarea id="obsNote" rows="3" placeholder="行为、栖息生境、周边环境……" class="w-full border hairline rounded-xl px-3.5 py-2.5 text-[13px] mt-1 bg-white/70"></textarea>
+      </div>
+      <button type="submit" class="w-full bg-canopy-700 hover:bg-canopy-800 text-white text-[13px] font-semibold py-3 rounded-xl mt-2 transition-colors">提交并进入审核</button>
+    </form>
+  </div>
+</div>
+
+<!-- ============================= MODAL: REPORT ============================= -->
+<div id="reportModal" class="hidden fixed inset-0 bg-ink-900/60 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+  <div class="glass-strong rounded-[28px] w-full max-w-md p-7 relative shadow-2xl">
+    <button onclick="closeModal('reportModal')" class="absolute right-5 top-5 text-ink-700/40 hover:text-ink-800"><i class="fa-solid fa-xmark text-lg"></i></button>
+    <h3 class="font-display text-xl text-coral-600 mb-5"><i class="fa-solid fa-triangle-exclamation mr-1.5"></i> 紧急异常上报</h3>
+    <form id="reportForm" onsubmit="handleReportSubmit(event)" class="space-y-3.5">
+      <div>
+        <label class="text-[10px] font-mono text-ink-700/50 uppercase">事件类型</label>
+        <select id="reportType" class="w-full border hairline rounded-xl px-3.5 py-2.5 text-[13px] mt-1 bg-white/70">
+          <option value="injured">野生鸟类受伤/受困</option>
+          <option value="hunting">疑似非法捕猎/架设鸟网</option>
+          <option value="destruction">栖息地破坏</option>
+        </select>
+      </div>
+      <div>
+        <label class="text-[10px] font-mono text-ink-700/50 uppercase">具体位置</label>
+        <input type="text" id="reportLocation" required placeholder="请尽量具体" class="w-full border hairline rounded-xl px-3.5 py-2.5 text-[13px] mt-1 bg-white/70">
+      </div>
+      <div>
+        <label class="text-[10px] font-mono text-ink-700/50 uppercase">情况说明</label>
+        <textarea id="reportDesc" rows="3" required class="w-full border hairline rounded-xl px-3.5 py-2.5 text-[13px] mt-1 bg-white/70"></textarea>
+      </div>
+      <button type="submit" class="w-full bg-coral-600 hover:bg-coral-500 text-white text-[13px] font-semibold py-3 rounded-xl mt-2 transition-colors">立即上报</button>
+    </form>
+  </div>
+</div>
+
+<!-- toast -->
+<div id="toast" class="hidden fixed bottom-6 left-1/2 -translate-x-1/2 z-[60] glass-strong rounded-full px-5 py-3 text-[13px] font-semibold text-ink-800 shadow-xl"></div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4"></script>
+<script src="js/env.js"></script>
+<script src="js/DataAdapter.js"></script>
+
+<script>
+  let authMode = 'signin';
+  let trendChart = null, pieChart = null;
+
+  function toast(msg) {
+    const el = document.getElementById('toast');
+    el.textContent = msg;
+    el.classList.remove('hidden');
+    clearTimeout(window.__toastTimer);
+    window.__toastTimer = setTimeout(() => el.classList.add('hidden'), 3200);
+  }
+
+  function openModal(id) { document.getElementById(id).classList.remove('hidden'); }
+  function closeModal(id) { document.getElementById(id).classList.add('hidden'); }
+
+  // ---------------- Auth modal ----------------
+  function openAuthModal(role) {
+    document.getElementById('authRole').value = role;
+    document.getElementById('authRoleBanner').classList.toggle('hidden', role !== 'admin');
+    document.getElementById('authInviteField').classList.toggle('hidden', role !== 'admin' || authMode !== 'signup');
+    if (!DataAdapter.isBackendConnected) {
+      const notice = document.getElementById('backendNotice');
+      notice.textContent = '提示：未检测到 Supabase 连接，当前运行在本地演示模式（数据仅保存在本浏览器）。';
+      notice.classList.remove('hidden');
+    }
+    openModal('authModal');
+  }
+
+  function switchAuthTab(tab) {
+    authMode = tab;
+    const isSignup = tab === 'signup';
+    document.getElementById('tabSignin').className = isSignup ? 'text-ink-700/40 pb-2' : 'text-canopy-700 border-b-2 border-canopy-600 pb-2 -mb-[13px]';
+    document.getElementById('tabSignup').className = isSignup ? 'text-canopy-700 border-b-2 border-canopy-600 pb-2 -mb-[13px]' : 'text-ink-700/40 pb-2';
+    document.getElementById('authSignupFields').classList.toggle('hidden', !isSignup);
+    document.getElementById('authInviteField').classList.toggle('hidden', !(isSignup && document.getElementById('authRole').value === 'admin'));
+    document.getElementById('authSubmitBtn').textContent = isSignup ? '创建账号' : '登录';
+  }
+
+  async function handleAuthSubmit(e) {
+    e.preventDefault();
+    const role = document.getElementById('authRole').value;
+    const email = document.getElementById('authEmail').value;
+    const password = document.getElementById('authPassword').value;
+    const nickname = document.getElementById('authNickname').value || '守护使者';
+    const inviteCode = document.getElementById('authInviteCode').value;
+
+    try {
+      if (authMode === 'signup') {
+        if (role === 'admin') {
+          const codes = (window.ENV && window.ENV.ADMIN_INVITE_CODES) || [];
+          if (!codes.includes(inviteCode)) {
+            toast('邀请码无效，管理员账号仅限授权人员注册');
+            return;
+          }
+        }
+        await DataAdapter.signUp(email, password, role, { nickname });
+        toast('注册成功，请登录');
+        switchAuthTab('signin');
+      } else {
+        await DataAdapter.signIn(email, password);
+        closeModal('authModal');
+        toast('登录成功，欢迎回来');
+        await refreshAll();
+        const user = await DataAdapter.getCurrentUser();
+        document.getElementById(user && user.role === 'admin' ? 'dashboard' : 'action').scrollIntoView({ behavior: 'smooth' });
+      }
+    } catch (err) {
+      toast('操作失败：' + (err && err.message ? err.message : '未知错误'));
+    }
+  }
+
+  async function handleSignOut() {
+    await DataAdapter.signOut();
+    toast('已安全退出');
+    await refreshAll();
+  }
+
+  // ---------------- Observation modal ----------------
+  async function openObsModal() {
+    const user = await DataAdapter.getCurrentUser();
+    if (!user) { toast('请先登录后再提交观测'); openAuthModal('public'); return; }
+    const species = await DataAdapter.getSpecies();
+    document.getElementById('obsSpecies').innerHTML = species.map(s => `<option value="${s.id}">${s.commonName}（${s.scientificName}）</option>`).join('');
+    openModal('obsModal');
+  }
+
+  async function handleObsSubmit(e) {
+    e.preventDefault();
+    const data = {
+      speciesId: document.getElementById('obsSpecies').value,
+      individualCount: document.getElementById('obsCount').value,
+      decimalLatitude: document.getElementById('obsLat').value,
+      decimalLongitude: document.getElementById('obsLng').value,
+      note: document.getElementById('obsNote').value
+    };
+    try {
+      await DataAdapter.submitObservation(data);
+      closeModal('obsModal');
+      toast('提交成功，已进入审核队列 · +待发放 100 pt');
+      await refreshAll();
+    } catch (err) {
+      toast('提交失败：' + err.message);
+    }
+  }
+
+  // ---------------- Report modal ----------------
+  function openReportModal() { openModal('reportModal'); }
+
+  async function handleReportSubmit(e) {
+    e.preventDefault();
+    const data = {
+      type: document.getElementById('reportType').value,
+      location: document.getElementById('reportLocation').value,
+      description: document.getElementById('reportDesc').value
+    };
+    try {
+      await DataAdapter.submitReport(data);
+      closeModal('reportModal');
+      toast('事件已上报，管理端将尽快响应');
+      await refreshAll();
+    } catch (err) {
+      toast('提交失败：' + err.message);
+    }
+  }
+
+  function selectGuardian(id) {
+    if (!id) return;
+    toast('守护契约已缔结，围绕该物种的观测将获得额外成长加成');
+  }
+
+  // ---------------- Rendering ----------------
+  async function renderSpeciesGallery() {
+    const species = await DataAdapter.getSpecies();
+    const wrap = document.getElementById('speciesGallery');
+    wrap.innerHTML = species.map(sp => `
+      <div class="glass rounded-3xl overflow-hidden shadow-sm min-w-[260px] max-w-[260px] snap-start flex flex-col hover:-translate-y-1 transition-transform duration-300">
+        <div class="h-36 relative overflow-hidden">
+          <img src="${sp.imageUrl}" class="w-full h-full object-cover" alt="${sp.commonName}">
+          <span class="absolute top-3 left-3 stamp text-[9px] font-mono font-semibold px-3 py-1 bg-ink-900/70 text-white backdrop-blur-sm">${sp.conservationStatus}</span>
+        </div>
+        <div class="p-4 flex-1 flex flex-col">
+          <h4 class="font-display text-base text-ink-800">${sp.commonName}</h4>
+          <p class="text-[10px] italic text-ink-700/45 font-mono">${sp.scientificName}</p>
+          <p class="text-[11.5px] text-ink-700/65 mt-2 leading-relaxed flex-1">${sp.description}</p>
+          <p class="text-[10px] text-canopy-700 font-medium mt-3 border-t hairline pt-2.5"><i class="fa-solid fa-leaf mr-1"></i>${sp.habitat}</p>
+        </div>
+      </div>
+    `).join('');
+
+    const select = document.getElementById('guardianSelect');
+    select.innerHTML = '<option value="">选择我的守护物种…</option>' + species.map(s => `<option value="${s.id}">${s.commonName}（${s.conservationStatus}）</option>`).join('');
+  }
+
+  async function renderNav() {
+    const user = await DataAdapter.getCurrentUser();
+    const pill = document.getElementById('navUserPill');
+    const authBtn = document.getElementById('navAuthBtn');
+    if (user) {
+      pill.classList.remove('hidden');
+      document.getElementById('navUserName').textContent = user.nickname || '守护使者';
+      document.getElementById('navUserPoints').textContent = `${user.points || 0} pt`;
+      authBtn.textContent = '退出登录';
+      authBtn.onclick = handleSignOut;
+    } else {
+      pill.classList.add('hidden');
+      authBtn.textContent = '注册 / 登录';
+      authBtn.onclick = () => openAuthModal('public');
+    }
+  }
+
+  async function renderProfile() {
+    const user = await DataAdapter.getCurrentUser();
+    document.getElementById('profileNameDisplay').textContent = user ? `${user.nickname} 的守护档案` : '我的守护档案（未登录）';
+    document.getElementById('profileLevel').textContent = user ? (user.level || 1) : '–';
+    document.getElementById('profilePoints').textContent = `${user ? (user.points || 0) : 0} pt`;
+
+    const listEl = document.getElementById('myObsList');
+    if (!user) {
+      listEl.innerHTML = `<p class="text-[11.5px] text-ink-700/40">登录后可查看你的观测历史与审核状态。</p>`;
+      return;
+    }
+    const mine = await DataAdapter.getObservations({ userId: user.id });
+    if (mine.length === 0) {
+      listEl.innerHTML = `<p class="text-[11.5px] text-ink-700/40">还没有提交过观测，去参与守护吧。</p>`;
+      return;
+    }
+    const badge = { pending: 'bg-amber-400/15 text-amber-600', approved: 'bg-canopy-100 text-canopy-700', rejected: 'bg-coral-500/10 text-coral-600' };
+    const label = { pending: '待审核', approved: '已通过', rejected: '未通过' };
+    listEl.innerHTML = mine.map(o => `
+      <div class="flex items-center justify-between text-[11.5px] border-b hairline pb-2">
+        <span class="text-ink-700/80">${o.commonName} · ${o.eventDate}</span>
+        <span class="px-2 py-0.5 rounded-full font-mono text-[10px] ${badge[o.status]}">${label[o.status]}</span>
+      </div>
+    `).join('');
+  }
+
+  async function renderLeaderboard() {
+    const board = await DataAdapter.getLeaderboard();
+    const el = document.getElementById('leaderboardList');
+    if (board.length === 0) {
+      el.innerHTML = `<p class="text-[11.5px] text-ink-700/40 col-span-2">还没有公众账号积分记录，登录并完成一次审核通过的观测即可上榜。</p>`;
+      return;
+    }
+    el.innerHTML = board.map((u, i) => `
+      <div class="flex items-center gap-3 bg-white/60 border hairline rounded-xl px-3.5 py-2.5">
+        <span class="w-6 h-6 rounded-full ${i < 3 ? 'bg-gold-500 text-white' : 'bg-canopy-50 text-canopy-700'} flex items-center justify-center text-[10px] font-mono font-semibold">${i + 1}</span>
+        <span class="text-[12px] font-medium text-ink-800 flex-1 truncate">${u.nickname}</span>
+        <span class="text-[11px] font-mono text-canopy-700 font-semibold">${u.points || 0} pt</span>
+      </div>
+    `).join('');
+  }
+
+  async function renderHeroStats() {
+    const stats = await DataAdapter.getDashboardStats();
+    document.getElementById('heroStatObs').textContent = stats.cards.totalObservations;
+    document.getElementById('heroStatUrgent').textContent = stats.cards.activeReports;
+  }
+
+  async function renderDashboardAccess() {
+    const user = await DataAdapter.getCurrentUser();
+    const unlocked = !!(user && user.role === 'admin');
+    document.getElementById('dashLocked').classList.toggle('hidden', unlocked);
+    document.getElementById('dashUnlocked').classList.toggle('hidden', !unlocked);
+    if (unlocked) await renderDashboard();
+  }
+
+  async function renderDashboard() {
+    document.getElementById('dashDate').textContent = new Date().toLocaleDateString('zh-CN');
+    const stats = await DataAdapter.getDashboardStats();
+    document.getElementById('statTotal').textContent = stats.cards.totalObservations;
+    document.getElementById('statSpecies').textContent = stats.cards.activeSpeciesCount;
+    document.getElementById('statPending').textContent = stats.cards.pendingReviews;
+    document.getElementById('statReports').textContent = stats.cards.activeReports;
+
+    const pending = await DataAdapter.getObservations({ status: 'pending' });
+    const tbody = document.getElementById('pendingTableBody');
+    tbody.innerHTML = pending.length === 0
+      ? `<tr><td colspan="6" class="py-8 text-center text-ink-700/40">暂无待审核记录，队列已清空。</td></tr>`
+      : pending.map(o => `
+        <tr>
+          <td class="py-2.5 pr-3 font-medium text-ink-800">${o.recordedBy}</td>
+          <td class="py-2.5 pr-3"><span class="font-semibold text-canopy-800">${o.commonName}</span><br><span class="text-[10px] italic text-ink-700/40">${o.scientificName}</span></td>
+          <td class="py-2.5 pr-3 font-mono text-canopy-700">${o.individualCount} 只</td>
+          <td class="py-2.5 pr-3 font-mono text-[10px] text-ink-700/50">${o.decimalLatitude.toFixed(3)}, ${o.decimalLongitude.toFixed(3)}</td>
+          <td class="py-2.5 pr-3 text-ink-700/50">${o.eventDate}</td>
+          <td class="py-2.5 pr-0 text-right space-x-1.5 whitespace-nowrap">
+            <button onclick="reviewObs('${o.id}','approved')" class="bg-canopy-700 hover:bg-canopy-800 text-white text-[10px] font-semibold px-3 py-1.5 rounded-full transition-colors">通过</button>
+            <button onclick="reviewObs('${o.id}','rejected')" class="bg-ink-800/10 hover:bg-ink-800/20 text-ink-700 text-[10px] font-semibold px-3 py-1.5 rounded-full transition-colors">驳回</button>
+          </td>
+        </tr>
+      `).join('');
+
+    const reports = await DataAdapter.getReports({ status: 'pending' });
+    const rq = document.getElementById('reportsQueue');
+    rq.innerHTML = reports.length === 0
+      ? `<p class="text-[12px] text-ink-700/40">暂无待处理异常事件。</p>`
+      : reports.map(r => `
+        <div class="flex items-center justify-between gap-3 bg-coral-500/5 border border-coral-500/15 rounded-xl px-4 py-3">
+          <div class="min-w-0">
+            <span class="text-[11px] font-mono text-coral-600 font-semibold uppercase">${r.type === 'injured' ? '受伤/受困' : r.type === 'hunting' ? '非法捕猎' : '栖息地破坏'}</span>
+            <p class="text-[12px] text-ink-800 truncate">${r.location} · ${r.description}</p>
+          </div>
+          <button onclick="resolveReportItem('${r.id}')" class="shrink-0 bg-coral-600 hover:bg-coral-500 text-white text-[10px] font-semibold px-3 py-1.5 rounded-full transition-colors">标记已处理</button>
+        </div>
+      `).join('');
+
+    renderCharts(stats.charts);
+    renderScatterMap(await DataAdapter.getObservations({ status: 'approved' }));
+  }
+
+  function renderCharts(chartData) {
+    const trendCtx = document.getElementById('trendChart').getContext('2d');
+    const pieCtx = document.getElementById('pieChart').getContext('2d');
+    if (trendChart) trendChart.destroy();
+    if (pieChart) pieChart.destroy();
+
+    trendChart = new Chart(trendCtx, {
+      type: 'line',
+      data: {
+        labels: chartData.monthlyTrend.labels,
+        datasets: [{
+          label: '有效观测数',
+          data: chartData.monthlyTrend.data,
+          borderColor: '#245A41',
+          backgroundColor: 'rgba(36,90,65,0.08)',
+          borderWidth: 2.5,
+          tension: 0.4,
+          fill: true,
+          pointRadius: 3,
+          pointBackgroundColor: '#245A41'
+        }]
+      },
+      options: {
+        responsive: true, maintainAspectRatio: false,
+        plugins: { legend: { display: false } },
+        scales: { y: { beginAtZero: true, grid: { color: 'rgba(18,42,34,0.06)' } }, x: { grid: { display: false } } }
+      }
+    });
+
+    pieChart = new Chart(pieCtx, {
+      type: 'doughnut',
+      data: {
+        labels: chartData.conservationPie.labels,
+        datasets: [{
+          data: chartData.conservationPie.data,
+          backgroundColor: ['#245A41', '#8DA891', '#E3A34D', '#D1482F', '#B8933B'],
+          borderWidth: 0
+        }]
+      },
+      options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { position: 'bottom', labels: { boxWidth: 10, font: { size: 10 } } } } }
+    });
+  }
+
+  function renderScatterMap(observations) {
+    const el = document.getElementById('scatterMap');
+    el.innerHTML = '';
+    if (observations.length === 0) return;
+    const lats = observations.map(o => o.decimalLatitude);
+    const lngs = observations.map(o => o.decimalLongitude);
+    const minLat = Math.min(...lats), maxLat = Math.max(...lats);
+    const minLng = Math.min(...lngs), maxLng = Math.max(...lngs);
+    observations.slice(0, 60).forEach(o => {
+      const x = maxLng === minLng ? 50 : ((o.decimalLongitude - minLng) / (maxLng - minLng)) * 88 + 6;
+      const y = maxLat === minLat ? 50 : (1 - (o.decimalLatitude - minLat) / (maxLat - minLat)) * 78 + 8;
+      const dot = document.createElement('div');
+      dot.className = 'absolute w-2 h-2 rounded-full bg-canopy-600/70';
+      dot.style.left = x + '%';
+      dot.style.top = y + '%';
+      dot.title = `${o.commonName} · ${o.eventDate}`;
+      el.appendChild(dot);
+    });
+  }
+
+  async function reviewObs(id, status) {
+    await DataAdapter.reviewObservation(id, status);
+    toast(status === 'approved' ? '已通过审核 · 已发放 100 pt' : '已驳回该记录');
+    await refreshAll();
+  }
+
+  async function resolveReportItem(id) {
+    await DataAdapter.resolveReport(id);
+    toast('该异常事件已标记为已处理');
+    await refreshAll();
+  }
+
+  function exportCSV() {
+    DataAdapter.getObservations().then(data => {
+      let csv = "data:text/csv;charset=utf-8,\ufeffID,RecordedBy,CommonName,ScientificName,Count,Latitude,Longitude,Status,SubmittedAt\n";
+      data.forEach(o => {
+        csv += `${o.id},${o.recordedBy},${o.commonName},${o.scientificName},${o.individualCount},${o.decimalLatitude},${o.decimalLongitude},${o.status},${o.submittedAt}\n`;
+      });
+      const link = document.createElement('a');
+      link.href = encodeURI(csv);
+      link.download = `WingGuard_Observations_${new Date().toISOString().slice(0,10)}.csv`;
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+    });
+  }
+
+  async function refreshAll() {
+    await Promise.all([
+      renderNav(),
+      renderSpeciesGallery(),
+      renderProfile(),
+      renderLeaderboard(),
+      renderHeroStats(),
+      renderDashboardAccess()
+    ]);
+  }
+
+  document.addEventListener('DOMContentLoaded', refreshAll);
+
+  // expose for inline HTML handlers (script is non-module, already global,
+  // but declared explicitly here for clarity/robustness)
+  window.openAuthModal = openAuthModal;
+  window.closeModal = closeModal;
+  window.switchAuthTab = switchAuthTab;
+  window.handleAuthSubmit = handleAuthSubmit;
+  window.handleSignOut = handleSignOut;
+  window.openObsModal = openObsModal;
+  window.handleObsSubmit = handleObsSubmit;
+  window.openReportModal = openReportModal;
+  window.handleReportSubmit = handleReportSubmit;
+  window.selectGuardian = selectGuardian;
+  window.reviewObs = reviewObs;
+  window.resolveReportItem = resolveReportItem;
+  window.exportCSV = exportCSV;
+</script>
+
+</body>
+</html>
