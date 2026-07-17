@@ -58,7 +58,7 @@ try {
       habitat: "大型湿地、沼泽、水库浅滩",
       description:
         "大型涉禽，体长约1.1–1.3米，嘴黑色而基部粗厚，眼周裸露皮肤呈醒目红色。全球种群数量稀少，是东亚湿地生态健康的重要指示物种。",
-      imageUrl: "https://images.unsplash.com/photo-1610058458484-4b4d7f1c7db7?auto=format&fit=crop&w=800&q=80"
+      imageUrl: "/Ciconia-boyciana.webp"
     },
     {
       id: "sp-02",
@@ -88,7 +88,7 @@ try {
       habitat: "江河、湖泊、海岸浅水区",
       description:
         "大型水鸟，颈、脚、嘴修长，体羽以灰色为主。常长时间静立浅水中伺机捕食鱼虾，民间俗称“老等”，是湿地食物链的重要一环。",
-      imageUrl: "https://images.unsplash.com/photo-1518559634263-0bee68334ffe?auto=format&fit=crop&w=800&q=80"
+      imageUrl: "/Ardea-cinerea.jpg"
     },
     {
       id: "sp-05",
@@ -98,7 +98,7 @@ try {
       habitat: "溪流、池塘、河岸土坡",
       description:
         "体型小巧，羽色艳丽如宝石，善于俯冲入水捕鱼，是许多观鸟爱好者入门的“梦幻鸟种”，对水质极为敏感。",
-      imageUrl: "https://images.unsplash.com/photo-1552728089-57bdde30ebd3?auto=format&fit=crop&w=800&q=80"
+      imageUrl: "/Alcedo-atthis.webp"
     },
     {
       id: "sp-06",
@@ -155,9 +155,9 @@ try {
   }
 
   function ensureSeedData() {
-    if (!localStorage.getItem(LS_KEYS.species)) {
-      localStorage.setItem(LS_KEYS.species, JSON.stringify(INITIAL_SPECIES));
-    }
+    // 强制更新物种数据以应用新的本地图片路径
+    localStorage.setItem(LS_KEYS.species, JSON.stringify(INITIAL_SPECIES));
+    
     if (!localStorage.getItem(LS_KEYS.observations)) {
       localStorage.setItem(LS_KEYS.observations, JSON.stringify(generateMockObservations()));
     }
