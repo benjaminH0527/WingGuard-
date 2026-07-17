@@ -14,8 +14,8 @@
   body, html {
     margin: 0;
     padding: 0;
-    background-color: #111;
-    color: #eee;
+    background-color: #f8fafc;
+    color: #1e293b;
     font-family: 'Noto Serif SC', serif;
     overflow-x: hidden;
   }
@@ -45,13 +45,7 @@
   }
   
   .overlay {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: linear-gradient(to bottom, rgba(0,0,0,0.3) 0%, rgba(0,0,0,0.8) 100%);
-    z-index: 1;
+    display: none !important;
   }
   
   .content {
@@ -66,6 +60,11 @@
     opacity: 0;
     transform: translateY(30px);
     margin-bottom: 2rem;
+    background: rgba(255, 255, 255, 0.4);
+    padding: 2.5rem;
+    border-radius: 1.5rem;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+    backdrop-filter: blur(20px);
   }
   
   .bird-name {
@@ -73,7 +72,7 @@
     font-size: 4rem;
     font-weight: 700;
     margin-bottom: 1rem;
-    background: linear-gradient(135deg, #fdfbfb 0%, #ebedee 100%);
+    background: linear-gradient(135deg, #0f172a 0%, #334155 100%);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
   }
@@ -81,7 +80,7 @@
   .bird-desc {
     font-size: 1.25rem;
     line-height: 2;
-    color: rgba(255, 255, 255, 0.9);
+    color: rgba(15, 23, 42, 0.9);
     text-align: justify;
   }
 
@@ -123,14 +122,15 @@
     position: fixed;
     bottom: 5.5rem;
     right: 2rem;
-    background: rgba(0, 0, 0, 0.8);
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    color: #e2e8f0;
+    background: rgba(255, 255, 255, 0.95);
+    border: 1px solid rgba(0, 0, 0, 0.1);
+    color: #1e293b;
     padding: 1rem;
     border-radius: 1rem 1rem 0 1rem;
     max-width: 250px;
     font-size: 0.9rem;
     backdrop-filter: blur(10px);
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
     z-index: 99;
     opacity: 0;
     transform: translateY(10px);
@@ -150,10 +150,10 @@
     right: -400px;
     width: 100%;
     max-width: 400px;
-    height: 100vh;
-    background: rgba(15, 23, 42, 0.85);
+    height: 100dvh;
+    background: rgba(255, 255, 255, 0.95);
     backdrop-filter: blur(20px);
-    border-left: 1px solid rgba(255, 255, 255, 0.1);
+    border-left: 1px solid rgba(0, 0, 0, 0.1);
     z-index: 1000;
     transition: right 0.4s cubic-bezier(0.16, 1, 0.3, 1);
     display: flex;
@@ -163,20 +163,25 @@
     right: 0;
   }
   
+  #chat-history {
+    overscroll-behavior-y: contain;
+  }
+  
   .chat-msg {
     margin-bottom: 1rem;
     line-height: 1.5;
     font-size: 0.95rem;
+    flex-shrink: 0;
   }
   .chat-msg.bot {
-    color: #e2e8f0;
+    color: #1e293b;
     background: rgba(16, 185, 129, 0.1);
     padding: 1rem;
     border-radius: 1rem 1rem 1rem 0;
   }
   .chat-msg.user {
     color: #fff;
-    background: rgba(255, 255, 255, 0.1);
+    background: #10b981;
     padding: 1rem;
     border-radius: 1rem 1rem 0 1rem;
     text-align: right;
@@ -196,6 +201,44 @@
   .typing-indicator span:nth-child(2) { animation-delay: 0.2s; }
   .typing-indicator span:nth-child(3) { animation-delay: 0.4s; }
   @keyframes jump { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-5px); } }
+  
+  /* Lightbox */
+  #lightbox {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: rgba(0, 0, 0, 0.9);
+    z-index: 9999;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.3s ease;
+    cursor: zoom-out;
+  }
+  #lightbox.active {
+    opacity: 1;
+    pointer-events: auto;
+  }
+  #lightbox img {
+    max-width: 90%;
+    max-height: 90vh;
+    object-fit: contain;
+    border-radius: 0.5rem;
+    box-shadow: 0 0 40px rgba(0,0,0,0.5);
+    transform: scale(0.95);
+    transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+  #lightbox.active img {
+    transform: scale(1);
+  }
+  
+  .panel img {
+    cursor: zoom-in;
+  }
   
 </style>
 </head>
@@ -386,18 +429,18 @@
 </div>
 
 <!-- AI Chat Drawer -->
-<div id="ai-drawer" class="p-6 text-white overflow-hidden flex flex-col">
-  <div class="flex justify-between items-center mb-6 pb-4 border-b border-white/10">
+<div id="ai-drawer" class="p-6 text-slate-800 overflow-hidden flex flex-col">
+  <div class="flex justify-between items-center mb-6 pb-4 border-b border-slate-200">
     <div class="flex items-center gap-3">
       <div class="w-10 h-10 rounded-full bg-emerald-500/20 flex items-center justify-center border border-emerald-500/50">
-        <i class="fa-solid fa-leaf text-emerald-400"></i>
+        <i class="fa-solid fa-leaf text-emerald-500"></i>
       </div>
       <div>
         <h3 class="font-bold text-lg leading-none">红树小灵</h3>
-        <p class="text-xs text-emerald-400/70 font-mono mt-1">Agnes 2.0 Flash</p>
+        <p class="text-xs text-emerald-600 font-mono mt-1">Agnes 2.0 Flash</p>
       </div>
     </div>
-    <button id="ai-close" class="text-white/50 hover:text-white"><i class="fa-solid fa-xmark text-xl"></i></button>
+    <button id="ai-close" class="text-slate-400 hover:text-slate-800"><i class="fa-solid fa-xmark text-xl"></i></button>
   </div>
   
   <div id="chat-history" class="flex-1 overflow-y-auto no-scrollbar pb-4 flex flex-col gap-2">
@@ -406,14 +449,19 @@
     </div>
   </div>
   
-  <div class="mt-4 pt-4 border-t border-white/10">
+  <div class="mt-4 pt-4 border-t border-slate-200">
     <form id="chat-form" class="flex gap-2 relative">
-      <input type="text" id="chat-input" placeholder="输入你的问题..." class="flex-1 bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-sm text-white focus:outline-none focus:border-emerald-500/50" autocomplete="off" required>
+      <input type="text" id="chat-input" placeholder="输入你的问题..." class="flex-1 bg-slate-100 border border-slate-300 rounded-xl px-4 py-3 text-sm text-slate-800 focus:outline-none focus:border-emerald-500" autocomplete="off" required>
       <button type="submit" class="bg-emerald-600 hover:bg-emerald-500 text-white px-4 rounded-xl transition">
         <i class="fa-solid fa-paper-plane"></i>
       </button>
     </form>
   </div>
+</div>
+
+<!-- Lightbox Overlay -->
+<div id="lightbox">
+  <img id="lightbox-img" src="" alt="Fullscreen Image">
 </div>
 
 <script type="module" src="/src/diary.js"></script>

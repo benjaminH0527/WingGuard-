@@ -217,3 +217,20 @@ chatForm.addEventListener('submit', async (e) => {
   
   appendMessage('bot', reply);
 });
+
+// 4. Lightbox functionality
+const lightbox = document.getElementById('lightbox');
+const lightboxImg = document.getElementById('lightbox-img');
+
+if (lightbox && lightboxImg) {
+  document.querySelectorAll('.panel img').forEach(img => {
+    img.addEventListener('click', () => {
+      lightboxImg.src = img.src;
+      lightbox.classList.add('active');
+    });
+  });
+
+  lightbox.addEventListener('click', () => {
+    lightbox.classList.remove('active');
+  });
+}
