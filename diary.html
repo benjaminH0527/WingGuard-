@@ -63,7 +63,7 @@
     background: rgba(255, 255, 255, 0.4);
     padding: 2.5rem;
     border-radius: 1.5rem;
-    box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+    box-shadow: 0 10px 30px rgba(255,255,255,0.1);
     backdrop-filter: blur(20px);
   }
   
@@ -228,7 +228,7 @@
     max-height: 90vh;
     object-fit: contain;
     border-radius: 0.5rem;
-    box-shadow: 0 0 40px rgba(0,0,0,0.5);
+    box-shadow: 0 0 40px rgba(255,255,255,0.5);
     transform: scale(0.95);
     transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
   }
@@ -245,10 +245,15 @@
 <body>
 
 <!-- Navigation Back -->
-<nav class="fixed top-0 left-0 w-full z-50 p-6 flex justify-between items-center mix-blend-difference text-white">
-  <a href="/index.html" class="flex items-center gap-2 hover:opacity-70 transition">
-    <i class="fa-solid fa-arrow-left"></i> 返回主站
-  </a>
+<nav class="fixed top-0 left-0 w-full z-50 p-6 flex justify-between items-center text-slate-800 drop-shadow-md">
+  <div class="flex gap-6">
+    <a href="/index.html" class="flex items-center gap-2 hover:opacity-70 transition">
+      <i class="fa-solid fa-arrow-left"></i> 生态决策后台
+    </a>
+    <a href="/story.html" class="flex items-center gap-2 hover:text-emerald-700 transition">
+      <i class="fa-solid fa-book-open"></i> 返回宏观故事
+    </a>
+  </div>
   <div class="font-mono text-sm tracking-widest uppercase">Shenzhen Bay · Migratory Diary</div>
 </nav>
 
@@ -259,17 +264,17 @@
     <!-- 0. Intro -->
     <section class="panel" id="section-intro">
       <div class="parallax-bg" style="background-image: url('/diary/0.png');"></div>
-      <div class="overlay" style="background: linear-gradient(to bottom, rgba(0,0,0,0.1), rgba(0,0,0,0.9));"></div>
+      <div class="overlay" style="background: linear-gradient(to bottom, rgba(255,255,255,0.1), rgba(255,255,255,0.9));"></div>
       <div class="content">
         <div class="text-block">
-          <p class="text-emerald-400 font-mono tracking-widest uppercase mb-4 text-sm">开场语</p>
+          <p class="text-emerald-700 font-mono tracking-widest uppercase mb-4 text-sm">开场语</p>
           <h1 class="bird-name text-6xl">嘿，你来啦。</h1>
         </div>
         <div class="text-block mt-8 max-w-2xl mx-auto">
           <p class="bird-desc">先别急着往下滑——在你面前的，不是一篇普通的科普文章，也不是一张冷冰冰的数据看板。</p>
           <p class="bird-desc mt-4">这是一本会说话的自然日记。</p>
           <p class="bird-desc mt-4">从西伯利亚的冻土荒原到深圳湾的红树林潮汐，每年秋冬，有将近十万只候鸟跨越半个地球，飞行数千公里，降落在你每天通勤的地铁站几站之外的地方。你或许从未注意过它们，但它们已经在这座城市的CBD腹地生活了很多很多年。</p>
-          <p class="bird-desc mt-4 text-emerald-300 font-semibold">在这里，你不是"读者"，你是"来赴约的人"。</p>
+          <p class="bird-desc mt-4 text-emerald-700 font-semibold">在这里，你不是"读者"，你是"来赴约的人"。</p>
         </div>
       </div>
     </section>
@@ -282,7 +287,7 @@
         <div class="md:w-1/2 text-left">
           <div class="text-block">
             <h2 class="bird-name">小琵</h2>
-            <p class="text-emerald-400 font-mono tracking-widest uppercase text-sm mb-6">黑脸琵鹭 Black-faced Spoonbill</p>
+            <p class="text-emerald-700 font-mono tracking-widest uppercase text-sm mb-6">黑脸琵鹭 Black-faced Spoonbill</p>
             <p class="bird-desc">我一直在你身边。<br><br>我的家在朝鲜半岛西海岸。每年十月，当那里的水面开始结冰，我和同伴们就起飞。飞过辽东半岛的滩涂，飞过黄河入海口的泥滩，飞过长江口崇明岛的芦苇荡，一路向南。三千公里。飞到深圳湾的时候，往往是十一月中旬。</p>
             <p class="bird-desc mt-4">我们黑脸琵鹭，全世界不到七千只。每二十只里就有一只，在你面前这片海滩上过冬。</p>
             <p class="bird-desc mt-4">你不需要飞去非洲看动物大迁徙，不需要飞去极地看极光。你走进地铁站，坐几站路，出站——地球上最濒危的鸟类之一，就在你面前。</p>
@@ -299,15 +304,15 @@
     <!-- 2. 鸥姐 -->
     <section class="panel" id="section-oujie">
       <div class="parallax-bg" style="background-image: url('/diary/2-Background.jpg');"></div>
-      <div class="overlay" style="background: linear-gradient(to right, rgba(0,0,0,0.9) 0%, rgba(0,0,0,0.3) 100%);"></div>
+      <div class="overlay" style="background: linear-gradient(to right, rgba(255,255,255,0.9) 0%, rgba(255,255,255,0.3) 100%);"></div>
       <div class="content flex flex-col md:flex-row-reverse items-center gap-12 max-w-6xl w-full text-left">
         <div class="md:w-1/2">
           <div class="text-block">
             <h2 class="bird-name">鸥姐</h2>
-            <p class="text-emerald-400 font-mono tracking-widest uppercase text-sm mb-6">红嘴鸥 Black-headed Gull</p>
+            <p class="text-emerald-700 font-mono tracking-widest uppercase text-sm mb-6">红嘴鸥 Black-headed Gull</p>
             <p class="bird-desc">嗨！！你终于来了！！我在天上就看见你了。<br><br>全深圳湾就数我最好找。你往天上看——最吵、最多、最不怕人的那群，就是我们。人多的时候我敢飞到你面前两米远。你拍照我就看镜头。</p>
-            <p class="bird-desc mt-4 text-emerald-300">我还有一个小道消息：保护区里面有一片基围鱼塘，是你们人类专门给鸟开的餐厅。涨潮的时候海水带进来小鱼小虾，退潮的时候锁住——二十四小时不打烊，你们的外卖都没这么快。</p>
-            <p class="bird-desc mt-4 font-bold tracking-widest text-white">"深圳人给十万只候鸟开了家餐厅。"</p>
+            <p class="bird-desc mt-4 text-emerald-700">我还有一个小道消息：保护区里面有一片基围鱼塘，是你们人类专门给鸟开的餐厅。涨潮的时候海水带进来小鱼小虾，退潮的时候锁住——二十四小时不打烊，你们的外卖都没这么快。</p>
+            <p class="bird-desc mt-4 font-bold tracking-widest text-slate-800">"深圳人给十万只候鸟开了家餐厅。"</p>
           </div>
         </div>
         <div class="md:w-1/2 text-block">
@@ -321,10 +326,10 @@
     <!-- 3. 阿鸬 -->
     <section class="panel" id="section-alu">
       <div class="parallax-bg" style="background-image: url('/diary/3.jpg'); transform: scale(1.1);"></div>
-      <div class="overlay" style="background: linear-gradient(to top, rgba(0,20,40,0.95), rgba(0,10,20,0.7));"></div>
+      <div class="overlay" style="background: linear-gradient(to top, rgba(255,255,255,0.95), rgba(255,255,255,0.7));"></div>
       <div class="content max-w-4xl mx-auto text-center">
         <div class="text-block">
-          <p class="text-blue-400 font-mono tracking-widest uppercase text-sm mb-6">普通鸬鹚 Great Cormorant</p>
+          <p class="text-blue-700 font-mono tracking-widest uppercase text-sm mb-6">普通鸬鹚 Great Cormorant</p>
           <h2 class="bird-name">阿鸬</h2>
           <p class="bird-desc mt-8">……<br>我在水下。听不到你说话。但你可以在这里等我。我一次最多待四十五秒。</p>
           <p class="bird-desc mt-4">水下是另一个深圳湾。红树林的气根从泥里往四面八方伸，像一座倒长的城市。鱼群在根系之间穿行，阳光从水面过滤下来，所有的颜色都暗了几度，但更干净。</p>
@@ -341,7 +346,7 @@
         <div class="md:w-1/2">
           <div class="text-block">
             <h2 class="bird-name">反反</h2>
-            <p class="text-amber-400 font-mono tracking-widest uppercase text-sm mb-6">反嘴鹬 Pied Avocet</p>
+            <p class="text-amber-700 font-mono tracking-widest uppercase text-sm mb-6">反嘴鹬 Pied Avocet</p>
             <p class="bird-desc">嘿！你知道我为什么跑这么快吗？<br><br>每年我都是第一批到深圳湾的。看看我的嘴——是不是往上翘的？我用这把镰刀一样的嘴在浅水里左右横扫，效率是其他鸟的三倍。精准胜过勤奋。</p>
             <p class="bird-desc mt-4">因为腿短，我只能在裸露的泥滩上走路。互花米草长得铺天盖地，对我们短腿鸟来说，那等于用一床绿被子盖住了我们的餐桌。于是保护区做了一个决定：砍树。主动清理入侵的草，把烂泥滩还给我们。</p>
             <p class="bird-desc mt-4">正确的和好看的，不总是一回事。<br>你们选择了正确。</p>
@@ -353,14 +358,14 @@
     <!-- 5. 老鹬 -->
     <section class="panel" id="section-laoyu">
       <div class="parallax-bg" style="background-image: url('/diary/5.jpg');"></div>
-      <div class="overlay" style="background: rgba(0,0,0,0.85);"></div>
+      <div class="overlay" style="background: rgba(255,255,255,0.85);"></div>
       <div class="content max-w-4xl mx-auto text-center">
         <div class="text-block">
           <h2 class="bird-name" style="font-size: 6rem; background: linear-gradient(to right, #ff4e50, #f9d423); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">11,000 km</h2>
-          <p class="text-orange-400 font-mono tracking-widest uppercase text-sm mb-6">老鹬 · 斑尾塍鹬 Bar-tailed Godwit</p>
+          <p class="text-orange-700 font-mono tracking-widest uppercase text-sm mb-6">老鹬 · 斑尾塍鹬 Bar-tailed Godwit</p>
           <p class="bird-desc">我看着你呢。你看了我好几眼，又去看黑脸琵鹭了。没关系，习惯了。</p>
           <p class="bird-desc mt-4">我有一项纪录：从阿拉斯加直飞新西兰，一万一千公里不落地。不吃不喝不睡觉。横跨整个太平洋。</p>
-          <p class="bird-desc mt-4 text-orange-200">好多年前你们的城市要修滨海大道。图纸上那条路会从这片红树林中间穿过去。但你们改了图纸。路向北平移了 260 米。增加了上亿元成本。还建了全国第一条为鸟类设计的隔音屏障。</p>
+          <p class="bird-desc mt-4 text-orange-700">好多年前你们的城市要修滨海大道。图纸上那条路会从这片红树林中间穿过去。但你们改了图纸。路向北平移了 260 米。增加了上亿元成本。还建了全国第一条为鸟类设计的隔音屏障。</p>
           <p class="bird-desc mt-6 font-bold tracking-widest" style="font-size: 1.5rem;">一条公路，为一只鸟让了路。</p>
           <p class="bird-desc mt-2">所以你看，我不是"路过"。我是"来赴约"。</p>
         </div>
@@ -370,14 +375,14 @@
     <!-- 6. 弯弯 -->
     <section class="panel" id="section-wanwan">
       <div class="parallax-bg" style="background-image: url('/diary/6.jpg');"></div>
-      <div class="overlay" style="background: linear-gradient(to top, rgba(0,0,0,1), rgba(0,0,0,0.3));"></div>
+      <div class="overlay" style="background: linear-gradient(to top, rgba(255,255,255,1), rgba(255,255,255,0.3));"></div>
       <div class="content max-w-3xl mx-auto text-left">
         <div class="text-block">
           <h2 class="bird-name">弯弯</h2>
-          <p class="text-emerald-400 font-mono tracking-widest uppercase text-sm mb-6">白腰杓鹬 Eurasian Curlew</p>
+          <p class="text-emerald-700 font-mono tracking-widest uppercase text-sm mb-6">白腰杓鹬 Eurasian Curlew</p>
           <p class="bird-desc">你看过清晨六点半的深圳湾吗？太阳刚刚从梧桐山背后升起来，光斜着打在水面上，像是有人在水面铺了一层金箔。</p>
           <p class="bird-desc mt-4">深圳湾是全球唯一一个位于千万人口超大城市 CBD 腹地的国家级自然保护区。</p>
-          <p class="bird-desc mt-4 font-semibold text-emerald-200">你住的城市，跟一片荒野共享着同一片海岸线。<br>所以你不需要飞很远去看"自然"。自然就在你家楼下。你只需要比平时早起半小时。</p>
+          <p class="bird-desc mt-4 font-semibold text-emerald-700">你住的城市，跟一片荒野共享着同一片海岸线。<br>所以你不需要飞很远去看"自然"。自然就在你家楼下。你只需要比平时早起半小时。</p>
         </div>
       </div>
     </section>
@@ -385,14 +390,14 @@
     <!-- 7. 金金 -->
     <section class="panel" id="section-jinjin">
       <div class="parallax-bg" style="background-image: url('/diary/7.jpg');"></div>
-      <div class="overlay" style="background: radial-gradient(circle at center, rgba(0,0,0,0.4), rgba(0,0,0,0.95));"></div>
+      <div class="overlay" style="background: radial-gradient(circle at center, rgba(255,255,255,0.4), rgba(255,255,255,0.95));"></div>
       <div class="content max-w-4xl mx-auto text-center">
         <div class="text-block">
-          <h2 class="bird-name text-yellow-300">金金</h2>
-          <p class="text-yellow-500 font-mono tracking-widest uppercase text-sm mb-6">太平洋金鸻 Pacific Golden Plover</p>
+          <h2 class="bird-name text-yellow-700">金金</h2>
+          <p class="text-yellow-700 font-mono tracking-widest uppercase text-sm mb-6">太平洋金鸻 Pacific Golden Plover</p>
           <p class="bird-desc">几百万年来，我们靠星光和月光导航。夜晚的天空是一张我们读得懂的地图。但你们发明了电灯之后，地图被篡改了。</p>
           <p class="bird-desc mt-4">但深圳，在 2019 年出台了"鸟类友好城市"规范。最关键的一条：候鸟迁徙季，保护区周边的朝天射灯关掉。民间叫它"为鸟熄灯"。</p>
-          <p class="bird-desc mt-4 text-yellow-100 font-bold">每次我从阿拉斯加飞了八千公里接近珠三角时，看到那一片熟悉的黑暗——我就知道，方向没偏。</p>
+          <p class="bird-desc mt-4 text-yellow-700 font-bold">每次我从阿拉斯加飞了八千公里接近珠三角时，看到那一片熟悉的黑暗——我就知道，方向没偏。</p>
           <p class="bird-desc mt-6 font-mono text-sm">"候鸟季的夜晚，如果你住在深圳湾附近，睡前记得拉上窗帘。<br>你房间少漏出来的一束光，可能是某只候鸟安全完成漫长飞行的一块拼图。"</p>
         </div>
       </div>
@@ -401,16 +406,16 @@
     <!-- 8. 尾声 -->
     <section class="panel" id="section-epilogue">
       <div class="parallax-bg" style="background-image: url('/diary/8.jpg'); filter: grayscale(100%);"></div>
-      <div class="overlay" style="background: rgba(0,0,0,0.9);"></div>
+      <div class="overlay" style="background: rgba(255,255,255,0.9);"></div>
       <div class="content max-w-3xl mx-auto text-center">
         <div class="text-block">
-          <p class="text-emerald-400 font-mono tracking-widest uppercase text-sm mb-6">尾声</p>
+          <p class="text-emerald-700 font-mono tracking-widest uppercase text-sm mb-6">尾声</p>
           <p class="bird-desc text-2xl font-serif">今年夏天，去一次深圳湾吧。<br>带一台望远镜，或者不带。<br>退潮后一个小时，东侧浅水区。<br>你会在那里看到一只白色的鸟，<br>站在浅水里用琵琶嘴左右扫食。</p>
-          <p class="bird-desc text-xl mt-8 italic text-white/50">我飞了三千公里来见你。</p>
-          <p class="bird-desc text-xl mt-2 italic text-white/50">今年也平安到达了。</p>
-          <p class="bird-desc text-xl mt-2 italic text-white/50">明年还会来。</p>
+          <p class="bird-desc text-xl mt-8 italic text-slate-800/50">我飞了三千公里来见你。</p>
+          <p class="bird-desc text-xl mt-2 italic text-slate-800/50">今年也平安到达了。</p>
+          <p class="bird-desc text-xl mt-2 italic text-slate-800/50">明年还会来。</p>
           <div class="mt-16">
-            <a href="/index.html" class="inline-block border border-white/30 text-white px-8 py-3 rounded-full hover:bg-white hover:text-black transition-all">参与生态观测</a>
+            <a href="/index.html" class="inline-block border border-white/30 text-slate-800 px-8 py-3 rounded-full hover:bg-white hover:text-black transition-all">参与生态观测</a>
           </div>
         </div>
       </div>
@@ -452,7 +457,7 @@
   <div class="mt-4 pt-4 border-t border-slate-200">
     <form id="chat-form" class="flex gap-2 relative">
       <input type="text" id="chat-input" placeholder="输入你的问题..." class="flex-1 bg-slate-100 border border-slate-300 rounded-xl px-4 py-3 text-sm text-slate-800 focus:outline-none focus:border-emerald-500" autocomplete="off" required>
-      <button type="submit" class="bg-emerald-600 hover:bg-emerald-500 text-white px-4 rounded-xl transition">
+      <button type="submit" class="bg-emerald-600 hover:bg-emerald-500 text-slate-800 px-4 rounded-xl transition">
         <i class="fa-solid fa-paper-plane"></i>
       </button>
     </form>

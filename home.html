@@ -1,0 +1,377 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>红檬智型 — 以候鸟之翼，飞越万里归途</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600;9..144,700&family=Manrope:wght@400;500;600;700;800&family=IBM+Plex+Mono:wght@400;500;600&family=Noto+Serif+SC:wght@400;500;600;700;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/src/narrative.css">
+</head>
+<body>
+
+<!-- ========== 导航栏 ========== -->
+<nav class="nav-bar" id="navbar">
+    <a href="home.html" class="nav-logo">
+        <svg class="logo-icon" viewBox="0 0 32 32" fill="none">
+            <circle cx="16" cy="16" r="14" fill="#f0c060" opacity="0.15"/>
+            <path d="M8 18 L14 10 L16 6 L18 10 L24 18 L20 18 L16 14 L12 18 Z"
+                  fill="#f0c060" opacity="0.9"/>
+            <path d="M10 20 Q16 24 22 20" stroke="#f0c060" stroke-width="1.5" fill="none"/>
+        </svg>
+        红檬智型
+    </a>
+    <button class="nav-toggle" id="navToggle" aria-label="菜单">
+        <span></span><span></span><span></span>
+    </button>
+    <ul class="nav-links" id="navLinks">
+        <li><a href="home.html" class="active">首页</a></li>
+        <li><a href="story.html">迁徙故事</a></li>
+        <li><a href="birds.html">鸟类图鉴</a></li>
+        <li><a href="protect.html">保护行动</a></li>
+        <li><a href="about.html">关于我们</a></li>
+        <li><a href="index.html">生态管理后台</a></li>
+    </ul>
+</nav>
+
+<!-- ========== Hero ========== -->
+<section class="hero" id="hero">
+    
+
+    <!-- 星星 -->
+    <div class="stars" id="starsContainer"></div>
+
+    <!-- 暗色云层 -->
+    
+
+    <!-- 海面 -->
+    
+
+    <!-- 飞鸟 -->
+    
+
+    <div class="hero-content">
+        <div class="hero-kicker">沉浸式迁徙体验</div>
+        <h1 class="hero-title">以候鸟之翼<br>飞越<em>万里归途</em></h1>
+        <p class="hero-subtitle">
+            在你面前的，是一本会说话的自然日记。
+            请你在这里，观察鸟儿们旅行中的歇脚，
+            也许只是它们喝水、飞翔、发呆的时刻，
+            但观鸟的你能够感受到TA们身上的美丽与独特就足够了。
+            珍视我们现在所拥有的生灵。
+            Let'go!
+        </p>
+        <div class="hero-cta">
+            <a href="story.html" class="btn-primary">开始迁徙之旅</a>
+            <a href="birds.html" class="btn-outline">探索鸟类图鉴</a>
+        </div>
+    </div>
+
+    <div class="scroll-hint">
+        <span>向下探索</span>
+        <div class="arrow"></div>
+    </div>
+</section>
+
+<!-- ========== 下方浅色内容区 ========== -->
+<div class="content-below">
+
+<!-- 迁徙路线 -->
+<div class="route-section">
+    <div class="route-container">
+        <div class="section-label fade-in">迁徙路线</div>
+        <h2 class="section-title fade-in">东亚—澳大利西亚迁飞路线</h2>
+        <p class="section-body fade-in">
+            每年，超过<strong>5000万只</strong>候鸟沿着这条横跨<strong>22个国家</strong>的路线往返迁徙。
+            从澳大利亚的繁殖地出发，它们飞越印度尼西亚群岛、
+            马来西亚和泰国的湿地，经过中国南海沿岸，
+            最终一部分选择在<strong>深圳湾</strong>栖息越冬。
+        </p>
+
+        <div class="route-map fade-in" id="routeMap">
+            <div class="route-point" style="left:13%; top:72%;">
+                <div class="dot start"></div>
+                <div class="label">澳大利亚</div>
+            </div>
+            <div class="route-point" style="left:28%; top:55%;">
+                <div class="dot"></div>
+                <div class="label">印度尼西亚</div>
+            </div>
+            <div class="route-point" style="left:42%; top:40%;">
+                <div class="dot"></div>
+                <div class="label">马来西亚</div>
+            </div>
+            <div class="route-point" style="left:55%; top:28%;">
+                <div class="dot"></div>
+                <div class="label">泰国</div>
+            </div>
+            <div class="route-point" style="left:68%; top:22%;">
+                <div class="dot"></div>
+                <div class="label">越南</div>
+            </div>
+            <div class="route-point" style="left:84%; top:18%;">
+                <div class="dot end"></div>
+                <div class="label">深圳湾</div>
+            </div>
+        </div>
+
+        <div class="route-stats fade-in">
+            <div class="route-stat">
+                <div class="number">12,000+</div>
+                <div class="desc">公里单程飞行</div>
+            </div>
+            <div class="route-stat">
+                <div class="number">50,000,000+</div>
+                <div class="desc">迁徙候鸟数量</div>
+            </div>
+            <div class="route-stat">
+                <div class="number">22</div>
+                <div class="desc">途经国家</div>
+            </div>
+            <div class="route-stat">
+                <div class="number">60+</div>
+                <div class="desc">候鸟种类</div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- 章节一 -->
+<div class="section fade-in">
+    <div class="section-label">第一章</div>
+    <h2 class="section-title">起点：南半球的离别</h2>
+    <div class="divider"></div>
+    <p class="section-body">
+        澳大利亚北部的<strong>卡卡杜国家公园</strong>，湿地广袤，食物丰沛。
+        但对于候鸟而言，随着南半球冬季的到来，白昼渐短、气温下降，
+        一场刻在基因里的迁徙本能被唤醒。
+    </p>
+    <p class="section-body">
+        它们开始大量进食，在体内储存脂肪——这将是长达<strong>12,000公里</strong>旅程的唯一燃料。
+        幼鸟跟随成鸟，借助地球磁场、星辰位置和地貌特征，校准飞行的方向。
+    </p>
+    <div class="pull-quote">
+        "每一次迁徙，都是一场以生命为赌注的壮丽冒险。"
+        <span class="attribution">—— 红檬智型 · 迁徙故事</span>
+    </div>
+</div>
+
+<!-- 章节二 -->
+<div class="section fade-in" style="padding-top: 0;">
+    <div class="section-label">第二章</div>
+    <h2 class="section-title">征途：跨越赤道的飞翔</h2>
+    <div class="divider"></div>
+    <p class="section-body">
+        离开澳大利亚海岸后，候鸟飞越<strong>阿拉弗拉海</strong>，进入印度尼西亚群岛。
+        在这个由<strong>17,000多个岛屿</strong>组成的国度，它们需要精准地找到湿地和滩涂作为"加油站"。
+    </p>
+    <p class="section-body">
+        每一片红树林、每一处滩涂，都可能成为决定生死的关键补给站。
+        然而城市化、围垦和污染正让这些驿站<strong>逐年消失</strong>。
+    </p>
+</div>
+
+<!-- 章节三 -->
+<div class="section fade-in" style="padding-top: 0;">
+    <div class="section-label">第三章</div>
+    <h2 class="section-title">终点：深圳湾的召唤</h2>
+    <div class="divider"></div>
+    <p class="section-body">
+        历经数月的飞行，候鸟终于抵达<strong>深圳湾（深港后海湾）</strong>。
+        这片位于繁华都市边缘的<strong>国际重要湿地</strong>，是东亚—澳大利西亚迁飞路线上
+        不可替代的"服务区"，每年吸引超过<strong>10万只</strong>候鸟在此停歇或越冬。
+    </p>
+    <p class="section-body">
+        黑脸琵鹭在这里优雅踱步，反嘴鹬用上翘的长喙扫过水面，
+        红脚鹬成百上千地聚集在退潮后的滩涂上……
+        深圳湾，是它们万里征途的终点，也是我们与自然重新连接的起点。
+    </p>
+</div>
+
+<!-- 导航卡片 -->
+<div class="section-wide fade-in">
+    <div style="margin-bottom:40px;">
+        <div class="section-label">探索更多</div>
+        <h2 class="section-title">开启你的候鸟守护之旅</h2>
+    </div>
+    <div class="narrative-grid">
+        <a href="story.html" class="narrative-card">
+            <span class="card-icon"></span>
+            <h3 class="card-title">迁徙故事</h3>
+            <p class="card-desc">
+                以候鸟的第一人称视角，沉浸式体验从澳大利亚到深圳湾的完整迁徙历程。
+            </p>
+            <span class="card-link">进入故事</span>
+        </a>
+        <a href="birds.html" class="narrative-card">
+            <span class="card-icon"></span>
+            <h3 class="card-title">鸟类图鉴</h3>
+            <p class="card-desc">
+                了解黑脸琵鹭、反嘴鹬等深圳湾常见候鸟的特征与习性。
+            </p>
+            <span class="card-link">查看图鉴</span>
+        </a>
+        <a href="protect.html" class="narrative-card">
+            <span class="card-icon"></span>
+            <h3 class="card-title">保护行动</h3>
+            <p class="card-desc">
+                了解湿地面临的挑战，学习如何为候鸟保护贡献力量。
+            </p>
+            <span class="card-link">参与保护</span>
+        </a>
+        <a href="about.html" class="narrative-card">
+            <span class="card-icon">‍‍</span>
+            <h3 class="card-title">关于我们</h3>
+            <p class="card-desc">
+                认识「红檬智型」团队，了解项目理念与保护计划。
+            </p>
+            <span class="card-link">了解团队</span>
+        </a>
+    </div>
+</div>
+
+</div><!-- /.content-below -->
+
+<!-- CTA -->
+<div class="cta-section fade-in">
+    <div class="cta-inner">
+        <h2 class="cta-title">与候鸟一起，踏上这段旅程</h2>
+        <p class="cta-desc">
+            从澳大利亚到深圳湾，每一次振翅都是生命的礼赞。
+            现在，以候鸟的视角，亲历这场非凡的迁徙吧。
+        </p>
+        <div class="cta-buttons">
+            <a href="story.html" class="cta-btn primary">开始迁徙之旅</a>
+            <a href="protect.html" class="cta-btn ghost">了解如何保护它们</a>
+        </div>
+    </div>
+</div>
+
+<!-- 页脚 -->
+<footer class="footer">
+    <div class="footer-inner">
+        <div class="footer-brand">红檬智型</div>
+        <ul class="footer-links">
+            <li><a href="home.html">首页</a></li>
+            <li><a href="story.html">迁徙故事</a></li>
+            <li><a href="birds.html">鸟类图鉴</a></li>
+            <li><a href="protect.html">保护行动</a></li>
+            <li><a href="about.html">关于我们</a></li>
+        </ul>
+    </div>
+    <div class="footer-copy">
+        &copy; 2026 红檬智型 — 守护候鸟，从心开始
+    </div>
+</footer>
+
+<script>
+    // ========== 生成星星 ==========
+    (function generateStars() {
+        const container = document.getElementById('starsContainer');
+        const count = 60;
+        for (let i = 0; i < count; i++) {
+            const star = document.createElement('div');
+            star.className = 'star';
+            const size = Math.random() * 2.5 + 1;
+            star.style.width = size + 'px';
+            star.style.height = size + 'px';
+            star.style.left = Math.random() * 100 + '%';
+            star.style.top = Math.random() * 62 + '%';
+            star.style.animationDuration = (Math.random() * 3 + 2) + 's';
+            star.style.animationDelay = Math.random() * 4 + 's';
+            container.appendChild(star);
+        }
+    })();
+
+    // ========== 导航栏滚动阴影 ==========
+    const navbar = document.getElementById('navbar');
+    window.addEventListener('scroll', () => {
+        navbar.classList.toggle('scrolled', window.scrollY > 20);
+    });
+
+    // ========== 移动端菜单切换 ==========
+    const navToggle = document.getElementById('navToggle');
+    const navLinks = document.getElementById('navLinks');
+    navToggle.addEventListener('click', () => {
+        navLinks.classList.toggle('open');
+    });
+    navLinks.querySelectorAll('a').forEach(link => {
+        link.addEventListener('click', () => {
+            navLinks.classList.remove('open');
+        });
+    });
+
+    // ========== 滚动淡入动画 ==========
+    const fadeElements = document.querySelectorAll('.fade-in');
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                entry.target.classList.add('visible');
+            }
+        });
+    }, { threshold: 0.15, rootMargin: '0px 0px -40px 0px' });
+
+    fadeElements.forEach(el => observer.observe(el));
+
+    // ========== 迁徙路线连线 ==========
+    (function drawRouteLines() {
+        const map = document.getElementById('routeMap');
+        const points = map.querySelectorAll('.route-point');
+        const mapRect = map.getBoundingClientRect();
+
+        const segments = [
+            [0, 1], [1, 2], [2, 3], [3, 4], [4, 5]
+        ];
+
+        function getPointCenter(el) {
+            const rect = el.getBoundingClientRect();
+            return {
+                x: rect.left + rect.width / 2 - mapRect.left,
+                y: rect.top + rect.height / 2 - mapRect.top
+            };
+        }
+
+        segments.forEach(([i, j]) => {
+            const a = getPointCenter(points[i]);
+            const b = getPointCenter(points[j]);
+
+            const midX = (a.x + b.x) / 2;
+            const midY = Math.min(a.y, b.y) - 40 + (Math.abs(b.y - a.y) * 0.2);
+
+            const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+            svg.setAttribute('style', `
+                position: absolute; top: 0; left: 0;
+                width: 100%; height: 100%;
+                pointer-events: none; z-index: 2;
+            `);
+
+            const path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+            const d = `M ${a.x} ${a.y} Q ${midX} ${midY} ${b.x} ${b.y}`;
+            path.setAttribute('d', d);
+            path.setAttribute('stroke', '#e67e22');
+            path.setAttribute('stroke-width', '2.5');
+            path.setAttribute('stroke-dasharray', '8 6');
+            path.setAttribute('fill', 'none');
+            path.setAttribute('opacity', '0.55');
+
+            svg.appendChild(path);
+            map.appendChild(svg);
+        });
+    })();
+
+    // 窗口大小变化时重新绘制
+    let resizeTimeout;
+    window.addEventListener('resize', () => {
+        clearTimeout(resizeTimeout);
+        resizeTimeout = setTimeout(() => {
+            const map = document.getElementById('routeMap');
+            const existingSvgs = map.querySelectorAll('svg');
+            existingSvgs.forEach(s => s.remove());
+            location.reload();
+        }, 500);
+    });
+</script>
+
+</body>
+</html>
