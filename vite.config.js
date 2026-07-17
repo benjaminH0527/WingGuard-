@@ -15,7 +15,8 @@ export default defineConfig({
         about: 'about.html',
         story: 'story.html',
         protect: 'protect.html',
-        birds: 'birds.html'
+        birds: 'birds.html',
+        identify: 'identify.html'
       }
     }
   }
