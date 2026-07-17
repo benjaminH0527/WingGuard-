@@ -31,13 +31,14 @@ import { ENV } from './env.js';
 
 let supabaseClient = null;
 try {
-  if (ENV.SUPABASE_URL && ENV.SUPABASE_ANON_KEY) {
+  if (ENV.FORCE_LOCAL_MOCK) {
+    console.warn("提示：已通过 FORCE_LOCAL_MOCK 强行回退到本地演示模式，将忽略真实的 Supabase 配置。");
+  } else if (ENV.SUPABASE_URL && ENV.SUPABASE_ANON_KEY) {
     supabaseClient = createClient(ENV.SUPABASE_URL, ENV.SUPABASE_ANON_KEY);
   }
 } catch (e) {
-    console.warn("Supabase 客户端初始化失败，将回退到本地演示模式：", e);
-  }
-
+  console.warn("Supabase 客户端初始化失败，将回退到本地演示模式：", e);
+}
   const LS_KEYS = {
     species: "wg_species",
     observations: "wg_observations",
@@ -258,7 +259,12 @@ try {
             }
           }
         });
-        if (error) throw error;
+        if (error) {
+          if (error.message.includes('rate limit')) {
+            throw new Error('测试频次超限 (Supabase 每小时限制3次)，请稍后再试或在 env.js 中开启 FORCE_LOCAL_MOCK 模式');
+          }
+          throw error;
+        }
         return data.user;
       }
       return localSignUp(email, password, role, profileExtra);
@@ -276,14 +282,25 @@ try {
           email,
           password
         });
-        if (authError) throw authError;
+        if (authError) {
+          if (authError.message.includes('Invalid login credentials')) {
+            throw new Error('邮箱密码错误，或者邮箱尚未验证（请检查收件箱，或在 Supabase 后台关闭邮件验证）');
+          }
+          throw authError;
+        }
 
         const { data: profile, error: profError } = await supabaseClient
           .from("profiles")
           .select("*")
           .eq("id", authData.user.id)
           .single();
-        if (profError) throw profError;
+        
+        if (profError) {
+          if (profError.code === 'PGRST116') {
+            throw new Error('登录成功，但未找到用户档案 (Profiles 表)。请检查数据库触发器 `on_auth_user_created` 是否成功执行。');
+          }
+          throw profError;
+        }
 
         writeLS(LS_KEYS.currentUser, profile);
         return { user: authData.user, profile };

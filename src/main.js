@@ -1,6 +1,7 @@
 import './style.css';
 import { DataAdapter } from './DataAdapter.js';
 import Chart from 'chart.js/auto';
+import { ENV } from './env.js';
 
   let authMode = 'signin';
   let trendChart = null, pieChart = null;
@@ -50,7 +51,7 @@ import Chart from 'chart.js/auto';
     try {
       if (authMode === 'signup') {
         if (role === 'admin') {
-          const codes = (window.ENV && window.ENV.ADMIN_INVITE_CODES) || [];
+          const codes = ENV.ADMIN_INVITE_CODES || [];
           if (!codes.includes(inviteCode)) {
             toast('邀请码无效，管理员账号仅限授权人员注册');
             return;
