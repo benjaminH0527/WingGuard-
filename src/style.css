@@ -1,0 +1,63 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+html { scroll-behavior: smooth; }
+body { background: var(--bg, #F6F3E9); }
+
+/* ---------- Glassmorphism system ---------- */
+.glass {
+  background: rgba(255,255,255,0.60);
+  backdrop-filter: blur(18px) saturate(140%);
+  -webkit-backdrop-filter: blur(18px) saturate(140%);
+  border: 1px solid rgba(255,255,255,0.55);
+}
+.glass-strong {
+  background: rgba(255,255,255,0.78);
+  backdrop-filter: blur(22px) saturate(150%);
+  -webkit-backdrop-filter: blur(22px) saturate(150%);
+  border: 1px solid rgba(255,255,255,0.65);
+}
+.glass-dark {
+  background: rgba(11,29,23,0.55);
+  backdrop-filter: blur(20px) saturate(130%);
+  -webkit-backdrop-filter: blur(20px) saturate(130%);
+  border: 1px solid rgba(255,255,255,0.12);
+}
+.glass-nav {
+  background: rgba(246,243,233,0.72);
+  backdrop-filter: blur(22px) saturate(150%);
+  -webkit-backdrop-filter: blur(22px) saturate(150%);
+  border-bottom: 1px solid rgba(18,42,34,0.08);
+}
+
+/* ---------- Signature: field stamp badge ---------- */
+.stamp {
+  display: inline-flex; align-items: center; justify-content: center;
+  border: 1.5px dashed currentColor;
+  border-radius: 999px;
+  transform: rotate(-4deg);
+  letter-spacing: 0.06em;
+}
+
+/* ---------- Topographic contour texture (B-end signature) ---------- */
+.topo-bg {
+  background-image:
+    repeating-radial-gradient(circle at 20% 30%, rgba(47,107,79,0.10) 0, rgba(47,107,79,0.10) 1px, transparent 1px, transparent 22px),
+    repeating-radial-gradient(circle at 80% 70%, rgba(47,107,79,0.08) 0, rgba(47,107,79,0.08) 1px, transparent 1px, transparent 26px);
+}
+
+.no-scrollbar::-webkit-scrollbar { display: none; }
+.no-scrollbar { -ms-overflow-style:none; scrollbar-width:none; }
+
+.hairline { border-color: rgba(18,42,34,0.10); }
+
+::selection { background: #2F6B4F; color: #fff; }
+
+/* fade-up on load */
+@keyframes fadeUp { from { opacity:0; transform: translateY(14px);} to {opacity:1; transform:translateY(0);} }
+.fade-up { animation: fadeUp .7s ease both; }
+
+.eyebrow { letter-spacing: 0.22em; }
+
+input:focus, select:focus, textarea:focus { outline: none; }

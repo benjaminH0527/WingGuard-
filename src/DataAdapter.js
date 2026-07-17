@@ -1,6 +1,6 @@
 /**
  * =========================================================================
- * DataAdapter — 翼守护 (WingGuard) 统一数据适配层
+ * DataAdapter — 红檬智型 (WingGuard) 统一数据适配层
  * =========================================================================
  * 架构说明：
  *   本文件是全平台唯一允许读写数据的地方。UI 代码永远不直接碰 localStorage
@@ -26,19 +26,15 @@
  * =========================================================================
  */
 
-(function () {
-  "use strict";
+import { createClient } from '@supabase/supabase-js';
+import { ENV } from './env.js';
 
-  // ------------------------------------------------------------------
-  // Supabase 客户端初始化
-  // ------------------------------------------------------------------
-  const ENV = window.ENV || {};
-  let supabaseClient = null;
-  try {
-    if (window.supabase && ENV.SUPABASE_URL && ENV.SUPABASE_ANON_KEY) {
-      supabaseClient = window.supabase.createClient(ENV.SUPABASE_URL, ENV.SUPABASE_ANON_KEY);
-    }
-  } catch (e) {
+let supabaseClient = null;
+try {
+  if (ENV.SUPABASE_URL && ENV.SUPABASE_ANON_KEY) {
+    supabaseClient = createClient(ENV.SUPABASE_URL, ENV.SUPABASE_ANON_KEY);
+  }
+} catch (e) {
     console.warn("Supabase 客户端初始化失败，将回退到本地演示模式：", e);
   }
 
@@ -532,5 +528,4 @@
     }
   };
 
-  window.DataAdapter = DataAdapter;
-})();
+  export { DataAdapter };

@@ -1,4 +1,4 @@
-# 翼守护 (WingGuard) — 数据接口契约 (API Contract)
+# 红檬智型 (WingGuard) — 数据接口契约 (API Contract)
 
 所有数据读写都必须经过 `js/DataAdapter.js` 中的统一接口，UI 层永远不直接操作
 `localStorage` 或 Supabase 客户端。字段命名参考 [GBIF Darwin Core](https://dwc.tdwg.org/)

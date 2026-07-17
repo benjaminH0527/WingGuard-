@@ -8,7 +8,7 @@
  * Row Level Security (RLS) 策略负责（见 supabase_schema.sql）。
  * ------------------------------------------------------------------
  */
-window.ENV = {
+export const ENV = {
   SUPABASE_URL: "https://rmsqbhnvwhdlzdcfkzwn.supabase.co",
   SUPABASE_ANON_KEY: "sb_publishable_q22LDtdUi81IFKlr8jjtzg_G9HMXXAR",
   ADMIN_INVITE_CODES: ["ADMIN2026", "ECOGUARD-PILOT"]
