@@ -108,7 +108,7 @@ try {
       habitat: "沼泽湿地、芦苇荡、滩涂",
       description:
         "体态优雅，顶冠裸皮呈朱红色，是长寿与吉祥的文化象征。对栖息地完整性要求极高，是区域生态保护成效的旗舰指标。",
-      imageUrl: "https://images.unsplash.com/photo-1508923567004-3a6b8004f3d7?auto=format&fit=crop&w=800&q=80"
+      imageUrl: "/Grus-japonensis.jpg"
     }
   ];
 
@@ -327,6 +327,33 @@ try {
      * @returns {Promise<Array>}
      */
     async getObservations(filters = {}) {
+      if (supabaseClient) {
+        let query = supabaseClient.from('observations').select('*').order('submitted_at', { ascending: false });
+        if (filters.status) query = query.eq('status', filters.status);
+        if (filters.userId) query = query.eq('user_id', filters.userId);
+        if (filters.speciesId) query = query.eq('species_id', filters.speciesId);
+        
+        const { data, error } = await query;
+        if (error) throw error;
+        
+        return data.map(o => ({
+          id: o.id,
+          speciesId: o.species_id,
+          scientificName: o.scientific_name,
+          commonName: o.common_name,
+          userId: o.user_id,
+          recordedBy: o.recorded_by,
+          eventDate: o.event_date,
+          decimalLatitude: o.decimal_latitude,
+          decimalLongitude: o.decimal_longitude,
+          individualCount: o.individual_count,
+          photoUrl: o.photo_url,
+          note: o.note,
+          status: o.status,
+          submittedAt: o.submitted_at
+        }));
+      }
+
       let list = readLS(LS_KEYS.observations);
       if (filters.status) list = list.filter((o) => o.status === filters.status);
       if (filters.userId) list = list.filter((o) => o.userId === filters.userId);
@@ -345,6 +372,43 @@ try {
 
       const speciesList = await this.getSpecies();
       const sp = speciesList.find((s) => s.id === data.speciesId);
+
+      const isLocal = String(user.id).startsWith("mock-user-") || String(user.id).startsWith("local-user-");
+
+      if (supabaseClient && !isLocal) {
+        const record = {
+          species_id: data.speciesId || null,
+          scientific_name: sp ? sp.scientificName : (data.scientificName || "Unknown"),
+          common_name: sp ? sp.commonName : (data.commonName || "未知鸟种"),
+          user_id: user.id,
+          recorded_by: user.nickname || "热心观测员",
+          event_date: new Date().toISOString().slice(0, 10),
+          decimal_latitude: Number(data.decimalLatitude) || 31.2304,
+          decimal_longitude: Number(data.decimalLongitude) || 121.4737,
+          individual_count: Math.max(1, parseInt(data.individualCount, 10) || 1),
+          photo_url: data.photoUrl || (sp ? sp.imageUrl : ""),
+          note: data.note || "",
+          status: "pending"
+        };
+        const { data: inserted, error } = await supabaseClient.from('observations').insert(record).select().single();
+        if (error) throw error;
+        return {
+          id: inserted.id,
+          speciesId: inserted.species_id,
+          scientificName: inserted.scientific_name,
+          commonName: inserted.common_name,
+          userId: inserted.user_id,
+          recordedBy: inserted.recorded_by,
+          eventDate: inserted.event_date,
+          decimalLatitude: inserted.decimal_latitude,
+          decimalLongitude: inserted.decimal_longitude,
+          individualCount: inserted.individual_count,
+          photoUrl: inserted.photo_url,
+          note: inserted.note,
+          status: inserted.status,
+          submittedAt: inserted.submitted_at
+        };
+      }
 
       const record = {
         id: uid("obs"),
@@ -376,6 +440,32 @@ try {
      * @returns {Promise<Object>}
      */
     async reviewObservation(id, status) {
+      if (supabaseClient && !String(id).startsWith("obs-")) {
+        const { data, error } = await supabaseClient.from('observations').update({ status }).eq('id', id).select().single();
+        if (error) throw error;
+        
+        if (status === "approved") {
+          await this._rewardUser(data.user_id, 100);
+        }
+        
+        return {
+          id: data.id,
+          speciesId: data.species_id,
+          scientificName: data.scientific_name,
+          commonName: data.common_name,
+          userId: data.user_id,
+          recordedBy: data.recorded_by,
+          eventDate: data.event_date,
+          decimalLatitude: data.decimal_latitude,
+          decimalLongitude: data.decimal_longitude,
+          individualCount: data.individual_count,
+          photoUrl: data.photo_url,
+          note: data.note,
+          status: data.status,
+          submittedAt: data.submitted_at
+        };
+      }
+
       const list = readLS(LS_KEYS.observations);
       const idx = list.findIndex((o) => o.id === id);
       if (idx === -1) throw new Error("未找到该观测记录");
@@ -421,6 +511,20 @@ try {
      * @returns {Promise<Array>}
      */
     async getSpecies() {
+      if (supabaseClient) {
+        const { data, error } = await supabaseClient.from('species').select('*');
+        if (!error && data && data.length > 0) {
+          return data.map(s => ({
+            id: s.id,
+            scientificName: s.scientific_name,
+            commonName: s.common_name,
+            conservationStatus: s.conservation_status,
+            habitat: s.habitat,
+            description: s.description,
+            imageUrl: s.image_url
+          }));
+        }
+      }
       return readLS(LS_KEYS.species);
     },
 
@@ -431,6 +535,31 @@ try {
      */
     async submitReport(data) {
       const user = await this.getCurrentUser();
+      const isLocal = user && (String(user.id).startsWith("mock-user-") || String(user.id).startsWith("local-user-"));
+      
+      if (supabaseClient && !isLocal) {
+        const record = {
+          user_id: user ? user.id : null,
+          type: data.type,
+          location: data.location,
+          description: data.description,
+          photo_url: data.photoUrl || "",
+          status: "pending"
+        };
+        const { data: inserted, error } = await supabaseClient.from('reports').insert(record).select().single();
+        if (error) throw error;
+        return {
+          id: inserted.id,
+          userId: inserted.user_id,
+          type: inserted.type,
+          location: inserted.location,
+          description: inserted.description,
+          photoUrl: inserted.photo_url,
+          status: inserted.status,
+          submittedAt: inserted.submitted_at
+        };
+      }
+
       const record = {
         id: uid("rep"),
         userId: user ? user.id : "anonymous",
@@ -453,6 +582,25 @@ try {
      * @returns {Promise<Array>}
      */
     async getReports(filters = {}) {
+      if (supabaseClient) {
+        let query = supabaseClient.from('reports').select('*').order('submitted_at', { ascending: false });
+        if (filters.status) query = query.eq('status', filters.status);
+        
+        const { data, error } = await query;
+        if (error) throw error;
+        
+        return data.map(r => ({
+          id: r.id,
+          userId: r.user_id,
+          type: r.type,
+          location: r.location,
+          description: r.description,
+          photoUrl: r.photo_url,
+          status: r.status,
+          submittedAt: r.submitted_at
+        }));
+      }
+
       let list = readLS(LS_KEYS.reports);
       if (filters.status) list = list.filter((r) => r.status === filters.status);
       return list.sort((a, b) => new Date(b.submittedAt) - new Date(a.submittedAt));
@@ -464,6 +612,21 @@ try {
      * @returns {Promise<Object>}
      */
     async resolveReport(id) {
+      if (supabaseClient && !String(id).startsWith("rep-")) {
+        const { data, error } = await supabaseClient.from('reports').update({ status: 'processed' }).eq('id', id).select().single();
+        if (error) throw error;
+        return {
+          id: data.id,
+          userId: data.user_id,
+          type: data.type,
+          location: data.location,
+          description: data.description,
+          photoUrl: data.photo_url,
+          status: data.status,
+          submittedAt: data.submitted_at
+        };
+      }
+
       const list = readLS(LS_KEYS.reports);
       const idx = list.findIndex((r) => r.id === id);
       if (idx === -1) throw new Error("未找到该举报记录");
@@ -477,6 +640,25 @@ try {
      * @returns {Promise<Array>}
      */
     async getLeaderboard() {
+      if (supabaseClient) {
+        const { data, error } = await supabaseClient
+          .from('profiles')
+          .select('*')
+          .eq('role', 'public')
+          .order('points', { ascending: false })
+          .limit(10);
+          
+        if (!error && data && data.length > 0) {
+          const localAccounts = readLS(LS_KEYS.localAccounts).filter((a) => a.role === "public");
+          const current = await this.getCurrentUser();
+          const merged = [...data, ...localAccounts];
+          if (current && current.role === "public" && !merged.find((a) => a.id === current.id)) {
+            merged.push(current);
+          }
+          return merged.sort((a, b) => (b.points || 0) - (a.points || 0)).slice(0, 10);
+        }
+      }
+
       const accounts = readLS(LS_KEYS.localAccounts).filter((a) => a.role === "public");
       const current = await this.getCurrentUser();
       const merged = [...accounts];
