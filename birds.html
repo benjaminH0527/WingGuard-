@@ -3,16 +3,247 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>鸟类图鉴 — 红檬智型</title>
+    <title>鸟类知识卡片 — 红檬智型</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600;9..144,700&family=Manrope:wght@400;500;600;700;800&family=IBM+Plex+Mono:wght@400;500;600&family=Noto+Serif+SC:wght@400;500;600;700;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="/src/narrative.css">
+    <style>
+        /* CSS reset & base */
+        body, html { margin: 0; padding: 0; width: 100%; height: 100%; overflow: hidden; background: #000; }
+        
+        .gallery-container {
+            position: relative;
+            width: 100vw;
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: #111;
+        }
+
+        /* Dynamic blurred background */
+        .bg-blur {
+            position: absolute;
+            top: -10%; left: -10%; width: 120%; height: 120%;
+            background-size: cover;
+            background-position: center;
+            filter: blur(40px) brightness(0.4);
+            z-index: 0;
+            transition: background-image 0.8s ease;
+        }
+
+        /* Knowledge Card */
+        .card-wrapper {
+            position: relative;
+            z-index: 10;
+            width: 90%;
+            max-width: 480px;
+            height: 75vh;
+            perspective: 1000px;
+            cursor: pointer;
+        }
+
+        .knowledge-card {
+            width: 100%;
+            height: 100%;
+            border-radius: 24px;
+            background: rgba(255, 255, 255, 0.08);
+            backdrop-filter: blur(25px);
+            -webkit-backdrop-filter: blur(25px);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            box-shadow: 0 30px 60px rgba(0,0,0,0.4);
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            transform-style: preserve-3d;
+            transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.4s ease;
+        }
+
+        .knowledge-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 40px 80px rgba(0,0,0,0.6);
+            border: 1px solid rgba(255, 255, 255, 0.25);
+        }
+
+        .card-image-container {
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            position: absolute;
+            top: 0; left: 0;
+            z-index: 1;
+        }
+
+        .card-overlay {
+            position: absolute;
+            bottom: 0; left: 0; right: 0;
+            height: 50%;
+            background: linear-gradient(to top, rgba(0,0,0,0.9) 0%, rgba(0,0,0,0) 100%);
+            z-index: 2;
+            pointer-events: none;
+        }
+
+        .card-image {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+        
+        .knowledge-card:hover .card-image {
+            transform: scale(1.05);
+        }
+
+        .card-content {
+            padding: 40px 30px;
+            color: #fff;
+            position: absolute;
+            bottom: 0; left: 0; right: 0;
+            z-index: 3;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-end;
+        }
+
+        .card-title {
+            font-family: 'Fraunces', 'Noto Serif SC', serif;
+            font-size: 2.5rem;
+            font-weight: 600;
+            margin: 0;
+            line-height: 1.2;
+            text-shadow: 0 2px 10px rgba(0,0,0,0.5);
+        }
+
+        .card-latin {
+            font-family: 'Manrope', sans-serif;
+            font-size: 1.1rem;
+            color: rgba(255,255,255,0.8);
+            font-style: italic;
+            margin-top: 6px;
+            letter-spacing: 0.5px;
+            text-shadow: 0 2px 8px rgba(0,0,0,0.5);
+        }
+
+        /* Navigation Buttons */
+        .nav-btn {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            z-index: 20;
+            background: rgba(255,255,255,0.05);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255,255,255,0.15);
+            color: #fff;
+            width: 64px;
+            height: 64px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+            font-size: 24px;
+        }
+
+        .nav-btn:hover {
+            background: rgba(255,255,255,0.2);
+            transform: translateY(-50%) scale(1.1);
+            border-color: rgba(255,255,255,0.4);
+        }
+
+        .nav-prev { left: 5vw; }
+        .nav-next { right: 5vw; }
+        
+        .click-hint {
+            position: absolute;
+            bottom: 30px;
+            width: 100%;
+            text-align: center;
+            color: rgba(255,255,255,0.5);
+            font-size: 0.85rem;
+            letter-spacing: 3px;
+            text-transform: uppercase;
+            z-index: 10;
+            pointer-events: none;
+            animation: pulse 2.5s infinite ease-in-out;
+        }
+        
+        @keyframes pulse {
+            0%, 100% { opacity: 0.3; }
+            50% { opacity: 0.8; }
+        }
+
+        /* Lightbox Modal */
+        .lightbox {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.92);
+            backdrop-filter: blur(10px);
+            z-index: 2000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.5s ease;
+        }
+
+        .lightbox.active {
+            opacity: 1;
+            pointer-events: all;
+        }
+
+        .lightbox-img {
+            max-width: 90%;
+            max-height: 90vh;
+            object-fit: contain;
+            border-radius: 4px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.8);
+            transform: scale(0.95);
+            transition: transform 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        .lightbox.active .lightbox-img {
+            transform: scale(1);
+        }
+
+        .lightbox-close {
+            position: absolute;
+            top: 30px; right: 40px;
+            color: #fff;
+            font-size: 40px;
+            cursor: pointer;
+            opacity: 0.5;
+            transition: opacity 0.3s;
+            z-index: 2010;
+        }
+
+        .lightbox-close:hover { opacity: 1; }
+        
+        /* Override narrative.css nav for dark background */
+        .nav-bar { background: rgba(0,0,0,0.1) !important; border-bottom: 1px solid rgba(255,255,255,0.05) !important; }
+        .nav-bar.scrolled { background: rgba(0,0,0,0.7) !important; box-shadow: none !important; }
+        .nav-logo, .nav-links a { color: #fff !important; }
+        .nav-links a:hover, .nav-links a.active { color: var(--accent-terracotta) !important; }
+        .nav-toggle span { background: #fff !important; }
+
+        @media (max-width: 768px) {
+            .nav-prev { left: 15px; width: 44px; height: 44px; font-size: 18px; }
+            .nav-next { right: 15px; width: 44px; height: 44px; font-size: 18px; }
+            .card-wrapper { width: 85%; height: 68vh; }
+        }
+    </style>
 </head>
 <body>
 
 <nav class="nav-bar" id="navbar">
-    <a href="index.html" class="nav-logo"> 红檬智型</a>
+    <a href="index.html" class="nav-logo">
+        <svg class="logo-icon" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M12 2L2 22H22L12 2Z" fill="currentColor"/>
+        </svg>
+        红檬智型
+    </a>
     <button class="nav-toggle" id="navToggle" aria-label="菜单">
         <span></span><span></span><span></span>
     </button>
@@ -26,144 +257,196 @@
     </ul>
 </nav>
 
-<section class="page-hero">
-    <div class="page-kicker"> 深圳湾候鸟图鉴</div>
-    <h1 class="page-title">认识万里归途上的它们</h1>
-    <p class="page-subtitle">
-        每一只候鸟都有一个名字、一段故事。了解它们，是保护它们的第一步。
-    </p>
-</section>
-
-<div class="guide-grid">
-
-    <!-- 黑脸琵鹭 -->
-    <div class="bird-card fade-in">
-        <div class="bird-card-img">‍⬛</div>
-        <div class="bird-card-body">
-            <h3 class="bird-name">黑脸琵鹭</h3>
-            <div class="bird-latin">Platalea minor</div>
-            <p class="bird-info">
-                全球濒危物种，因其扁平如琵琶的黑色喙而得名。
-                每年在深圳湾越冬的种群约占全球总数的10%。
-                优雅的水中"扫地僧"，用喙在水中左右扫动觅食。
-            </p>
-            <div class="bird-tags">
-                <span class="bird-tag warning">全球濒危</span>
-                <span class="bird-tag">冬候鸟</span>
-                <span class="bird-tag">深圳湾旗舰种</span>
+<div class="gallery-container">
+    <div class="bg-blur" id="bgBlur"></div>
+    
+    <button class="nav-btn nav-prev" id="btnPrev">←</button>
+    
+    <div class="card-wrapper" id="cardWrapper">
+        <div class="knowledge-card" id="kCard">
+            <div class="card-image-container">
+                <img src="" alt="Bird" class="card-image" id="cardImg">
+                <div class="card-overlay"></div>
+            </div>
+            <div class="card-content">
+                <h3 class="card-title" id="cardTitle"></h3>
+                <div class="card-latin" id="cardLatin"></div>
             </div>
         </div>
     </div>
-
-    <!-- 反嘴鹬 -->
-    <div class="bird-card fade-in">
-        <div class="bird-card-img"></div>
-        <div class="bird-card-body">
-            <h3 class="bird-name">反嘴鹬</h3>
-            <div class="bird-latin">Recurvirostra avosetta</div>
-            <p class="bird-info">
-                标志性的上翘长喙是它最显著的特征。
-                常在浅水中用喙左右扫动或探入淤泥中觅食。
-                黑白分明的羽毛配色，飞行时尤为优雅。
-            </p>
-            <div class="bird-tags">
-                <span class="bird-tag">冬候鸟</span>
-                <span class="bird-tag">滩涂觅食</span>
-            </div>
-        </div>
-    </div>
-
-    <!-- 青脚鹬 -->
-    <div class="bird-card fade-in">
-        <div class="bird-card-img"></div>
-        <div class="bird-card-body">
-            <h3 class="bird-name">青脚鹬</h3>
-            <div class="bird-latin">Tringa nebularia</div>
-            <p class="bird-info">
-                拥有一双标志性的青绿色长腿，是滩涂上的"长腿模特"。
-                以小鱼、虾蟹和软体动物为食，常在退潮后的泥滩上快速奔走捕食。
-                叫声清脆响亮，是深圳湾最常见的冬候鸟之一。
-            </p>
-            <div class="bird-tags">
-                <span class="bird-tag">冬候鸟</span>
-                <span class="bird-tag">常见种</span>
-            </div>
-        </div>
-    </div>
-
-    <!-- 红脚鹬 -->
-    <div class="bird-card fade-in">
-        <div class="bird-card-img"></div>
-        <div class="bird-card-body">
-            <h3 class="bird-name">红脚鹬</h3>
-            <div class="bird-latin">Tringa totanus</div>
-            <p class="bird-info">
-                橙红色的双腿是它名字的由来。体型中等，常成群结队在
-                退潮后的滩涂上觅食。繁殖期会发出持续的"啾啾"警戒声。
-                对栖息地变化非常敏感。
-            </p>
-            <div class="bird-tags">
-                <span class="bird-tag">冬候鸟</span>
-                <span class="bird-tag">敏感指示种</span>
-            </div>
-        </div>
-    </div>
-
-    <!-- 白鹭 -->
-    <div class="bird-card fade-in">
-        <div class="bird-card-img"></div>
-        <div class="bird-card-body">
-            <h3 class="bird-name">白鹭</h3>
-            <div class="bird-latin">Egretta garzetta</div>
-            <p class="bird-info">
-                雪白的羽毛、黑色的长喙和黄脚趾，是深圳湾红树林最常见的留鸟之一。
-                繁殖期会长出美丽的蓑羽，曾因羽毛贸易被大量猎杀。
-                如今是湿地生态健康的"晴雨表"。
-            </p>
-            <div class="bird-tags">
-                <span class="bird-tag">留鸟</span>
-                <span class="bird-tag">生态指示种</span>
-            </div>
-        </div>
-    </div>
-
-    <!-- 鸬鹚 -->
-    <div class="bird-card fade-in">
-        <div class="bird-card-img"></div>
-        <div class="bird-card-body">
-            <h3 class="bird-name">普通鸬鹚</h3>
-            <div class="bird-latin">Phalacrocorax carbo</div>
-            <p class="bird-info">
-                全身黑色的大型水鸟，善于潜水捕鱼。在深圳湾的冬季，
-                常能看到成群的鸬鹚排成"人"字形飞过天际。
-                因羽毛不防水，捕鱼后需要展开翅膀晾干。
-            </p>
-            <div class="bird-tags">
-                <span class="bird-tag">冬候鸟</span>
-                <span class="bird-tag">大型水鸟</span>
-            </div>
-        </div>
-    </div>
-
+    
+    <button class="nav-btn nav-next" id="btnNext">→</button>
+    
+    <div class="click-hint">点击卡片全屏观看</div>
 </div>
 
-<footer class="footer">
-    <div style="margin-bottom:8px;"> 红檬智型</div>
-    &copy; 2026 红檬智型 — 守护候鸟，从心开始
-</footer>
+<div class="lightbox" id="lightbox">
+    <div class="lightbox-close" id="lightboxClose">&times;</div>
+    <img src="" alt="Full screen" class="lightbox-img" id="lightboxImg">
+</div>
 
-<script>
+<script type="module">
+    import gsap from 'gsap';
+
+    const birdData = [
+        {
+            id: 'platalea',
+            name: '黑脸琵鹭',
+            latin: 'Platalea minor',
+            desc: '全球濒危物种，因其扁平如琵琶的黑色喙而得名。每年在深圳湾越冬的种群约占全球总数的10%。优雅的水中"扫地僧"，用喙在水中左右扫动觅食。',
+            img: '/birds/Platalea-minor.jpg',
+            tags: [{text: '全球濒危', type: 'warning'}, {text: '冬候鸟', type: 'default'}, {text: '深圳湾旗舰种', type: 'default'}]
+        },
+        {
+            id: 'recurvirostra',
+            name: '反嘴鹬',
+            latin: 'Recurvirostra avosetta',
+            desc: '标志性的上翘长喙是它最显著的特征。常在浅水中用喙左右扫动或探入淤泥中觅食。黑白分明的羽毛配色，飞行时尤为优雅。',
+            img: '/birds/Recurvirostra-avosetta.jpg',
+            tags: [{text: '冬候鸟', type: 'default'}, {text: '滩涂觅食', type: 'default'}]
+        },
+        {
+            id: 'nebularia',
+            name: '青脚鹬',
+            latin: 'Tringa nebularia',
+            desc: '拥有一双标志性的青绿色长腿，是滩涂上的"长腿模特"。以小鱼、虾蟹和软体动物为食，常在退潮后的泥滩上快速奔走捕食。叫声清脆响亮，是深圳湾最常见的冬候鸟之一。',
+            img: '/birds/Tringa-nebularia.jpg',
+            tags: [{text: '冬候鸟', type: 'default'}, {text: '常见种', type: 'default'}]
+        },
+        {
+            id: 'totanus',
+            name: '红脚鹬',
+            latin: 'Tringa totanus',
+            desc: '橙红色的双腿是它名字的由来。体型中等，常成群结队在退潮后的滩涂上觅食。繁殖期会发出持续的"啾啾"警戒声。对栖息地变化非常敏感。',
+            img: '/birds/Tringa-totanus.jpg',
+            tags: [{text: '冬候鸟', type: 'default'}, {text: '敏感指示种', type: 'default'}]
+        },
+        {
+            id: 'egretta',
+            name: '白鹭',
+            latin: 'Egretta garzetta',
+            desc: '雪白的羽毛、黑色的长喙和黄脚趾，是深圳湾红树林最常见的留鸟之一。繁殖期会长出美丽的蓑羽，曾因羽毛贸易被大量猎杀。如今是湿地生态健康的"晴雨表"。',
+            img: '/birds/Egretta-garzetta.jpg',
+            tags: [{text: '留鸟', type: 'default'}, {text: '生态指示种', type: 'default'}]
+        },
+        {
+            id: 'phalacrocorax',
+            name: '普通鸬鹚',
+            latin: 'Phalacrocorax carbo',
+            desc: '全身黑色的大型水鸟，善于潜水捕鱼。在深圳湾的冬季，常能看到成群的鸬鹚排成"人"字形飞过天际。因羽毛不防水，捕鱼后需要展开翅膀晾干。',
+            img: '/birds/Phalacrocorax-carbo.jpg',
+            tags: [{text: '冬候鸟', type: 'default'}, {text: '大型水鸟', type: 'default'}]
+        }
+    ];
+
+    let currentIndex = 0;
+    let isAnimating = false;
+
+    // Elements
+    const bgBlur = document.getElementById('bgBlur');
+    const cardImg = document.getElementById('cardImg');
+    const cardTitle = document.getElementById('cardTitle');
+    const cardLatin = document.getElementById('cardLatin');
+    const cardWrapper = document.getElementById('cardWrapper');
+    const kCard = document.getElementById('kCard');
+    
+    // Lightbox Elements
+    const lightbox = document.getElementById('lightbox');
+    const lightboxImg = document.getElementById('lightboxImg');
+    const lightboxClose = document.getElementById('lightboxClose');
+
+    // Nav Bar Logic
     const navbar = document.getElementById('navbar');
-    window.addEventListener('scroll', () => navbar.classList.toggle('scrolled', window.scrollY > 20));
+    window.addEventListener('scroll', () => navbar.classList.toggle('scrolled', window.scrollY > 10));
+
+    function updateCard(index, direction) {
+        if (isAnimating) return;
+        isAnimating = true;
+
+        const data = birdData[index];
+        const outgoingX = direction === 'next' ? -80 : 80;
+        const incomingX = direction === 'next' ? 80 : -80;
+
+        const tl = gsap.timeline({
+            onComplete: () => { isAnimating = false; }
+        });
+
+        // Outgoing
+        if (cardImg.src && cardImg.src !== window.location.href) {
+            tl.to(kCard, {
+                x: outgoingX,
+                opacity: 0,
+                duration: 0.35,
+                ease: "power2.in"
+            });
+        }
+
+        tl.add(() => {
+            bgBlur.style.backgroundImage = `url(${data.img})`;
+            cardImg.src = data.img;
+            cardTitle.textContent = data.name;
+            cardLatin.textContent = data.latin;
+
+            gsap.set(kCard, { x: incomingX, opacity: 0 });
+        });
+
+        // Incoming
+        tl.to(kCard, {
+            x: 0,
+            opacity: 1,
+            duration: 0.5,
+            ease: "power3.out"
+        });
+    }
+
+    // Initialize
+    gsap.set(kCard, { opacity: 0 });
+    setTimeout(() => { updateCard(0, 'next'); }, 50);
+
+    // Navigation
+    document.getElementById('btnNext').addEventListener('click', (e) => {
+        e.stopPropagation();
+        if (isAnimating) return;
+        currentIndex = (currentIndex + 1) % birdData.length;
+        updateCard(currentIndex, 'next');
+    });
+
+    document.getElementById('btnPrev').addEventListener('click', (e) => {
+        e.stopPropagation();
+        if (isAnimating) return;
+        currentIndex = (currentIndex - 1 + birdData.length) % birdData.length;
+        updateCard(currentIndex, 'prev');
+    });
+
+    // Keyboard
+    document.addEventListener('keydown', (e) => {
+        if (lightbox.classList.contains('active')) {
+            if (e.key === 'Escape') closeLightbox();
+            return;
+        }
+        if (e.key === 'ArrowRight') document.getElementById('btnNext').click();
+        if (e.key === 'ArrowLeft') document.getElementById('btnPrev').click();
+    });
+
+    // Lightbox
+    cardWrapper.addEventListener('click', () => {
+        const data = birdData[currentIndex];
+        lightboxImg.src = data.img;
+        lightbox.classList.add('active');
+    });
+
+    const closeLightbox = () => lightbox.classList.remove('active');
+    lightboxClose.addEventListener('click', closeLightbox);
+    lightbox.addEventListener('click', (e) => {
+        if(e.target === lightbox) closeLightbox();
+    });
+    
+    // Mobile menu toggle
     const navToggle = document.getElementById('navToggle');
     const navLinks = document.getElementById('navLinks');
-    navToggle.addEventListener('click', () => navLinks.classList.toggle('open'));
-    navLinks.querySelectorAll('a').forEach(l => l.addEventListener('click', () => navLinks.classList.remove('open')));
-
-    const observer = new IntersectionObserver((entries) => {
-        entries.forEach(entry => { if (entry.isIntersecting) entry.target.classList.add('visible'); });
-    }, { threshold: 0.1 });
-    document.querySelectorAll('.fade-in').forEach(el => observer.observe(el));
+    if(navToggle) {
+        navToggle.addEventListener('click', () => navLinks.classList.toggle('open'));
+    }
 </script>
 
 </body>
