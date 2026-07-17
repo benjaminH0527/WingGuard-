@@ -135,8 +135,8 @@ import Chart from 'chart.js/auto';
   async function renderSpeciesGallery() {
     const species = await DataAdapter.getSpecies();
     const wrap = document.getElementById('speciesGallery');
-    wrap.innerHTML = species.map(sp => `
-      <div class="glass rounded-3xl overflow-hidden shadow-sm min-w-[260px] max-w-[260px] snap-start flex flex-col hover:-translate-y-1 transition-transform duration-300">
+    wrap.innerHTML = species.map((sp, i) => `
+      <div class="glass rounded-3xl overflow-hidden shadow-sm min-w-[260px] max-w-[260px] snap-start flex flex-col hover:-translate-y-1 transition-transform duration-300 fade-up" style="animation-delay: ${i * 30}ms;">
         <div class="h-36 relative overflow-hidden">
           <img src="${sp.imageUrl}" class="w-full h-full object-cover" alt="${sp.commonName}">
           <span class="absolute top-3 left-3 stamp text-[9px] font-mono font-semibold px-3 py-1 bg-ink-900/70 text-white backdrop-blur-sm">${sp.conservationStatus}</span>
@@ -189,8 +189,8 @@ import Chart from 'chart.js/auto';
     }
     const badge = { pending: 'bg-amber-400/15 text-amber-600', approved: 'bg-canopy-100 text-canopy-700', rejected: 'bg-coral-500/10 text-coral-600' };
     const label = { pending: '待审核', approved: '已通过', rejected: '未通过' };
-    listEl.innerHTML = mine.map(o => `
-      <div class="flex items-center justify-between text-[11.5px] border-b hairline pb-2">
+    listEl.innerHTML = mine.map((o, i) => `
+      <div class="flex items-center justify-between text-[11.5px] border-b hairline pb-2 fade-up" style="animation-delay: ${i * 30}ms;">
         <span class="text-ink-700/80">${o.commonName} · ${o.eventDate}</span>
         <span class="px-2 py-0.5 rounded-full font-mono text-[10px] ${badge[o.status]}">${label[o.status]}</span>
       </div>
@@ -205,7 +205,7 @@ import Chart from 'chart.js/auto';
       return;
     }
     el.innerHTML = board.map((u, i) => `
-      <div class="flex items-center gap-3 bg-white/60 border hairline rounded-xl px-3.5 py-2.5">
+      <div class="flex items-center gap-3 bg-white/60 border hairline rounded-xl px-3.5 py-2.5 fade-up" style="animation-delay: ${i * 30}ms;">
         <span class="w-6 h-6 rounded-full ${i < 3 ? 'bg-gold-500 text-white' : 'bg-canopy-50 text-canopy-700'} flex items-center justify-center text-[10px] font-mono font-semibold">${i + 1}</span>
         <span class="text-[12px] font-medium text-ink-800 flex-1 truncate">${u.nickname}</span>
         <span class="text-[11px] font-mono text-canopy-700 font-semibold">${u.points || 0} pt</span>
@@ -239,8 +239,8 @@ import Chart from 'chart.js/auto';
     const tbody = document.getElementById('pendingTableBody');
     tbody.innerHTML = pending.length === 0
       ? `<tr><td colspan="6" class="py-8 text-center text-ink-700/40">暂无待审核记录，队列已清空。</td></tr>`
-      : pending.map(o => `
-        <tr>
+      : pending.map((o, i) => `
+        <tr class="fade-up" style="animation-delay: ${i * 30}ms;">
           <td class="py-2.5 pr-3 font-medium text-ink-800">${o.recordedBy}</td>
           <td class="py-2.5 pr-3"><span class="font-semibold text-canopy-800">${o.commonName}</span><br><span class="text-[10px] italic text-ink-700/40">${o.scientificName}</span></td>
           <td class="py-2.5 pr-3 font-mono text-canopy-700">${o.individualCount} 只</td>
@@ -257,8 +257,8 @@ import Chart from 'chart.js/auto';
     const rq = document.getElementById('reportsQueue');
     rq.innerHTML = reports.length === 0
       ? `<p class="text-[12px] text-ink-700/40">暂无待处理异常事件。</p>`
-      : reports.map(r => `
-        <div class="flex items-center justify-between gap-3 bg-coral-500/5 border border-coral-500/15 rounded-xl px-4 py-3">
+      : reports.map((r, i) => `
+        <div class="flex items-center justify-between gap-3 bg-coral-500/5 border border-coral-500/15 rounded-xl px-4 py-3 fade-up" style="animation-delay: ${i * 30}ms;">
           <div class="min-w-0">
             <span class="text-[11px] font-mono text-coral-600 font-semibold uppercase">${r.type === 'injured' ? '受伤/受困' : r.type === 'hunting' ? '非法捕猎' : '栖息地破坏'}</span>
             <p class="text-[12px] text-ink-800 truncate">${r.location} · ${r.description}</p>

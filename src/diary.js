@@ -54,6 +54,7 @@ document.querySelectorAll('.panel').forEach((panel, i) => {
       opacity: 1,
       y: 0,
       duration: 1,
+      ease: "expo.out",
       scrollTrigger: {
         trigger: block,
         start: "top 85%",
@@ -213,10 +214,39 @@ chatForm.addEventListener('submit', async (e) => {
   
   appendTypingIndicator();
   const reply = await callAgnesFlash(text);
-  removeTypingIndicator();
   
-  appendMessage('bot', reply);
+  // Anticipation: 0.5s pause before results
+  setTimeout(() => {
+    removeTypingIndicator();
+    appendMessageChunked('bot', reply);
+  }, 500);
 });
+
+function appendMessageChunked(role, text) {
+  const div = document.createElement('div');
+  div.className = `chat-msg ${role}`;
+  chatHistory.appendChild(div);
+  
+  // Chunk Reveal: slice by words or punctuation
+  const chunks = text.split(/(\s+|,\s*|\.\s*|;\s*|，|。|！|？|、)/).filter(c => c);
+  let i = 0;
+  
+  function reveal() {
+    if (i >= chunks.length) {
+      if (window.marked && role === 'bot') {
+        div.innerHTML = marked.parse(text);
+      }
+      return;
+    }
+    div.innerText += chunks[i++];
+    chatHistory.scrollTop = chatHistory.scrollHeight;
+    
+    // Non-uniform delay: 40-120ms
+    const delay = 40 + Math.random() * 80;
+    setTimeout(reveal, delay);
+  }
+  reveal();
+}
 
 // 4. Lightbox functionality
 const lightbox = document.getElementById('lightbox');

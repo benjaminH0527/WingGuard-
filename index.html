@@ -7,7 +7,7 @@
 
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600;9..144,700&family=Inter:wght@400;500;600;700;800&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600;9..144,700&family=Manrope:wght@400;500;600;700;800&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 <link rel="stylesheet" href="/src/style.css">
 </head>
@@ -122,48 +122,50 @@
       <h2 class="font-display text-2xl md:text-4xl text-ink-800 mt-2">你的每一次上报，都会进入真实的审核流程</h2>
     </div>
 
-    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+    <div class="grid grid-cols-1 lg:grid-cols-5 gap-6">
 
-      <!-- guardian card -->
-      <div class="glass-strong rounded-[28px] p-7 flex flex-col justify-between min-h-[300px] shadow-sm">
-        <div>
+      <!-- guardian card (spanning 3 columns) -->
+      <div class="lg:col-span-3 glass-strong rounded-[28px] p-7 md:p-10 flex flex-col justify-between min-h-[300px] shadow-sm relative overflow-hidden">
+        <div class="absolute top-0 right-0 w-64 h-64 bg-canopy-300/10 rounded-full blur-3xl -translate-y-1/2 translate-x-1/3"></div>
+        <div class="relative z-10">
           <span class="w-11 h-11 rounded-2xl bg-canopy-100 text-canopy-700 flex items-center justify-center text-lg mb-5"><i class="fa-solid fa-seedling"></i></span>
-          <h3 class="font-display text-xl text-ink-800">缔结守护契约</h3>
-          <p class="text-[12.5px] text-ink-700/60 mt-2.5 leading-relaxed">
+          <h3 class="font-display text-2xl text-ink-800">缔结守护契约</h3>
+          <p class="text-[13px] text-ink-700/60 mt-3 leading-relaxed max-w-sm">
             绑定一种你愿意持续关注的鸟类。围绕它上报的观测记录，审核通过后将获得额外成长加成。
           </p>
         </div>
-        <select id="guardianSelect" onchange="selectGuardian(this.value)" class="w-full bg-white border hairline rounded-2xl px-4 py-3 text-[12.5px] font-medium text-ink-800 mt-6 shadow-sm">
-          <option value="">选择我的守护物种…</option>
-        </select>
+        <div class="relative z-10 mt-8">
+          <select id="guardianSelect" onchange="selectGuardian(this.value)" class="w-full md:w-2/3 bg-white border hairline rounded-2xl px-5 py-4 text-[13px] font-medium text-ink-800 shadow-sm transition hover:border-canopy-300">
+            <option value="">选择我的守护物种…</option>
+          </select>
+        </div>
       </div>
 
-      <!-- observation card -->
-      <div class="glass-strong rounded-[28px] p-7 flex flex-col justify-between min-h-[300px] shadow-sm border-l-4 border-l-canopy-500">
-        <div>
-          <span class="w-11 h-11 rounded-2xl bg-canopy-100 text-canopy-700 flex items-center justify-center text-lg mb-5"><i class="fa-solid fa-location-dot"></i></span>
-          <h3 class="font-display text-xl text-ink-800">提交现场观测</h3>
-          <p class="text-[12.5px] text-ink-700/60 mt-2.5 leading-relaxed">
-            记录物种、数量与坐标。提交后进入「待审核」状态，管理端通过后自动发放 100 积分。
-          </p>
+      <!-- side cards stack -->
+      <div class="lg:col-span-2 flex flex-col gap-6">
+        <!-- observation card -->
+        <div class="glass-strong rounded-[28px] p-7 flex flex-col justify-between flex-1 shadow-sm border-t hairline">
+          <div>
+            <div class="flex items-center gap-3 mb-3">
+              <span class="w-9 h-9 rounded-2xl bg-canopy-50 text-canopy-700 flex items-center justify-center text-sm"><i class="fa-solid fa-location-dot"></i></span>
+              <h3 class="font-display text-lg text-ink-800">提交现场观测</h3>
+            </div>
+            <p class="text-[12px] text-ink-700/60 leading-relaxed">记录物种、数量与坐标。提交审核通过后自动发放 100 积分。</p>
+          </div>
+          <button onclick="openObsModal()" class="w-full bg-canopy-700 hover:bg-canopy-800 text-white text-[13px] font-semibold py-3 rounded-2xl mt-5 transition-colors shadow-sm">填写观测表单</button>
         </div>
-        <button onclick="openObsModal()" class="w-full bg-canopy-700 hover:bg-canopy-800 text-white text-[13px] font-semibold py-3.5 rounded-2xl mt-6 transition-colors shadow-sm">
-          填写观测表单
-        </button>
-      </div>
 
-      <!-- report card -->
-      <div class="glass-strong rounded-[28px] p-7 flex flex-col justify-between min-h-[300px] shadow-sm border-l-4 border-l-coral-500">
-        <div>
-          <span class="w-11 h-11 rounded-2xl bg-coral-500/10 text-coral-600 flex items-center justify-center text-lg mb-5"><i class="fa-solid fa-triangle-exclamation"></i></span>
-          <h3 class="font-display text-xl text-ink-800">紧急异常举报</h3>
-          <p class="text-[12.5px] text-ink-700/60 mt-2.5 leading-relaxed">
-            发现受伤鸟类、非法捕猎或鸟网？立即上报，事件将直接推送至管理端待办池。
-          </p>
+        <!-- report card -->
+        <div class="glass-strong rounded-[28px] p-7 flex flex-col justify-between flex-1 shadow-sm border-t hairline bg-gradient-to-br from-white/40 to-coral-500/5">
+          <div>
+            <div class="flex items-center gap-3 mb-3">
+              <span class="w-9 h-9 rounded-2xl bg-coral-500/10 text-coral-600 flex items-center justify-center text-sm"><i class="fa-solid fa-triangle-exclamation"></i></span>
+              <h3 class="font-display text-lg text-ink-800">紧急异常举报</h3>
+            </div>
+            <p class="text-[12px] text-ink-700/60 leading-relaxed">发现受伤鸟类或非法捕猎？事件将直接推送至管理端待办池。</p>
+          </div>
+          <button onclick="openReportModal()" class="w-full bg-coral-600 hover:bg-coral-500 text-white text-[13px] font-semibold py-3 rounded-2xl mt-5 transition-colors shadow-sm">发起紧急上报</button>
         </div>
-        <button onclick="openReportModal()" class="w-full bg-coral-600 hover:bg-coral-500 text-white text-[13px] font-semibold py-3.5 rounded-2xl mt-6 transition-colors shadow-sm">
-          发起紧急上报
-        </button>
       </div>
     </div>
 

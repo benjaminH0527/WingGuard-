@@ -6,28 +6,40 @@ body { background: var(--bg, #F6F3E9); }
 
 /* ---------- Glassmorphism system ---------- */
 .glass {
-  background: rgba(255,255,255,0.60);
+  background: color-mix(in oklch, white 60%, transparent);
   backdrop-filter: blur(18px) saturate(140%);
   -webkit-backdrop-filter: blur(18px) saturate(140%);
-  border: 1px solid rgba(255,255,255,0.55);
+  border: 1px solid color-mix(in oklch, white 55%, transparent);
 }
 .glass-strong {
-  background: rgba(255,255,255,0.78);
+  background: color-mix(in oklch, white 78%, transparent);
   backdrop-filter: blur(22px) saturate(150%);
   -webkit-backdrop-filter: blur(22px) saturate(150%);
-  border: 1px solid rgba(255,255,255,0.65);
+  border: 1px solid color-mix(in oklch, white 65%, transparent);
 }
 .glass-dark {
-  background: rgba(11,29,23,0.55);
+  background: color-mix(in oklch, #0b1d17 55%, transparent);
   backdrop-filter: blur(20px) saturate(130%);
   -webkit-backdrop-filter: blur(20px) saturate(130%);
-  border: 1px solid rgba(255,255,255,0.12);
+  border: 1px solid color-mix(in oklch, white 12%, transparent);
 }
 .glass-nav {
-  background: rgba(246,243,233,0.72);
+  background: color-mix(in oklch, #F6F3E9 72%, transparent);
   backdrop-filter: blur(22px) saturate(150%);
   -webkit-backdrop-filter: blur(22px) saturate(150%);
-  border-bottom: 1px solid rgba(18,42,34,0.08);
+  border-bottom: 1px solid color-mix(in oklch, #122a22 8%, transparent);
+}
+
+/* Typography & Scrollbars */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(18,42,34,0.2) transparent;
+}
+h1, h2, h3 { text-wrap: balance; }
+p { 
+  text-wrap: pretty;
+  text-spacing-trim: space-all;
+  hanging-punctuation: first;
 }
 
 /* ---------- Signature: field stamp badge ---------- */
@@ -55,7 +67,7 @@ body { background: var(--bg, #F6F3E9); }
 
 /* fade-up on load */
 @keyframes fadeUp { from { opacity:0; transform: translateY(14px);} to {opacity:1; transform:translateY(0);} }
-.fade-up { animation: fadeUp .7s ease both; }
+.fade-up { animation: fadeUp .8s cubic-bezier(0.16, 1, 0.3, 1) both; }
 
 .eyebrow { letter-spacing: 0.22em; }
 
