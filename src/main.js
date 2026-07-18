@@ -27,6 +27,8 @@ import { ENV } from './env.js';
       notice.textContent = '提示：未检测到 Supabase 连接，当前运行在本地演示模式（数据仅保存在本浏览器）。';
       notice.classList.remove('hidden');
     }
+    // 管理员入口默认切到注册 tab，使邀请码字段自动可见；已有账号可手动切回登录
+    if (role === 'admin') switchAuthTab('signup');
     openModal('authModal');
   }
 
