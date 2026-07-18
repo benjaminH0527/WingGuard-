@@ -9,176 +9,51 @@
     <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600;9..144,700&family=Manrope:wght@400;500;600;700;800&family=IBM+Plex+Mono:wght@400;500;600&family=Noto+Serif+SC:wght@400;500;600;700;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="/src/narrative.css">
     <style>
-        /* CSS reset & base */
-        body, html { margin: 0; padding: 0; width: 100%; height: 100%; overflow: hidden; background: #000; }
+        .tag-badge {
+            font-size: 0.72rem;
+            padding: 3px 8px;
+            border-radius: 6px;
+            font-weight: 600;
+            display: inline-block;
+        }
+        .tag-badge.warning {
+            background: #FDF2F2;
+            color: #EC5959;
+            border: 1px solid #FBD5D5;
+        }
+        .tag-badge.default {
+            background: #F4F6F4;
+            color: #2F6B4F;
+            border: 1px solid #D7E9DA;
+        }
         
-        .gallery-container {
-            position: relative;
-            width: 100vw;
-            height: 100vh;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            background: #111;
-        }
-
-        /* Dynamic blurred background */
-        .bg-blur {
-            position: absolute;
-            top: -10%; left: -10%; width: 120%; height: 120%;
-            background-size: cover;
-            background-position: center;
-            filter: blur(40px) brightness(0.4);
-            z-index: 0;
-            transition: background-image 0.8s ease;
-        }
-
-        /* Knowledge Card */
-        .card-wrapper {
-            position: relative;
-            z-index: 10;
-            width: 90%;
-            max-width: 480px;
-            height: 75vh;
-            perspective: 1000px;
-            cursor: pointer;
-        }
-
-        .knowledge-card {
-            width: 100%;
-            height: 100%;
-            border-radius: 24px;
-            background: rgba(255, 255, 255, 0.08);
-            backdrop-filter: blur(25px);
-            -webkit-backdrop-filter: blur(25px);
-            border: 1px solid rgba(255, 255, 255, 0.15);
-            box-shadow: 0 30px 60px rgba(0,0,0,0.4);
+        .bird-card {
+            background: #fff;
+            border: 1px solid var(--border-light);
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.02);
+            transition: transform 0.4s var(--easing-expo), box-shadow 0.4s var(--easing-expo);
             display: flex;
             flex-direction: column;
-            overflow: hidden;
-            transform-style: preserve-3d;
-            transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.4s ease;
         }
-
-        .knowledge-card:hover {
-            transform: translateY(-8px);
-            box-shadow: 0 40px 80px rgba(0,0,0,0.6);
-            border: 1px solid rgba(255, 255, 255, 0.25);
+        .bird-card:hover {
+            transform: translateY(-6px);
+            box-shadow: 0 12px 30px rgba(0, 0, 0, 0.06);
+            border-color: rgba(204, 120, 92, 0.3);
         }
-
-        .card-image-container {
-            width: 100%;
-            height: 100%;
-            overflow: hidden;
-            position: absolute;
-            top: 0; left: 0;
-            z-index: 1;
-        }
-
-        .card-overlay {
-            position: absolute;
-            bottom: 0; left: 0; right: 0;
-            height: 50%;
-            background: linear-gradient(to top, rgba(0,0,0,0.9) 0%, rgba(0,0,0,0) 100%);
-            z-index: 2;
-            pointer-events: none;
-        }
-
-        .card-image {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-            transition: transform 0.8s cubic-bezier(0.16, 1, 0.3, 1);
-        }
-        
-        .knowledge-card:hover .card-image {
+        .bird-card:hover .bird-img {
             transform: scale(1.05);
         }
-
-        .card-content {
-            padding: 40px 30px;
-            color: #fff;
-            position: absolute;
-            bottom: 0; left: 0; right: 0;
-            z-index: 3;
-            display: flex;
-            flex-direction: column;
-            justify-content: flex-end;
-        }
-
-        .card-title {
-            font-family: 'Fraunces', 'Noto Serif SC', serif;
-            font-size: 2.5rem;
-            font-weight: 600;
-            margin: 0;
-            line-height: 1.2;
-            text-shadow: 0 2px 10px rgba(0,0,0,0.5);
-        }
-
-        .card-latin {
-            font-family: 'Manrope', sans-serif;
-            font-size: 1.1rem;
-            color: rgba(255,255,255,0.8);
-            font-style: italic;
-            margin-top: 6px;
-            letter-spacing: 0.5px;
-            text-shadow: 0 2px 8px rgba(0,0,0,0.5);
-        }
-
-        /* Navigation Buttons */
-        .nav-btn {
-            position: absolute;
-            top: 50%;
-            transform: translateY(-50%);
-            z-index: 20;
-            background: rgba(255,255,255,0.05);
-            backdrop-filter: blur(10px);
-            border: 1px solid rgba(255,255,255,0.15);
-            color: #fff;
-            width: 64px;
-            height: 64px;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-            transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
-            font-size: 24px;
-        }
-
-        .nav-btn:hover {
-            background: rgba(255,255,255,0.2);
-            transform: translateY(-50%) scale(1.1);
-            border-color: rgba(255,255,255,0.4);
-        }
-
-        .nav-prev { left: 5vw; }
-        .nav-next { right: 5vw; }
-        
-        .click-hint {
-            position: absolute;
-            bottom: 30px;
-            width: 100%;
-            text-align: center;
-            color: rgba(255,255,255,0.5);
-            font-size: 0.85rem;
-            letter-spacing: 3px;
-            text-transform: uppercase;
-            z-index: 10;
-            pointer-events: none;
-            animation: pulse 2.5s infinite ease-in-out;
+        .bird-card:hover .click-overlay {
+            opacity: 1;
         }
         
-        @keyframes pulse {
-            0%, 100% { opacity: 0.3; }
-            50% { opacity: 0.8; }
-        }
-
         /* Lightbox Modal */
         .lightbox {
             position: fixed;
             top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0,0,0,0.92);
+            background: rgba(245, 240, 232, 0.95);
             backdrop-filter: blur(10px);
             z-index: 2000;
             display: flex;
@@ -196,12 +71,13 @@
 
         .lightbox-img {
             max-width: 90%;
-            max-height: 90vh;
+            max-height: 80vh;
             object-fit: contain;
-            border-radius: 4px;
-            box-shadow: 0 20px 60px rgba(0,0,0,0.8);
+            border-radius: 12px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.15);
             transform: scale(0.95);
             transition: transform 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+            border: 1px solid var(--border-light);
         }
 
         .lightbox.active .lightbox-img {
@@ -211,7 +87,7 @@
         .lightbox-close {
             position: absolute;
             top: 30px; right: 40px;
-            color: #fff;
+            color: var(--text-ink);
             font-size: 40px;
             cursor: pointer;
             opacity: 0.5;
@@ -220,19 +96,6 @@
         }
 
         .lightbox-close:hover { opacity: 1; }
-        
-        /* Override narrative.css nav for dark background */
-        .nav-bar { background: rgba(0,0,0,0.1) !important; border-bottom: 1px solid rgba(255,255,255,0.05) !important; }
-        .nav-bar.scrolled { background: rgba(0,0,0,0.7) !important; box-shadow: none !important; }
-        .nav-logo, .nav-links a { color: #fff !important; }
-        .nav-links a:hover, .nav-links a.active { color: var(--accent-terracotta) !important; }
-        .nav-toggle span { background: #fff !important; }
-
-        @media (max-width: 768px) {
-            .nav-prev { left: 15px; width: 44px; height: 44px; font-size: 18px; }
-            .nav-next { right: 15px; width: 44px; height: 44px; font-size: 18px; }
-            .card-wrapper { width: 85%; height: 68vh; }
-        }
     </style>
 </head>
 <body>
@@ -256,28 +119,24 @@
     </ul>
 </nav>
 
-<div class="gallery-container">
-    <div class="bg-blur" id="bgBlur"></div>
-    
-    <button class="nav-btn nav-prev" id="btnPrev">←</button>
-    
-    <div class="card-wrapper" id="cardWrapper">
-        <div class="knowledge-card" id="kCard">
-            <div class="card-image-container">
-                <img src="" alt="Bird" class="card-image" id="cardImg">
-                <div class="card-overlay"></div>
-            </div>
-            <div class="card-content">
-                <h3 class="card-title" id="cardTitle"></h3>
-                <div class="card-latin" id="cardLatin"></div>
-            </div>
-        </div>
+<section class="page-hero">
+    <div class="page-kicker">专题科普</div>
+    <h1 class="page-title">本地重点观测鸟种图鉴</h1>
+    <p class="page-subtitle">
+        深圳湾是候鸟迁徙的重要驿站。翻阅这些重点观测鸟类的档案，点击卡片图片可全屏查看原图。
+    </p>
+</section>
+
+<div class="content">
+    <div class="bird-grid" id="birdGrid">
+        <!-- Dynamically injected via JavaScript -->
     </div>
-    
-    <button class="nav-btn nav-next" id="btnNext">→</button>
-    
-    <div class="click-hint">点击卡片全屏观看</div>
 </div>
+
+<footer class="footer">
+    <div style="margin-bottom:8px;">红檬智型</div>
+    &copy; 2026 红檬智型 — 守护候鸟，从心开始
+</footer>
 
 <div class="lightbox" id="lightbox">
     <div class="lightbox-close" id="lightboxClose">&times;</div>
@@ -285,8 +144,6 @@
 </div>
 
 <script type="module">
-    import gsap from 'gsap';
-
     const birdData = [
         {
             id: 'platalea',
@@ -324,7 +181,7 @@
             id: 'egretta',
             name: '白鹭',
             latin: 'Egretta garzetta',
-            desc: '雪白的羽毛、黑色的长喙和黄脚趾，是深圳湾红树林最常见的留鸟之一。繁殖期会长出美丽的蓑羽，曾因羽毛贸易被大量猎杀。如今是湿地生态健康的"晴雨表"。',
+            desc: '雪白的羽毛、黑色的长喙 and 黄脚趾，是深圳湾红树林最常见的留鸟之一。繁殖期会长出美丽的蓑羽，曾因羽毛贸易被大量猎杀。如今是湿地生态健康的"晴雨表"。',
             img: '/birds/Egretta-garzetta.jpg',
             tags: [{text: '留鸟', type: 'default'}, {text: '生态指示种', type: 'default'}]
         },
@@ -338,115 +195,81 @@
         }
     ];
 
-    let currentIndex = 0;
-    let isAnimating = false;
+    const birdGrid = document.getElementById('birdGrid');
+    if (birdGrid) {
+        birdGrid.innerHTML = birdData.map((data, index) => {
+            const tagHtml = (data.tags || []).map(t => 
+                `<span class="tag-badge ${t.type || 'default'}">${t.text}</span>`
+            ).join(' ');
+            
+            return `
+                <div class="bird-card fade-in">
+                    <div class="bird-img-wrap" style="height: 220px; overflow: hidden; position: relative; cursor: pointer;" onclick="openBirdLightbox(${index})">
+                        <img src="${data.img}" alt="${data.name}" class="bird-img" style="width: 100%; height: 100%; object-fit: cover; object-position: center 15%; transition: transform 0.6s var(--easing-expo);">
+                        <div class="click-overlay" style="position: absolute; inset: 0; background: rgba(0,0,0,0.15); display: flex; align-items: center; justify-content: center; opacity: 0; transition: opacity 0.3s ease;">
+                            <span style="color: #fff; font-size: 0.85em; font-weight: 500; background: rgba(0,0,0,0.65); padding: 6px 14px; border-radius: 20px; backdrop-filter: blur(4px);"><i class="fa-solid fa-expand mr-1.5"></i>全屏查看</span>
+                        </div>
+                    </div>
+                    <div class="bird-info" style="padding: 24px; display: flex; flex-direction: column; gap: 12px; flex: 1;">
+                        <div style="display: flex; align-items: baseline; justify-content: space-between; flex-wrap: wrap; gap: 8px; border-bottom: 1px solid var(--border-light); padding-bottom: 8px;">
+                            <h3 class="bird-name" style="margin: 0; font-size: 1.3em; font-family: 'Fraunces', 'Noto Serif SC', serif; color: var(--text-ink); font-weight: 600;">${data.name}</h3>
+                            <span class="bird-latin" style="font-size: 0.85em; color: var(--text-muted); font-style: italic;">${data.latin}</span>
+                        </div>
+                        <div class="bird-tags" style="display: flex; gap: 6px; flex-wrap: wrap;">
+                            ${tagHtml}
+                        </div>
+                        <p class="bird-desc" style="font-size: 0.9em; color: var(--text-ink); opacity: 0.85; line-height: 1.6; margin: 0; text-align: justify; flex: 1;">${data.desc}</p>
+                    </div>
+                </div>
+            `;
+        }).join('');
+    }
 
-    // Elements
-    const bgBlur = document.getElementById('bgBlur');
-    const cardImg = document.getElementById('cardImg');
-    const cardTitle = document.getElementById('cardTitle');
-    const cardLatin = document.getElementById('cardLatin');
-    const cardWrapper = document.getElementById('cardWrapper');
-    const kCard = document.getElementById('kCard');
-    
-    // Lightbox Elements
     const lightbox = document.getElementById('lightbox');
     const lightboxImg = document.getElementById('lightboxImg');
     const lightboxClose = document.getElementById('lightboxClose');
 
-    // Nav Bar Logic
-    const navbar = document.getElementById('navbar');
-    window.addEventListener('scroll', () => navbar.classList.toggle('scrolled', window.scrollY > 10));
-
-    function updateCard(index, direction) {
-        if (isAnimating) return;
-        isAnimating = true;
-
+    window.openBirdLightbox = function(index) {
         const data = birdData[index];
-        const outgoingX = direction === 'next' ? -80 : 80;
-        const incomingX = direction === 'next' ? 80 : -80;
-
-        const tl = gsap.timeline({
-            onComplete: () => { isAnimating = false; }
-        });
-
-        // Outgoing
-        if (cardImg.src && cardImg.src !== window.location.href) {
-            tl.to(kCard, {
-                x: outgoingX,
-                opacity: 0,
-                duration: 0.35,
-                ease: "power2.in"
-            });
-        }
-
-        tl.add(() => {
-            bgBlur.style.backgroundImage = `url(${data.img})`;
-            cardImg.src = data.img;
-            cardTitle.textContent = data.name;
-            cardLatin.textContent = data.latin;
-
-            gsap.set(kCard, { x: incomingX, opacity: 0 });
-        });
-
-        // Incoming
-        tl.to(kCard, {
-            x: 0,
-            opacity: 1,
-            duration: 0.5,
-            ease: "power3.out"
-        });
-    }
-
-    // Initialize
-    gsap.set(kCard, { opacity: 0 });
-    setTimeout(() => { updateCard(0, 'next'); }, 50);
-
-    // Navigation
-    document.getElementById('btnNext').addEventListener('click', (e) => {
-        e.stopPropagation();
-        if (isAnimating) return;
-        currentIndex = (currentIndex + 1) % birdData.length;
-        updateCard(currentIndex, 'next');
-    });
-
-    document.getElementById('btnPrev').addEventListener('click', (e) => {
-        e.stopPropagation();
-        if (isAnimating) return;
-        currentIndex = (currentIndex - 1 + birdData.length) % birdData.length;
-        updateCard(currentIndex, 'prev');
-    });
-
-    // Keyboard
-    document.addEventListener('keydown', (e) => {
-        if (lightbox.classList.contains('active')) {
-            if (e.key === 'Escape') closeLightbox();
-            return;
-        }
-        if (e.key === 'ArrowRight') document.getElementById('btnNext').click();
-        if (e.key === 'ArrowLeft') document.getElementById('btnPrev').click();
-    });
-
-    // Lightbox
-    cardWrapper.addEventListener('click', () => {
-        const data = birdData[currentIndex];
         lightboxImg.src = data.img;
         lightbox.classList.add('active');
-    });
+    };
 
     const closeLightbox = () => lightbox.classList.remove('active');
-    lightboxClose.addEventListener('click', closeLightbox);
-    lightbox.addEventListener('click', (e) => {
-        if(e.target === lightbox) closeLightbox();
+    if (lightboxClose) lightboxClose.addEventListener('click', closeLightbox);
+    if (lightbox) {
+        lightbox.addEventListener('click', (e) => {
+            if(e.target === lightbox) closeLightbox();
+        });
+    }
+    document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape' && lightbox && lightbox.classList.contains('active')) {
+            closeLightbox();
+        }
     });
+
+    // Nav Bar Logic
+    const navbar = document.getElementById('navbar');
+    if (navbar) {
+        window.addEventListener('scroll', () => navbar.classList.toggle('scrolled', window.scrollY > 20));
+    }
     
-    // Mobile menu toggle
     const navToggle = document.getElementById('navToggle');
     const navLinks = document.getElementById('navLinks');
     if(navToggle) {
         navToggle.addEventListener('click', () => navLinks.classList.toggle('open'));
     }
-</script>
 
+    // Scroll fade-in effect
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => { 
+            if (entry.isIntersecting) {
+                entry.target.classList.add('visible'); 
+            }
+        });
+    }, { threshold: 0.1 });
+    
+    document.querySelectorAll('.fade-in').forEach(el => observer.observe(el));
+</script>
 </body>
 </html>
