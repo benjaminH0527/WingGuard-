@@ -165,12 +165,12 @@
         <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
           <!-- 真实感生态地图 (Carousel) -->
           <div class="md:col-span-2 relative h-64 border hairline-border overflow-hidden bg-[#e6e6e6]" id="mapCarouselContainer">
-            <!-- ArcGIS World Imagery (Satellite) -->
-            <img src="https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/export?bbox=113.8,22.45,114.05,22.58&f=image" alt="Shenzhen Bay Satellite" class="map-slide absolute inset-0 w-full h-full object-cover transition-opacity duration-1000 opacity-100">
-            <!-- ArcGIS World Topo Map -->
-            <img src="https://server.arcgisonline.com/ArcGIS/rest/services/World_Topo_Map/MapServer/export?bbox=113.8,22.45,114.05,22.58&f=image" alt="Shenzhen Bay Topography" class="map-slide absolute inset-0 w-full h-full object-cover transition-opacity duration-1000 opacity-0">
-            <!-- ArcGIS World Street Map -->
-            <img src="https://server.arcgisonline.com/ArcGIS/rest/services/World_Street_Map/MapServer/export?bbox=113.8,22.45,114.05,22.58&f=image" alt="Shenzhen Bay Street Map" class="map-slide absolute inset-0 w-full h-full object-cover transition-opacity duration-1000 opacity-0">
+            <!-- Yandex Satellite -->
+            <img src="https://static-maps.yandex.ru/1.x/?ll=113.96,22.50&size=650,450&z=12&l=sat" alt="Shenzhen Bay Satellite" class="map-slide absolute inset-0 w-full h-full object-cover transition-opacity duration-1000 opacity-100">
+            <!-- Yandex Hybrid -->
+            <img src="https://static-maps.yandex.ru/1.x/?ll=113.96,22.50&size=650,450&z=12&l=sat,skl" alt="Shenzhen Bay Hybrid Map" class="map-slide absolute inset-0 w-full h-full object-cover transition-opacity duration-1000 opacity-0">
+            <!-- Yandex Street Map -->
+            <img src="https://static-maps.yandex.ru/1.x/?ll=113.96,22.50&size=650,450&z=12&l=map" alt="Shenzhen Bay Street Map" class="map-slide absolute inset-0 w-full h-full object-cover transition-opacity duration-1000 opacity-0">
             
             <!-- 热力/标注覆盖层 -->
             <svg class="absolute inset-0 w-full h-full z-10 pointer-events-none" viewBox="0 0 400 200" preserveAspectRatio="none">
