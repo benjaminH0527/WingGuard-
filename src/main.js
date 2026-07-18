@@ -423,7 +423,11 @@ import { ENV } from './env.js';
     ]);
   }
 
-  document.addEventListener('DOMContentLoaded', refreshAll);
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', refreshAll);
+  } else {
+    refreshAll();
+  }
 
   // expose for inline HTML handlers (script is non-module, already global,
   // but declared explicitly here for clarity/robustness)

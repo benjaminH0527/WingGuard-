@@ -53,7 +53,6 @@
 
     <nav class="hidden lg:flex items-center gap-8 text-[13px] font-medium text-ink-700/80">
       <a href="home.html" class="text-coral-600 font-semibold hover:text-coral-700 transition-colors flex items-center gap-1.5"><i class="fa-solid fa-compass"></i> 公众科普端</a>
-      <a href="#hero" class="hover:text-canopy-700 transition-colors">愿景</a>
       <a href="identify.html" class="hover:text-canopy-700 transition-colors"><i class="fa-solid fa-camera"></i> AI 识鸟</a>
       <a href="#gallery" class="hover:text-canopy-700 transition-colors">物种图鉴</a>
       <a href="#action" class="hover:text-canopy-700 transition-colors">参与守护</a>
@@ -113,7 +112,6 @@
       <!-- Navigation Links in Drawer -->
       <nav class="flex flex-col gap-4 text-[14px] font-medium text-ink-700/80">
         <a href="home.html" onclick="toggleMobileMenu()" class="text-coral-600 font-semibold hover:text-coral-700 transition-colors flex items-center gap-2.5 py-2 px-3 rounded-xl hover:bg-black/5"><i class="fa-solid fa-compass"></i> 公众科普端</a>
-        <a href="#hero" onclick="toggleMobileMenu()" class="hover:text-canopy-700 transition-colors flex items-center gap-2.5 py-2 px-3 rounded-xl hover:bg-black/5"><i class="fa-solid fa-eye"></i> 愿景</a>
         <a href="identify.html" onclick="toggleMobileMenu()" class="hover:text-canopy-700 transition-colors flex items-center gap-2.5 py-2 px-3 rounded-xl hover:bg-black/5"><i class="fa-solid fa-camera"></i> AI 识鸟</a>
         <a href="#gallery" onclick="toggleMobileMenu()" class="hover:text-canopy-700 transition-colors flex items-center gap-2.5 py-2 px-3 rounded-xl hover:bg-black/5"><i class="fa-solid fa-book-open"></i> 物种图鉴</a>
         <a href="#action" onclick="toggleMobileMenu()" class="hover:text-canopy-700 transition-colors flex items-center gap-2.5 py-2 px-3 rounded-xl hover:bg-black/5"><i class="fa-solid fa-seedling"></i> 参与守护</a>
@@ -142,8 +140,9 @@
         <span class="eyebrow text-[10px] uppercase" style="color:rgba(238,245,239,.6)">东亚—澳大利西亚迁飞路线</span>
       </div>
       <h1 class="display-hero" style="color:#EEF5EF">以候鸟之翼<br>飞越<em>万里</em>归途</h1>
-      <p class="lede hero-lede">跟随一只候鸟，从澳大利亚的湿地振翅起飞，沿东亚—澳大利西亚迁飞路线跨越赤道与海洋，最终回到深圳湾。</p>
+      <p class="lede hero-lede text-white" style="color: #ffffff !important;">跟随一只候鸟，从澳大利亚的湿地振翅起飞，沿东亚—澳大利西亚迁飞路线跨越赤道与海洋，最终回到深圳湾。</p>
       <div class="hero-btns">
+        <a href="home.html" class="hero-btn"><i class="fa-solid fa-compass"></i> 公众科普端</a>
         <a href="#action" class="hero-btn primary"><i class="fa-solid fa-binoculars"></i> 开始观测打卡</a>
         <a href="identify.html" class="hero-btn"><i class="fa-solid fa-camera"></i> AI 智能识鸟</a>
         <a href="/diary.html" class="hero-btn"><i class="fa-solid fa-book-open"></i> 候鸟迁徙日记</a>
@@ -431,11 +430,11 @@
       <input type="hidden" id="authRole" value="public">
       <div>
         <label class="text-[10px] font-mono text-ink-700/50 uppercase">邮箱</label>
-        <input type="email" id="authEmail" required class="w-full border hairline rounded-xl px-3.5 py-2.5 text-[13px] mt-1 bg-white/70">
+        <input type="email" id="authEmail" required autocomplete="email" class="w-full border hairline rounded-xl px-3.5 py-2.5 text-[13px] mt-1 bg-white/70">
       </div>
       <div>
         <label class="text-[10px] font-mono text-ink-700/50 uppercase">密码（至少6位）</label>
-        <input type="password" id="authPassword" required minlength="6" class="w-full border hairline rounded-xl px-3.5 py-2.5 text-[13px] mt-1 bg-white/70">
+        <input type="password" id="authPassword" required minlength="6" autocomplete="current-password" class="w-full border hairline rounded-xl px-3.5 py-2.5 text-[13px] mt-1 bg-white/70">
       </div>
 
       <div id="authSignupFields" class="hidden space-y-3.5">
