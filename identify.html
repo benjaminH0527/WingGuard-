@@ -498,13 +498,13 @@ async function uploadToStorage(file){
     }catch(e){ return null; }
 }
 
-/* ================= AI CALL (Agnes vision) ================= */
+/* ================= AI CALL (GLM vision) ================= */
 let chatHistory=[];
-async function askAgnes(messages){
-    const res = await fetch('https://apihub.agnes-ai.com/v1/chat/completions',{
+async function askGLM(messages){
+    const res = await fetch('https://open.bigmodel.cn/api/paas/v4/chat/completions',{
         method:'POST',
-        headers:{ 'Content-Type':'application/json', 'Authorization':'Bearer wk-RpfvyhbDfh8Akj2XjWXNZLGRi61lUqnY3mi1mrzT3o0m3cOn' },
-        body:JSON.stringify({ model:'agnes-2.0-flash', messages })
+        headers:{ 'Content-Type':'application/json', 'Authorization':'Bearer 733207cc68f147e583df719508cf8bdc.uo5iqQhTcStQxUuC' },
+        body:JSON.stringify({ model:'glm-5v-turbo', messages })
     });
     if(!res.ok) throw new Error('HTTP '+res.status);
     const data = await res.json();
@@ -564,7 +564,7 @@ async function runIdentify(file){
             { type:'text', text:'请识别这张图片中的鸟类。用中文回答：第一行只给出鸟的中文名称；随后用 2-3 句简介其外形、习性与在东亚—澳大利西亚迁飞路线上的意义；若属于保护物种请注明保护等级。' },
             { type:'image_url', image_url:{ url:base64 } }
         ]}];
-        aiText = await askAgnes(messages);
+        aiText = await askGLM(messages);
         chatHistory = messages.concat([{ role:'assistant', content:aiText }]);
         setStep('ai','done');
     }catch(e){ setStep('ai','fail'); document.getElementById('scan').classList.remove('scanning');
@@ -596,7 +596,7 @@ function extractName(text){
 
 function renderResult(name, aiText, pinned){
     document.getElementById('resName').textContent = name;
-    document.getElementById('resSci').textContent = 'AI VISION · agnes-2.0';
+    document.getElementById('resSci').textContent = 'AI VISION · GLM-5V-Turbo';
     // tags: detect protection keywords
     const tags = document.getElementById('resTags'); tags.innerHTML='';
     const add=(t,warn)=>{ const s=document.createElement('span'); s.className='tag'+(warn?' warn':''); s.textContent=t; tags.appendChild(s); };
@@ -660,7 +660,7 @@ window.sendMessage=async()=>{
     if(chatBase64) content.push({ type:'image_url', image_url:{ url:chatBase64 } });
     chatHistory.push({ role:'user', content });
     try{
-        const reply = await askAgnes(chatHistory);
+        const reply = await askGLM(chatHistory);
         chatHistory.push({ role:'assistant', content:reply });
         typing(false); addMsg('ai', reply);
         // if it was an image in chat, also pin it

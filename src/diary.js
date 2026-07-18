@@ -107,7 +107,7 @@ function updateContextBubble(sectionId) {
   }
 }
 
-// 3. AI Assistant Integration (Agnes 2.0 Flash)
+// 3. AI Assistant Integration (GLM)
 const aiTrigger = document.getElementById('ai-trigger');
 const aiDrawer = document.getElementById('ai-drawer');
 const aiClose = document.getElementById('ai-close');
@@ -143,19 +143,19 @@ let messages = [
   { role: 'system', content: SYSTEM_PROMPT }
 ];
 
-async function callAgnesFlash(userMessage) {
+async function callGLM(userMessage) {
   // Append user message
   messages.push({ role: 'user', content: userMessage });
   
   try {
-    const response = await fetch('https://apihub.agnes-ai.com/v1/chat/completions', {
+    const response = await fetch('https://open.bigmodel.cn/api/paas/v4/chat/completions', {
       method: 'POST',
       headers: {
-        'Authorization': 'Bearer wk-GZ9VEzB5yJ7Hh7qFhWsevtgkgeybOqkSoEG0kFfUwkiCsyGq',
+        'Authorization': 'Bearer 733207cc68f147e583df719508cf8bdc.uo5iqQhTcStQxUuC',
         'Content-Type': 'application/json'
       },
       body: JSON.stringify({
-        model: 'agnes-2.0-flash',
+        model: 'glm-5.2',
         messages: messages,
         temperature: 0.7,
         max_tokens: 1024
@@ -170,7 +170,7 @@ async function callAgnesFlash(userMessage) {
     messages.push({ role: 'assistant', content: botReply });
     return botReply;
   } catch (err) {
-    console.error('Agnes API Error:', err);
+    console.error('GLM API Error:', err);
     return '抱歉，我现在有点累了，稍后再试好吗？';
   }
 }
@@ -213,7 +213,7 @@ chatForm.addEventListener('submit', async (e) => {
   chatInput.value = '';
   
   appendTypingIndicator();
-  const reply = await callAgnesFlash(text);
+  const reply = await callGLM(text);
   
   // Anticipation: 0.5s pause before results
   setTimeout(() => {
