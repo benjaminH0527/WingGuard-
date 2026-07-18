@@ -407,7 +407,7 @@ async function loadUserLeaderboard() {
     users.forEach(u => {
       const tr = document.createElement('tr');
       tr.innerHTML = `
-        <td class="py-3 pr-4 font-semibold">${u.nickname || '未命名'} <br><span class="text-xs text-[#191919]/50 font-sans font-normal">${u.email}</span></td>
+        <td class="py-3 pr-4 font-semibold">${u.nickname || '未命名'} <br><span class="text-xs text-[#191919]/50 font-sans font-normal">${u.email || '未绑定邮箱'}</span></td>
         <td class="py-3 px-4 text-[#14BF96] font-bold" id="pts-${u.id}">${u.points || 0}</td>
         <td class="py-3 px-4 text-xs">Lv.${u.level || 1}</td>
         <td class="py-3 px-4 text-right">
