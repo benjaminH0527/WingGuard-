@@ -69,7 +69,7 @@ try {
       habitat: "温带山地丘陵、稻田、溪流湿地",
       description:
         "素有“东方宝石”之称，体羽多为白色并微染粉红，后枕部有柳叶状羽冠。曾一度被认为野外灭绝，是人工保育成功的旗舰物种。",
-      imageUrl: "https://images.unsplash.com/photo-1591608971362-f08b2a75731a?auto=format&fit=crop&w=800&q=80"
+      imageUrl: "/Nipponia-nippon.png"
     },
     {
       id: "sp-03",
@@ -538,7 +538,7 @@ try {
             conservationStatus: s.conservation_status,
             habitat: s.habitat,
             description: s.description,
-            imageUrl: s.image_url
+            imageUrl: s.id === 'sp-03' ? '/Aegithalos-concinnus.webp' : (s.id === 'sp-02' ? '/Nipponia-nippon.png' : s.image_url)
           }));
         }
       }

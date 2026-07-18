@@ -160,7 +160,7 @@ import { ENV } from './env.js';
     wrap.innerHTML = species.map((sp, i) => `
       <div class="glass rounded-3xl overflow-hidden shadow-sm min-w-[260px] max-w-[260px] snap-start flex flex-col hover:-translate-y-1 transition-transform duration-300 fade-up" style="animation-delay: ${i * 30}ms;">
         <div class="h-36 relative overflow-hidden">
-          <img src="${sp.imageUrl}" class="w-full h-full object-cover" alt="${sp.commonName}">
+          <img src="${sp.imageUrl}" class="w-full h-full object-cover" style="object-position: center 20%;" alt="${sp.commonName}">
           <span class="absolute top-3 left-3 stamp text-[9px] font-mono font-semibold px-3 py-1 bg-ink-900/70 text-white backdrop-blur-sm">${sp.conservationStatus}</span>
         </div>
         <div class="p-4 flex-1 flex flex-col">
