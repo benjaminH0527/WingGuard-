@@ -38,7 +38,7 @@
       </a>
     </nav>
 
-    <div class="flex items-center gap-3">
+    <div class="hidden lg:flex items-center gap-3">
       <div id="navUserPill" class="hidden md:flex items-center gap-2 bg-white/70 border border-white/70 rounded-full pl-1 pr-3.5 py-1 text-[11px] shadow-sm">
         <span class="w-6 h-6 rounded-full bg-canopy-100 text-canopy-700 flex items-center justify-center"><i class="fa-solid fa-user text-[10px]"></i></span>
         <span id="navUserName" class="font-semibold text-ink-800">游客</span>
@@ -48,8 +48,65 @@
         注册 / 登录
       </button>
     </div>
+
+    <!-- Mobile/Tablet Toggle Button -->
+    <button id="mobileMenuToggle" onclick="toggleMobileMenu()" class="lg:hidden w-9 h-9 flex items-center justify-center rounded-xl hover:bg-black/5 active:bg-black/10 transition-colors" aria-label="Toggle Menu">
+      <i class="fa-solid fa-bars text-lg text-ink-800"></i>
+    </button>
   </div>
 </header>
+
+<!-- ============================= MOBILE DRAWER ============================= -->
+<div id="mobileDrawer" class="fixed inset-0 z-50 transition-opacity duration-300 opacity-0 pointer-events-none">
+  <!-- Backdrop overlay -->
+  <div class="absolute inset-0 bg-black/40 backdrop-blur-sm" onclick="toggleMobileMenu()"></div>
+  
+  <!-- Drawer content -->
+  <div class="absolute right-0 top-0 bottom-0 w-[280px] bg-[#F6F3E9] shadow-2xl p-6 flex flex-col justify-between transform translate-x-full transition-transform duration-300 ease-out z-10">
+    <div>
+      <!-- Top header of drawer -->
+      <div class="flex items-center justify-between mb-8">
+        <div class="flex items-center gap-2">
+          <img src="/logo.png" alt="Logo" class="w-7 h-7 object-contain">
+          <span class="font-display font-semibold text-base text-canopy-800">红檬智型</span>
+        </div>
+        <button onclick="toggleMobileMenu()" class="w-8 h-8 flex items-center justify-center rounded-full hover:bg-black/5 text-ink-800 transition-colors">
+          <i class="fa-solid fa-xmark text-lg"></i>
+        </button>
+      </div>
+
+      <!-- User pill / Login Card in Drawer -->
+      <div class="mb-8 border-b hairline pb-6">
+        <div id="mobileUserCard" class="hidden flex items-center gap-3 bg-white/70 border border-white/70 rounded-2xl p-3.5 shadow-sm">
+          <span class="w-8 h-8 rounded-full bg-canopy-100 text-canopy-700 flex items-center justify-center"><i class="fa-solid fa-user text-xs"></i></span>
+          <div class="flex-1 min-w-0">
+            <div id="mobileUserName" class="font-semibold text-ink-800 text-[13px] truncate">游客</div>
+            <div id="mobileUserPoints" class="font-mono text-canopy-700 text-[11px] font-semibold mt-0.5">0 pt</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Navigation Links in Drawer -->
+      <nav class="flex flex-col gap-4 text-[14px] font-medium text-ink-700/80">
+        <a href="home.html" onclick="toggleMobileMenu()" class="text-coral-600 font-semibold hover:text-coral-700 transition-colors flex items-center gap-2.5 py-2 px-3 rounded-xl hover:bg-black/5"><i class="fa-solid fa-compass"></i> 公众科普端</a>
+        <a href="#hero" onclick="toggleMobileMenu()" class="hover:text-canopy-700 transition-colors flex items-center gap-2.5 py-2 px-3 rounded-xl hover:bg-black/5"><i class="fa-solid fa-eye"></i> 愿景</a>
+        <a href="identify.html" onclick="toggleMobileMenu()" class="hover:text-canopy-700 transition-colors flex items-center gap-2.5 py-2 px-3 rounded-xl hover:bg-black/5"><i class="fa-solid fa-camera"></i> AI 识鸟</a>
+        <a href="#gallery" onclick="toggleMobileMenu()" class="hover:text-canopy-700 transition-colors flex items-center gap-2.5 py-2 px-3 rounded-xl hover:bg-black/5"><i class="fa-solid fa-book-open"></i> 物种图鉴</a>
+        <a href="#action" onclick="toggleMobileMenu()" class="hover:text-canopy-700 transition-colors flex items-center gap-2.5 py-2 px-3 rounded-xl hover:bg-black/5"><i class="fa-solid fa-seedling"></i> 参与守护</a>
+        <a href="#dashboard" onclick="toggleMobileMenu()" class="hover:text-canopy-700 transition-colors flex items-center gap-2.5 py-2 px-3 rounded-xl hover:bg-black/5">
+          <i class="fa-solid fa-chart-simple text-xs"></i> 生态决策后台
+        </a>
+      </nav>
+    </div>
+
+    <!-- Action Button at bottom (Login/Logout) -->
+    <div class="pt-6 border-t hairline">
+      <button id="mobileAuthBtn" class="w-full bg-canopy-700 hover:bg-canopy-800 text-white text-[13px] font-semibold py-3 rounded-xl shadow-sm transition-colors text-center">
+        注册 / 登录
+      </button>
+    </div>
+  </div>
+</div>
 
 <!-- ============================= HERO ============================= -->
 <section id="hero" class="relative overflow-hidden">

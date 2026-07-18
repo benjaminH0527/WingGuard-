@@ -17,6 +17,25 @@ import { ENV } from './env.js';
   function openModal(id) { document.getElementById(id).classList.remove('hidden'); }
   function closeModal(id) { document.getElementById(id).classList.add('hidden'); }
 
+  let isMobileMenuOpen = false;
+  function toggleMobileMenu() {
+    const drawer = document.getElementById('mobileDrawer');
+    if (!drawer) return;
+    const drawerContent = drawer.querySelector('.absolute.right-0');
+    isMobileMenuOpen = !isMobileMenuOpen;
+    if (isMobileMenuOpen) {
+      drawer.classList.remove('pointer-events-none');
+      drawer.classList.remove('opacity-0');
+      if (drawerContent) drawerContent.classList.remove('translate-x-full');
+      document.body.style.overflow = 'hidden';
+    } else {
+      drawer.classList.add('pointer-events-none');
+      drawer.classList.add('opacity-0');
+      if (drawerContent) drawerContent.classList.add('translate-x-full');
+      document.body.style.overflow = '';
+    }
+  }
+
   // ---------------- Auth modal ----------------
   function openAuthModal(role) {
     document.getElementById('authRole').value = role;
@@ -161,16 +180,45 @@ import { ENV } from './env.js';
     const user = await DataAdapter.getCurrentUser();
     const pill = document.getElementById('navUserPill');
     const authBtn = document.getElementById('navAuthBtn');
+    const mobileUserCard = document.getElementById('mobileUserCard');
+    const mobileAuthBtn = document.getElementById('mobileAuthBtn');
+
     if (user) {
-      pill.classList.remove('hidden');
-      document.getElementById('navUserName').textContent = user.nickname || '守护使者';
-      document.getElementById('navUserPoints').textContent = `${user.points || 0} pt`;
-      authBtn.textContent = '退出登录';
-      authBtn.onclick = handleSignOut;
+      // Desktop
+      if (pill) pill.classList.remove('hidden');
+      if (document.getElementById('navUserName')) document.getElementById('navUserName').textContent = user.nickname || '守护使者';
+      if (document.getElementById('navUserPoints')) document.getElementById('navUserPoints').textContent = `${user.points || 0} pt`;
+      if (authBtn) {
+        authBtn.textContent = '退出登录';
+        authBtn.onclick = handleSignOut;
+      }
+      // Mobile Drawer
+      if (mobileUserCard) mobileUserCard.classList.remove('hidden');
+      if (document.getElementById('mobileUserName')) document.getElementById('mobileUserName').textContent = user.nickname || '守护使者';
+      if (document.getElementById('mobileUserPoints')) document.getElementById('mobileUserPoints').textContent = `${user.points || 0} pt`;
+      if (mobileAuthBtn) {
+        mobileAuthBtn.textContent = '退出登录';
+        mobileAuthBtn.onclick = () => {
+          toggleMobileMenu();
+          handleSignOut();
+        };
+      }
     } else {
-      pill.classList.add('hidden');
-      authBtn.textContent = '注册 / 登录';
-      authBtn.onclick = () => openAuthModal('public');
+      // Desktop
+      if (pill) pill.classList.add('hidden');
+      if (authBtn) {
+        authBtn.textContent = '注册 / 登录';
+        authBtn.onclick = () => openAuthModal('public');
+      }
+      // Mobile Drawer
+      if (mobileUserCard) mobileUserCard.classList.add('hidden');
+      if (mobileAuthBtn) {
+        mobileAuthBtn.textContent = '注册 / 登录';
+        mobileAuthBtn.onclick = () => {
+          toggleMobileMenu();
+          openAuthModal('public');
+        };
+      }
     }
   }
 
@@ -381,6 +429,7 @@ import { ENV } from './env.js';
   // but declared explicitly here for clarity/robustness)
   window.openAuthModal = openAuthModal;
   window.closeModal = closeModal;
+  window.toggleMobileMenu = toggleMobileMenu;
   window.switchAuthTab = switchAuthTab;
   window.handleAuthSubmit = handleAuthSubmit;
   window.handleSignOut = handleSignOut;
