@@ -34,13 +34,15 @@ p, li, .section-body {
 .nav-bar {
     position: fixed;
     top: 0; left: 0; right: 0;
-    height: var(--nav-height);
+    height: calc(var(--nav-height) + env(safe-area-inset-top, 0px));
+    padding-top: env(safe-area-inset-top, 0px);
     background: rgba(245, 240, 232, 0.85);
     backdrop-filter: blur(20px);
     border-bottom: 1px solid var(--border-light);
     z-index: 1000;
     display: flex; align-items: center; justify-content: space-between;
-    padding: 0 48px;
+    padding-left: 48px;
+    padding-right: 48px;
     transition: all 0.4s var(--easing-expo);
 }
 .nav-bar.scrolled {
@@ -325,7 +327,7 @@ p, li, .section-body {
 .nav-toggle span:nth-child(3) { top: 22px; }
 
 @media (max-width: 768px) {
-    .nav-bar { padding: 0 24px; }
+    .nav-bar { padding-left: 24px; padding-right: 24px; }
     .nav-toggle { display: block; }
     .nav-links {
         position: fixed;

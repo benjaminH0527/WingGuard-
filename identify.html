@@ -2,7 +2,7 @@
 <html lang="zh-CN">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
     <title>AI 识鸟 — WingGuard</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -36,7 +36,7 @@
         .nav-bar {
             position: absolute;
             top: 0; left: 0; right: 0;
-            z-index: 100;
+            z-index: 1000;
             background: rgba(246, 243, 233, 0.9);
             backdrop-filter: blur(10px);
             -webkit-backdrop-filter: blur(10px);
@@ -46,7 +46,7 @@
         /* FAB Button */
         .fab {
             position: absolute;
-            bottom: 30px;
+            bottom: calc(30px + env(safe-area-inset-bottom, 0px));
             right: 30px;
             width: 60px;
             height: 60px;
@@ -74,7 +74,8 @@
             right: 0;
             width: 380px;
             height: 100vh;
-            z-index: 150; /* Higher than navbar */
+            padding-top: calc(64px + env(safe-area-inset-top, 0px));
+            z-index: 150; /* Lower than navbar but visually shifted down */
             background: rgba(250, 248, 240, 0.95);
             backdrop-filter: blur(20px);
             -webkit-backdrop-filter: blur(20px);
@@ -484,7 +485,8 @@
             showMarker: true,        
             panToLocation: true,
             zoomToAccuracy: true,
-            buttonPosition: 'LT'
+            buttonPosition: 'LB',
+            buttonOffset: new AMap.Pixel(15, 30)
         });
         map.addControl(geolocation);
         
