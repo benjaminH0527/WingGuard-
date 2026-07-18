@@ -30,7 +30,7 @@ create policy "species_all_admin" on public.species for all using (
 insert into public.species (id, scientific_name, common_name, conservation_status, habitat, description, image_url) values
 ('sp-01', 'Ciconia boyciana', '东方白鹳', '国家一级', '大型湿地、沼泽、水库浅滩', '大型涉禽，体长约1.1–1.3米，嘴黑色而基部粗厚，眼周裸露皮肤呈醒目红色。全球种群数量稀少，是东亚湿地生态健康的重要指示物种。', '/Ciconia-boyciana.webp'),
 ('sp-02', 'Nipponia nippon', '朱鹮', '国家一级', '温带山地丘陵、稻田、溪流湿地', '素有“东方宝石”之称，体羽多为白色并微染粉红，后枕部有柳叶状羽冠。曾一度被认为野外灭绝，是人工保育成功的旗舰物种。', 'https://images.unsplash.com/photo-1591608971362-f08b2a75731a?auto=format&fit=crop&w=800&q=80'),
-('sp-03', 'Aegithalos concinnus', '红头长尾山雀', '三有保护', '针阔混交林、灌木丛、公园绿地', '网络著名的“小肥啾”之一，头顶栗红、喉部一枚黑斑，性活泼喜结群，是校园与城市公园里最容易被公众观测到的鸟种之一。', '/Aegithalos-concinnus.webp'),
+('sp-03', 'Aegithalos concinnus', '红头长尾山雀', '三有保护', '针阔混交林、灌木丛、公园绿地', '网络著名的“小肥啾”之一，头顶栗红、喉部一枚黑斑，性活泼喜结群，是校园与城市公园里最容易被公众观测到的鸟种之一。', 'https://images.unsplash.com/photo-1444464666168-49d633b86797?auto=format&fit=crop&w=800&q=80'),
 ('sp-04', 'Ardea cinerea', '苍鹭', '三有保护', '江河、湖泊、海岸浅水区', '大型水鸟，颈、脚、嘴修长，体羽以灰色为主。常长时间静立浅水中伺机捕食鱼虾，民间俗称“老等”，是湿地食物链的重要一环。', '/Ardea-cinerea.jpg'),
 ('sp-05', 'Alcedo atthis', '普通翠鸟', '三有保护', '溪流、池塘、河岸土坡', '体型小巧，羽色艳丽如宝石，善于俯冲入水捕鱼，是许多观鸟爱好者入门的“梦幻鸟种”，对水质极为敏感。', '/Alcedo-atthis.webp'),
 ('sp-06', 'Grus japonensis', '丹顶鹤', '国家一级', '沼泽湿地、芦苇荡、滩涂', '体态优雅，顶冠裸皮呈朱红色，是长寿与吉祥的文化象征。对栖息地完整性要求极高，是区域生态保护成效的旗舰指标。', '/Grus-japonensis.jpg')

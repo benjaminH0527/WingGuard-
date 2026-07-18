@@ -79,7 +79,7 @@ try {
       habitat: "针阔混交林、灌木丛、公园绿地",
       description:
         "网络著名的“小肥啾”之一，头顶栗红、喉部一枚黑斑，性活泼喜结群，是校园与城市公园里最容易被公众观测到的鸟种之一。",
-      imageUrl: "/Aegithalos-concinnus.webp"
+      imageUrl: "https://images.unsplash.com/photo-1444464666168-49d633b86797?auto=format&fit=crop&w=800&q=80"
     },
     {
       id: "sp-04",

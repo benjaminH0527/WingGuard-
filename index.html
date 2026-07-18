@@ -12,10 +12,34 @@
 <link rel="stylesheet" href="/src/style.css">
 </head>
 
-<body class="font-body text-ink-800 antialiased" style="background:#F6F3E9;">
+<body class="font-body text-ink-800 antialiased" style="background:#F4EFE4;">
+
+<!-- ============================= IMMERSIVE BACKGROUND LAYERS ============================= -->
+<!-- deep-space backdrop + scroll-driven migration globe (fixed, behind content) -->
+<div id="space" aria-hidden="true"></div>
+<div id="globe" aria-hidden="true"></div>
+<!-- dive sequence: fly through clouds → Shenzhen Bay aerial → reveal the bird -->
+<div id="cloudPass" aria-hidden="true">
+  <span class="cl c1"></span><span class="cl c2"></span><span class="cl c3"></span><span class="cl c4"></span><span class="cl c5"></span>
+</div>
+<div id="bayAerial" aria-hidden="true">
+  <div class="layer-img"></div>
+  <div class="layer-grad"></div>
+  <div class="layer-label"><span class="mono">深圳湾 · SHENZHEN BAY</span><em class="serif">俯瞰万里归途的终点</em></div>
+</div>
+<div id="birdReveal" aria-hidden="true">
+  <div class="layer-img"></div>
+  <div class="layer-grad"></div>
+  <div class="layer-label"><span class="mono">PLATALEA MINOR</span><em class="serif">黑脸琵鹭 · 深圳湾旗舰物种</em></div>
+</div>
+
+<!-- tactile film texture -->
+<div class="vignette" aria-hidden="true"></div>
+<div class="grain" aria-hidden="true"></div>
 
 <!-- ============================= NAV ============================= -->
-<header class="glass-nav sticky top-0 z-40">
+<header class="glass-nav sticky top-0 z-40 relative">
+  <div class="nav-progress" id="navProgress"></div>
   <div class="max-w-7xl mx-auto px-5 md:px-8 py-3.5 flex items-center justify-between">
     <button onclick="window.scrollTo({top:0,behavior:'smooth'})" class="flex items-center gap-2.5">
       <span class="w-9 h-9 flex items-center justify-center">
@@ -29,6 +53,7 @@
 
     <nav class="hidden lg:flex items-center gap-8 text-[13px] font-medium text-ink-700/80">
       <a href="home.html" class="text-coral-600 font-semibold hover:text-coral-700 transition-colors flex items-center gap-1.5"><i class="fa-solid fa-compass"></i> 公众科普端</a>
+      <a href="#hero" class="hover:text-canopy-700 transition-colors">愿景</a>
       <a href="identify.html" class="hover:text-canopy-700 transition-colors"><i class="fa-solid fa-camera"></i> AI 识鸟</a>
       <a href="#gallery" class="hover:text-canopy-700 transition-colors">物种图鉴</a>
       <a href="#action" class="hover:text-canopy-700 transition-colors">参与守护</a>
@@ -88,6 +113,7 @@
       <!-- Navigation Links in Drawer -->
       <nav class="flex flex-col gap-4 text-[14px] font-medium text-ink-700/80">
         <a href="home.html" onclick="toggleMobileMenu()" class="text-coral-600 font-semibold hover:text-coral-700 transition-colors flex items-center gap-2.5 py-2 px-3 rounded-xl hover:bg-black/5"><i class="fa-solid fa-compass"></i> 公众科普端</a>
+        <a href="#hero" onclick="toggleMobileMenu()" class="hover:text-canopy-700 transition-colors flex items-center gap-2.5 py-2 px-3 rounded-xl hover:bg-black/5"><i class="fa-solid fa-eye"></i> 愿景</a>
         <a href="identify.html" onclick="toggleMobileMenu()" class="hover:text-canopy-700 transition-colors flex items-center gap-2.5 py-2 px-3 rounded-xl hover:bg-black/5"><i class="fa-solid fa-camera"></i> AI 识鸟</a>
         <a href="#gallery" onclick="toggleMobileMenu()" class="hover:text-canopy-700 transition-colors flex items-center gap-2.5 py-2 px-3 rounded-xl hover:bg-black/5"><i class="fa-solid fa-book-open"></i> 物种图鉴</a>
         <a href="#action" onclick="toggleMobileMenu()" class="hover:text-canopy-700 transition-colors flex items-center gap-2.5 py-2 px-3 rounded-xl hover:bg-black/5"><i class="fa-solid fa-seedling"></i> 参与守护</a>
@@ -106,67 +132,65 @@
   </div>
 </div>
 
-<!-- ============================= HERO ============================= -->
-<section id="hero" class="relative overflow-hidden">
-  <div class="absolute inset-0">
-    <img src="https://images.unsplash.com/photo-1500534623283-312aade485b7?auto=format&fit=crop&w=2000&q=80" class="w-full h-full object-cover" alt="晨雾湿地">
-    <div class="absolute inset-0 bg-gradient-to-b from-white/80 via-white/50 to-mist"></div>
-  </div>
-
-  <div class="relative max-w-7xl mx-auto px-5 md:px-8 pt-20 pb-28 md:pt-28 md:pb-40">
-    <div class="max-w-2xl fade-up">
-      <span class="stamp text-ink-800/90 text-[10px] font-mono px-4 py-1.5 mb-6">FIELD SEASON · 2026</span>
-      <h1 class="font-display text-ink-800 text-4xl md:text-6xl leading-[1.08] font-medium mt-5">
-        每一次抬头张望，<br>都是一次生态观测。
-      </h1>
-      <p class="text-ink-800/85 text-sm md:text-base mt-6 leading-relaxed max-w-lg">
-        红檬智型连接公众的双眼与生态管理部门的决策台——用一次次真实的观测打卡，
-        绘出一张持续生长的区域鸟类分布地图。
-      </p>
-      <div class="flex flex-wrap gap-3 mt-9">
-        <a href="home.html" class="bg-coral-500 hover:bg-coral-600 text-white text-[13px] font-semibold px-6 py-3.5 rounded-full shadow-lg shadow-black/20 transition-colors">
-          <i class="fa-solid fa-compass mr-1.5"></i> 公众科普端
-        </a>
-        <a href="#action" class="bg-canopy-600 hover:bg-canopy-700 text-white text-[13px] font-semibold px-6 py-3.5 rounded-full shadow-lg shadow-black/20 transition-colors">
-          <i class="fa-solid fa-binoculars mr-1.5"></i> 开始观测打卡
-        </a>
-        <a href="identify.html" class="bg-canopy-600 hover:bg-canopy-700 text-white text-[13px] font-semibold px-6 py-3.5 rounded-full shadow-lg shadow-black/20 transition-colors" style="background-color: #e67e22;">
-          <i class="fa-solid fa-camera mr-1.5"></i> AI 智能识鸟
-        </a>
-        <a href="/diary.html" class="glass text-ink-800 text-[13px] font-semibold px-6 py-3.5 rounded-full hover:bg-white/20 transition-colors">
-          <i class="fa-solid fa-book-open mr-1.5"></i> 翻阅候鸟迁徙日记
-        </a>
+<!-- ============================= HERO · MIGRATION GLOBE ============================= -->
+<section id="hero" class="hero-globe">
+  <div class="hero-pin">
+    <div class="hero-copy" id="heroCopy">
+      <div class="hero-eyebrow">
+        <span class="idx" style="color:#7FE9D6">EAAF / 2026</span>
+        <span class="hero-eyebrow-line"></span>
+        <span class="eyebrow text-[10px] uppercase" style="color:rgba(238,245,239,.6)">东亚—澳大利西亚迁飞路线</span>
+      </div>
+      <h1 class="display-hero" style="color:#EEF5EF">以候鸟之翼<br>飞越<em>万里</em>归途</h1>
+      <p class="lede hero-lede">跟随一只候鸟，从澳大利亚的湿地振翅起飞，沿东亚—澳大利西亚迁飞路线跨越赤道与海洋，最终回到深圳湾。</p>
+      <div class="hero-btns">
+        <a href="#action" class="hero-btn primary"><i class="fa-solid fa-binoculars"></i> 开始观测打卡</a>
+        <a href="identify.html" class="hero-btn"><i class="fa-solid fa-camera"></i> AI 智能识鸟</a>
+        <a href="/diary.html" class="hero-btn"><i class="fa-solid fa-book-open"></i> 候鸟迁徙日记</a>
       </div>
     </div>
-  </div>
 
-  <!-- stat strip -->
-  <div class="relative max-w-5xl mx-auto px-5 md:px-8 -mt-14 md:-mt-16">
-    <div class="glass-strong rounded-3xl px-6 md:px-10 py-6 grid grid-cols-3 gap-4 shadow-xl">
-      <div>
-        <div class="font-display text-2xl md:text-3xl text-canopy-800" id="heroStatSpecies">6</div>
-        <div class="text-[10px] eyebrow uppercase text-ink-700/60 font-mono mt-1">监测物种</div>
-      </div>
-      <div class="border-l hairline pl-4 md:pl-8">
-        <div class="font-display text-2xl md:text-3xl text-canopy-800" id="heroStatObs">--</div>
-        <div class="text-[10px] eyebrow uppercase text-ink-700/60 font-mono mt-1">累计观测</div>
-      </div>
-      <div class="border-l hairline pl-4 md:pl-8">
-        <div class="font-display text-2xl md:text-3xl text-coral-600" id="heroStatUrgent">--</div>
-        <div class="text-[10px] eyebrow uppercase text-ink-700/60 font-mono mt-1">待响应事件</div>
-      </div>
+    <div class="hero-caption" id="heroCaption">
+      <span class="hero-caption-dot"></span>
+      <span id="skyCaption" class="mono">澳大利亚 · 卡卡杜湿地 — 迁徙起点</span>
+    </div>
+    <div class="hero-scrollhint" id="heroScrollHint">
+      <span class="eyebrow text-[10px]">向下滑动 · 随候鸟迁徙</span>
+      <span class="hero-scrollhint-line floaty"></span>
     </div>
   </div>
 </section>
 
-<!-- ============================= SPECIES GALLERY ============================= -->
-<section id="gallery" class="max-w-7xl mx-auto px-5 md:px-8 pt-24 pb-16">
-  <div class="flex flex-col md:flex-row md:items-end md:justify-between gap-3 mb-8">
+<!-- ============================= PAPER CONTENT (slides over the globe) ============================= -->
+<div class="page-body">
+
+<!-- stat strip -->
+<div class="max-w-5xl mx-auto px-5 md:px-8 pt-16 -mt-14 relative z-10">
+  <div class="glass-strong rounded-[28px] px-7 md:px-12 py-8 grid grid-cols-3 gap-4 sheen lift">
     <div>
-      <span class="text-[10px] eyebrow uppercase text-canopy-600 font-mono font-semibold">Species Field Guide</span>
-      <h2 class="font-display text-2xl md:text-4xl text-ink-800 mt-2">本地重点观测鸟种图鉴</h2>
+      <div class="font-display font-medium text-3xl md:text-5xl text-canopy-800 tnum" id="heroStatSpecies" data-count="6">6</div>
+      <div class="text-[10px] eyebrow uppercase text-ink-700/55 font-mono mt-2">监测物种</div>
     </div>
-    <p class="text-xs text-ink-700/60 max-w-sm leading-relaxed">向右滑动，翻阅每一份保护等级档案 —— 每张卡片都是一份等待被更多人认领的守护契约。</p>
+    <div class="border-l hairline pl-5 md:pl-10">
+      <div class="font-display font-medium text-3xl md:text-5xl text-canopy-800 tnum" id="heroStatObs">--</div>
+      <div class="text-[10px] eyebrow uppercase text-ink-700/55 font-mono mt-2">累计观测</div>
+    </div>
+    <div class="border-l hairline pl-5 md:pl-10">
+      <div class="font-display font-medium text-3xl md:text-5xl text-coral-600 tnum" id="heroStatUrgent">--</div>
+      <div class="text-[10px] eyebrow uppercase text-ink-700/55 font-mono mt-2">待响应事件</div>
+    </div>
+  </div>
+</div>
+
+<!-- ============================= SPECIES GALLERY ============================= -->
+<section id="gallery" class="max-w-7xl mx-auto px-5 md:px-8 pt-32 pb-16 reveal">
+  <div class="flex items-center gap-4 mb-6">
+    <span class="idx">01</span><span class="flex-1 rule"></span>
+    <span class="text-[10px] eyebrow uppercase text-canopy-600 font-mono">Species Field Guide</span>
+  </div>
+  <div class="flex flex-col md:flex-row md:items-end md:justify-between gap-4 mb-10">
+    <h2 class="font-display font-medium text-4xl md:text-6xl text-ink-800 leading-[1.02] tracking-tight max-w-2xl">本地重点<br>观测鸟种图鉴</h2>
+    <p class="text-[13px] text-ink-700/60 max-w-sm leading-relaxed">向右滑动，翻阅每一份保护等级档案 —— 每张卡片都是一份等待被更多人认领的守护契约。</p>
   </div>
 
   <div id="speciesGallery" class="flex gap-5 overflow-x-auto pb-4 snap-x">
@@ -177,15 +201,18 @@
 <!-- ============================= C-END ACTION ============================= -->
 <section id="action" class="relative py-20 border-t border-b hairline">
   <div class="absolute inset-0 -z-10">
-    <img src="/Aegithalos-concinnus.webp" class="w-full h-full object-cover opacity-[0.08]" alt="">
+    <img src="https://images.unsplash.com/photo-1444464666168-49d633b86797?auto=format&fit=crop&w=2000&q=80" class="w-full h-full object-cover opacity-[0.08]" alt="">
   </div>
   <div class="max-w-7xl mx-auto px-5 md:px-8">
-    <div class="mb-10">
-      <span class="text-[10px] eyebrow uppercase text-canopy-600 font-mono font-semibold">Take Action</span>
-      <h2 class="font-display text-2xl md:text-4xl text-ink-800 mt-2">你的每一次上报，都会进入真实的审核流程</h2>
+    <div class="mb-12 reveal">
+      <div class="flex items-center gap-4 mb-6">
+        <span class="idx">02</span><span class="flex-1 rule"></span>
+        <span class="text-[10px] eyebrow uppercase text-canopy-600 font-mono">Take Action</span>
+      </div>
+      <h2 class="font-display font-medium text-4xl md:text-6xl text-ink-800 leading-[1.02] tracking-tight max-w-3xl">你的每一次上报<br>都会进入真实的审核流程</h2>
     </div>
 
-    <div class="grid grid-cols-1 lg:grid-cols-5 gap-6">
+    <div class="grid grid-cols-1 lg:grid-cols-5 gap-6" data-stagger>
 
       <!-- guardian card (spanning 3 columns) -->
       <div class="lg:col-span-3 glass-strong rounded-[28px] p-7 md:p-10 flex flex-col justify-between min-h-[300px] shadow-sm relative overflow-hidden">
@@ -258,10 +285,13 @@
 </section>
 
 <!-- ============================= B-END DASHBOARD ============================= -->
-<section id="dashboard" class="max-w-7xl mx-auto px-5 md:px-8 py-24">
-  <div class="mb-10">
-    <span class="text-[10px] eyebrow uppercase text-canopy-600 font-mono font-semibold">Ecology Ops Console</span>
-    <h2 class="font-display text-2xl md:text-4xl text-ink-800 mt-2">生态管理部门数据决策后台</h2>
+<section id="dashboard" class="max-w-7xl mx-auto px-5 md:px-8 py-28">
+  <div class="mb-12 reveal">
+    <div class="flex items-center gap-4 mb-6">
+      <span class="idx">03</span><span class="flex-1 rule"></span>
+      <span class="text-[10px] eyebrow uppercase text-canopy-600 font-mono">Ecology Ops Console</span>
+    </div>
+    <h2 class="font-display font-medium text-4xl md:text-6xl text-ink-800 leading-[1.02] tracking-tight max-w-3xl">生态管理部门<br>数据决策后台</h2>
   </div>
 
   <!-- locked state -->
@@ -356,12 +386,32 @@
   </div>
 </section>
 
-<footer class="border-t hairline py-10 bg-white/40">
-  <div class="max-w-7xl mx-auto px-5 md:px-8 flex flex-col md:flex-row items-center justify-between gap-3 text-[11px] text-ink-700/50">
-    <span>© 2026 红檬智型 WingGuard · 鸟类生态保护双端联动 Web 平台</span>
+<!-- ============================= CLOSING BAND ============================= -->
+<section class="max-w-7xl mx-auto px-5 md:px-8 pb-20 reveal">
+  <div class="glass-strong rounded-[34px] px-8 md:px-16 py-16 md:py-24 text-center relative overflow-hidden lift">
+    <div class="absolute -top-24 left-1/2 -translate-x-1/2 w-[520px] h-[520px] bg-canopy-300/20 rounded-full blur-3xl"></div>
+    <div class="relative">
+      <span class="idx">EAAF · 12,000 KM</span>
+      <h2 class="font-display font-medium text-4xl md:text-6xl text-ink-800 mt-5 leading-[1.05] tracking-tight">与候鸟一起<br>踏上这段<em class="text-coral-600 italic">万里归途</em></h2>
+      <p class="lede mt-6 max-w-xl mx-auto text-ink-700/70">每一次真实的抬头张望，都在为一张持续生长的生态地图添上一笔。</p>
+      <div class="flex flex-wrap justify-center gap-3.5 mt-10">
+        <a href="#action" class="btn-lux solid text-[13px] px-8 py-4"><i class="fa-solid fa-binoculars"></i> 立即开始观测</a>
+        <a href="story.html" class="btn-lux ghost text-[13px] px-8 py-4"><i class="fa-solid fa-feather"></i> 阅读迁徙故事</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer class="border-t hairline py-12 bg-white/30 backdrop-blur-md">
+  <div class="max-w-7xl mx-auto px-5 md:px-8 flex flex-col md:flex-row items-center justify-between gap-4 text-[11px] text-ink-700/55">
+    <div class="flex items-center gap-2.5">
+      <img src="/logo.png" alt="" class="w-6 h-6 object-contain opacity-80">
+      <span>© 2026 红檬智型 WingGuard · 鸟类生态保护双端联动 Web 平台</span>
+    </div>
     <span class="font-mono">v1.0 · Darwin-Core aligned data schema</span>
   </div>
 </footer>
+</div><!-- /.page-body -->
 
 <!-- ============================= MODAL: AUTH ============================= -->
 <div id="authModal" class="hidden fixed inset-0 bg-white/60 backdrop-blur-sm z-50 flex items-center justify-center p-4">
@@ -381,11 +431,11 @@
       <input type="hidden" id="authRole" value="public">
       <div>
         <label class="text-[10px] font-mono text-ink-700/50 uppercase">邮箱</label>
-        <input type="email" id="authEmail" required autocomplete="email" class="w-full border hairline rounded-xl px-3.5 py-2.5 text-[13px] mt-1 bg-white/70">
+        <input type="email" id="authEmail" required class="w-full border hairline rounded-xl px-3.5 py-2.5 text-[13px] mt-1 bg-white/70">
       </div>
       <div>
         <label class="text-[10px] font-mono text-ink-700/50 uppercase">密码（至少6位）</label>
-        <input type="password" id="authPassword" required minlength="6" autocomplete="current-password" class="w-full border hairline rounded-xl px-3.5 py-2.5 text-[13px] mt-1 bg-white/70">
+        <input type="password" id="authPassword" required minlength="6" class="w-full border hairline rounded-xl px-3.5 py-2.5 text-[13px] mt-1 bg-white/70">
       </div>
 
       <div id="authSignupFields" class="hidden space-y-3.5">
@@ -468,6 +518,53 @@
 <!-- toast -->
 <div id="toast" class="hidden fixed bottom-6 left-1/2 -translate-x-1/2 z-[60] glass-strong rounded-full px-5 py-3 text-[13px] font-semibold text-ink-800 shadow-xl"></div>
 
+<!-- migration globe -->
+<script type="module" src="/src/hero3d.js"></script>
+<script type="module" src="/src/enhance.js"></script>
+<script>
+(function () {
+  const $ = (id) => document.getElementById(id);
+  const copy = $('heroCopy'), hint = $('heroScrollHint'), caption = $('heroCaption');
+  const globeEl = $('globe'), spaceEl = $('space');
+  const cloudEl = $('cloudPass'), aerialEl = $('bayAerial'), birdEl = $('birdReveal');
+  const aerialImg = aerialEl && aerialEl.querySelector('.layer-img');
+  const birdImg = birdEl && birdEl.querySelector('.layer-img');
+  const sm = (a, b, x) => { const u = Math.min(1, Math.max(0, (x - a) / (b - a))); return u * u * (3 - 2 * u); };
+  let ticking = false;
+  function update() {
+    ticking = false;
+    const vh = window.innerHeight || 1;
+    const hp = window.scrollY / (vh * 3.6); // whole pinned-hero progress 0..1
+
+    if (copy) copy.style.opacity = String(Math.max(0, 1 - hp / 0.20));
+    if (hint) hint.style.opacity = String(Math.max(0, 1 - hp / 0.07));
+    if (caption) caption.style.opacity = String(hp > 0.03 && hp < 0.42 ? 1 : 0);
+
+    // 穿云 — a cloud bank rushes past and swells as we punch through
+    const cloud = sm(0.44, 0.55, hp) * (1 - sm(0.60, 0.72, hp));
+    if (cloudEl) { cloudEl.style.opacity = String(cloud); cloudEl.style.transform = 'scale(' + (1 + 2.4 * sm(0.44, 0.76, hp)).toFixed(3) + ')'; }
+
+    // 深圳湾俯瞰图 — appears from the clouds, holds, then dives further and fades
+    const aIn = sm(0.62, 0.72, hp), aOut = sm(0.82, 0.90, hp);
+
+    // globe fades behind the clouds; the dark space backdrop lingers until the
+    // aerial actually covers the screen (prevents a bright paper flash)
+    if (globeEl) globeEl.style.opacity = String(1 - sm(0.54, 0.64, hp));
+    if (spaceEl) spaceEl.style.opacity = String(1 - aIn);
+    if (aerialEl) aerialEl.style.opacity = String(aIn * (1 - aOut));
+    if (aerialImg) aerialImg.style.transform = 'scale(' + (1.16 - 0.16 * aIn + 0.14 * aOut).toFixed(3) + ')';
+
+    // 引出鸟照片 — the black-faced spoonbill emerges as the aerial dissolves
+    const bIn = sm(0.84, 0.96, hp);
+    if (birdEl) birdEl.style.opacity = String(bIn);
+    if (birdImg) birdImg.style.transform = 'scale(' + (1.14 - 0.14 * bIn).toFixed(3) + ')';
+  }
+  function onScroll() { if (!ticking) { ticking = true; requestAnimationFrame(update); } }
+  window.addEventListener('scroll', onScroll, { passive: true });
+  window.addEventListener('resize', onScroll, { passive: true });
+  update();
+})();
+</script>
 <script type="module" src="/src/main.js"></script>
 
 </body>
