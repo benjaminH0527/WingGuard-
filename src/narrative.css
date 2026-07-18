@@ -138,6 +138,56 @@ p, li, .section-body {
     color: var(--accent-terracotta);
 }
 
+/* ========== 滚动指示器 (Scroll Hint) ========== */
+.scroll-hint {
+    position: absolute;
+    bottom: 24px;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+    color: var(--text-muted);
+    font-size: 0.85em;
+    cursor: pointer;
+    z-index: 10;
+    transition: color 0.3s var(--easing-expo), transform 0.3s var(--easing-expo);
+    letter-spacing: 0.1em;
+}
+.scroll-hint:hover {
+    color: var(--accent-terracotta);
+    transform: translate(-50%, -2px);
+}
+.scroll-hint span {
+    font-weight: 500;
+}
+.scroll-hint .arrow {
+    width: 8px;
+    height: 8px;
+    border-right: 2px solid currentColor;
+    border-bottom: 2px solid currentColor;
+    transform: rotate(45deg);
+    animation: scroll-bounce 1.8s infinite;
+}
+
+@keyframes scroll-bounce {
+    0%, 100% {
+        transform: translateY(0) rotate(45deg);
+        opacity: 0.4;
+    }
+    50% {
+        transform: translateY(6px) rotate(45deg);
+        opacity: 1;
+    }
+}
+
+@media (max-height: 680px) {
+    .scroll-hint {
+        display: none;
+    }
+}
+
 /* ========== 通用章节 ========== */
 .section, .section-wide { padding: 100px 80px; max-width: 1000px; margin: 0 auto; }
 .section-wide { max-width: 1200px; }

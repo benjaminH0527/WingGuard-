@@ -312,6 +312,17 @@
 
     fadeElements.forEach(el => observer.observe(el));
 
+    // ========== 滚动指示器点击滚动 ==========
+    const scrollHint = document.querySelector('.scroll-hint');
+    if (scrollHint) {
+        scrollHint.addEventListener('click', () => {
+            const contentSection = document.querySelector('.content-below');
+            if (contentSection) {
+                contentSection.scrollIntoView({ behavior: 'smooth' });
+            }
+        });
+    }
+
     // ========== 迁徙路线连线 ==========
     (function drawRouteLines() {
         const map = document.getElementById('routeMap');
