@@ -564,6 +564,14 @@
   update();
 })();
 </script>
+<!-- ============================= MODAL: KNOWLEDGE CARD LIGHTBOX ============================= -->
+<div id="cardLightbox" class="hidden fixed inset-0 bg-[#F4EFE4]/95 backdrop-blur-md z-[100] flex items-center justify-center p-4 transition-opacity" onclick="if(event.target === this) closeCardLightbox()">
+  <button onclick="closeCardLightbox()" class="absolute right-6 top-6 text-ink-700/50 hover:text-ink-800 transition-colors z-[110]">
+    <i class="fa-solid fa-xmark text-3xl"></i>
+  </button>
+  <img id="cardLightboxImg" src="" alt="Knowledge Card" class="max-w-[95%] max-h-[85vh] object-contain rounded-2xl shadow-2xl border border-white/50">
+</div>
+
 <script type="module" src="/src/main.js"></script>
 
 </body>

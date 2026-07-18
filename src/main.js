@@ -157,7 +157,9 @@ import { ENV } from './env.js';
   async function renderSpeciesGallery() {
     const species = await DataAdapter.getSpecies();
     const wrap = document.getElementById('speciesGallery');
-    wrap.innerHTML = species.map((sp, i) => `
+    wrap.innerHTML = species.map((sp, i) => {
+      const cardPath = '/cards/' + sp.scientificName.replace(' ', '-') + '.jpg';
+      return `
       <div class="glass rounded-3xl overflow-hidden shadow-sm min-w-[260px] max-w-[260px] snap-start flex flex-col hover:-translate-y-1 transition-transform duration-300 fade-up" style="animation-delay: ${i * 30}ms;">
         <div class="h-36 relative overflow-hidden">
           <img src="${sp.imageUrl}" class="w-full h-full object-cover" style="object-position: center 20%;" alt="${sp.commonName}">
@@ -167,10 +169,13 @@ import { ENV } from './env.js';
           <h4 class="font-display text-base text-ink-800">${sp.commonName}</h4>
           <p class="text-[10px] italic text-ink-700/45 font-mono">${sp.scientificName}</p>
           <p class="text-[11.5px] text-ink-700/65 mt-2 leading-relaxed flex-1">${sp.description}</p>
-          <p class="text-[10px] text-canopy-700 font-medium mt-3 border-t hairline pt-2.5"><i class="fa-solid fa-leaf mr-1"></i>${sp.habitat}</p>
+          <div class="flex items-center justify-between mt-3 border-t hairline pt-3">
+             <p class="text-[10px] text-canopy-700 font-medium truncate flex-1 pr-2" title="${sp.habitat}"><i class="fa-solid fa-leaf mr-1"></i>${sp.habitat}</p>
+             <button onclick="window.openKnowledgeCard('${cardPath}')" class="shrink-0 bg-white hover:bg-canopy-50 text-canopy-700 border border-canopy-200 text-[10px] px-3 py-1.5 rounded-full transition-colors font-semibold shadow-sm"><i class="fa-solid fa-id-card mr-1"></i>知识卡片</button>
+          </div>
         </div>
       </div>
-    `).join('');
+    `}).join('');
 
     const select = document.getElementById('guardianSelect');
     select.innerHTML = '<option value="">选择我的守护物种…</option>' + species.map(s => `<option value="${s.id}">${s.commonName}（${s.conservationStatus}）</option>`).join('');
@@ -445,3 +450,21 @@ import { ENV } from './env.js';
   window.reviewObs = reviewObs;
   window.resolveReportItem = resolveReportItem;
   window.exportCSV = exportCSV;
+  window.openKnowledgeCard = function(src) {
+    const lightbox = document.getElementById('cardLightbox');
+    const img = document.getElementById('cardLightboxImg');
+    if (lightbox && img) {
+      img.src = src;
+      lightbox.classList.remove('hidden');
+      lightbox.classList.add('flex');
+    } else {
+      window.open(src, '_blank');
+    }
+  };
+  window.closeCardLightbox = function() {
+    const lightbox = document.getElementById('cardLightbox');
+    if (lightbox) {
+      lightbox.classList.add('hidden');
+      lightbox.classList.remove('flex');
+    }
+  };

@@ -282,6 +282,60 @@
             desc: '全身黑色的大型水鸟，善于潜水捕鱼。在深圳湾的冬季，常能看到成群的鸬鹚排成"人"字形飞过天际。因羽毛不防水，捕鱼后需要展开翅膀晾干。',
             img: '/birds/Phalacrocorax-carbo.jpg',
             tags: [{text: '冬候鸟', type: 'default'}, {text: '大型水鸟', type: 'default'}]
+        },
+        {
+            id: 'ciconia',
+            name: '东方白鹳',
+            latin: 'Ciconia boyciana',
+            desc: '大型涉禽，体长约1.1–1.3米，嘴黑色而基部粗厚，眼周裸露皮肤呈醒目红色。全球种群数量稀少，是东亚湿地生态健康的重要指示物种。栖息于大型湿地、沼泽、水库浅滩。',
+            img: '/Ciconia-boyciana.webp',
+            cardImg: '/cards/Ciconia-boyciana.jpg',
+            tags: [{text: '国家一级', type: 'warning'}]
+        },
+        {
+            id: 'nipponia',
+            name: '朱鹮',
+            latin: 'Nipponia nippon',
+            desc: '素有“东方宝石”之称，体羽多为白色并微染粉红，后枕部有柳叶状羽冠。曾一度被认为野外灭绝，是人工保育成功的旗舰物种。栖息于温带山地丘陵、稻田、溪流湿地。',
+            img: '/Nipponia-nippon.png',
+            cardImg: '/cards/Nipponia-nippon.jpg',
+            tags: [{text: '国家一级', type: 'warning'}]
+        },
+        {
+            id: 'aegithalos',
+            name: '红头长尾山雀',
+            latin: 'Aegithalos concinnus',
+            desc: '网络著名的“小肥啾”之一，头顶栗红、喉部一枚黑斑，性活泼喜结群，是校园与城市公园里最容易被公众观测到的鸟种之一。栖息于针阔混交林、灌木丛、公园绿地。',
+            img: '/Aegithalos-concinnus.webp',
+            cardImg: '/cards/Aegithalos-concinnus.jpg',
+            tags: [{text: '三有保护', type: 'default'}]
+        },
+        {
+            id: 'ardea',
+            name: '苍鹭',
+            latin: 'Ardea cinerea',
+            desc: '大型水鸟，颈、脚、嘴修长，体羽以灰色为主。常长时间静立浅水中伺机捕食鱼虾，民间俗称“老等”，是湿地食物链的重要一环。栖息于江河、湖泊、海岸浅水区。',
+            img: '/Ardea-cinerea.jpg',
+            cardImg: '/cards/Ardea-cinerea.jpg',
+            tags: [{text: '三有保护', type: 'default'}]
+        },
+        {
+            id: 'alcedo',
+            name: '普通翠鸟',
+            latin: 'Alcedo atthis',
+            desc: '体型小巧，羽色艳丽如宝石，善于俯冲入水捕鱼，是许多观鸟爱好者入门的“梦幻鸟种”，对水质极为敏感。栖息于溪流、池塘、河岸土坡。',
+            img: '/Alcedo-atthis.webp',
+            cardImg: '/cards/Alcedo-atthis.jpg',
+            tags: [{text: '三有保护', type: 'default'}]
+        },
+        {
+            id: 'grus',
+            name: '丹顶鹤',
+            latin: 'Grus japonensis',
+            desc: '体态优雅，顶冠裸皮呈朱红色，是长寿与吉祥的文化象征。对栖息地完整性要求极高，是区域生态保护成效的旗舰指标。栖息于沼泽湿地、芦苇荡、滩涂。',
+            img: '/Grus-japonensis.jpg',
+            cardImg: '/cards/Grus-japonensis.jpg',
+            tags: [{text: '国家一级', type: 'warning'}]
         }
     ];
 
@@ -294,7 +348,7 @@
             
             return `
                 <div class="bird-card fade-in">
-                    <div class="bird-img-wrap" style="height: 220px; overflow: hidden; position: relative; cursor: pointer;" onclick="openBirdLightbox(${index})">
+                    <div class="bird-img-wrap" style="height: 220px; overflow: hidden; position: relative; cursor: pointer;" onclick="openBirdLightbox('${data.img}')">
                         <img src="${data.img}" alt="${data.name}" class="bird-img" style="width: 100%; height: 100%; object-fit: cover; object-position: center 15%; transition: transform 0.6s var(--easing-expo);">
                         
                         <!-- Pulse Indicator Guide Badge -->
@@ -312,8 +366,9 @@
                             <h3 class="bird-name" style="margin: 0; font-size: 1.3em; font-family: 'Fraunces', 'Noto Serif SC', serif; color: var(--text-ink); font-weight: 600;">${data.name}</h3>
                             <span class="bird-latin" style="font-size: 0.85em; color: var(--text-muted); font-style: italic;">${data.latin}</span>
                         </div>
-                        <div class="bird-tags" style="display: flex; gap: 6px; flex-wrap: wrap;">
+                        <div class="bird-tags" style="display: flex; gap: 6px; flex-wrap: wrap; align-items: center;">
                             ${tagHtml}
+                            ${data.cardImg ? `<button onclick="openBirdLightbox('${data.cardImg}')" style="margin-left: auto; background: #fff; color: var(--text-ink); border: 1px solid var(--border-light); padding: 4px 10px; border-radius: 6px; font-size: 0.75rem; font-weight: 600; cursor: pointer; transition: all 0.3s; display: inline-flex; align-items: center; gap: 4px;" onmouseover="this.style.borderColor='rgba(204, 120, 92, 0.5)'; this.style.color='var(--accent-terracotta)'" onmouseout="this.style.borderColor='var(--border-light)'; this.style.color='var(--text-ink)'"><i class="fa-solid fa-id-card"></i> 知识卡片</button>` : ''}
                         </div>
                         <p class="bird-desc" style="font-size: 0.9em; color: var(--text-ink); opacity: 0.85; line-height: 1.6; margin: 0; text-align: justify; flex: 1;">${data.desc}</p>
                     </div>
@@ -326,9 +381,8 @@
     const lightboxImg = document.getElementById('lightboxImg');
     const lightboxClose = document.getElementById('lightboxClose');
 
-    window.openBirdLightbox = function(index) {
-        const data = birdData[index];
-        lightboxImg.src = data.img;
+    window.openBirdLightbox = function(imageSrc) {
+        lightboxImg.src = imageSrc;
         lightbox.classList.add('active');
     };
 
