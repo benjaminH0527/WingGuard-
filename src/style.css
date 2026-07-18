@@ -165,7 +165,7 @@ body {
   transform: scale(1.14); will-change: transform;
 }
 #bayAerial .layer-img { background-image: url('/images/浅滩鸟群.jpeg'); }
-#birdReveal .layer-img { background-image: url('/birds/Platalea-minor.jpg'); }
+#birdReveal .layer-img { background-image: url('/images/浅滩琵鹭.jpg'); }
 .layer-grad {
   position: absolute; inset: 0;
   background: linear-gradient(180deg, rgba(6,20,24,0.36) 0%, transparent 34%, rgba(6,20,24,0.10) 60%, var(--bg) 100%);
