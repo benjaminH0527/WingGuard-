@@ -1,6 +1,5 @@
 import './style.css';
 import { DataAdapter } from './DataAdapter.js';
-import Chart from 'chart.js/auto';
 import { ENV } from './env.js';
 
   let authMode = 'signin';
@@ -87,7 +86,12 @@ import { ENV } from './env.js';
         toast('登录成功，欢迎回来');
         await refreshAll();
         const user = await DataAdapter.getCurrentUser();
-        document.getElementById(user && user.role === 'admin' ? 'dashboard' : 'action').scrollIntoView({ behavior: 'smooth' });
+        if (user && user.role === 'admin') {
+          window.location.href = 'admin.html';
+        } else {
+          const actionSection = document.getElementById('action');
+          if (actionSection) actionSection.scrollIntoView({ behavior: 'smooth' });
+        }
       }
     } catch (err) {
       toast('操作失败：' + (err && err.message ? err.message : '未知错误'));
@@ -155,8 +159,9 @@ import { ENV } from './env.js';
 
   // ---------------- Rendering ----------------
   async function renderSpeciesGallery() {
-    const species = await DataAdapter.getSpecies();
     const wrap = document.getElementById('speciesGallery');
+    if (!wrap) return;
+    const species = await DataAdapter.getSpecies();
     wrap.innerHTML = species.map((sp, i) => {
       const cardPath = '/cards/' + sp.scientificName.replace(' ', '-') + '.jpg';
       return `
@@ -228,8 +233,10 @@ import { ENV } from './env.js';
   }
 
   async function renderProfile() {
+    const display = document.getElementById('profileNameDisplay');
+    if (!display) return;
     const user = await DataAdapter.getCurrentUser();
-    document.getElementById('profileNameDisplay').textContent = user ? `${user.nickname} 的守护档案` : '我的守护档案（未登录）';
+    display.textContent = user ? `${user.nickname} 的守护档案` : '我的守护档案（未登录）';
     document.getElementById('profileLevel').textContent = user ? (user.level || 1) : '–';
     document.getElementById('profilePoints').textContent = `${user ? (user.points || 0) : 0} pt`;
 
@@ -254,8 +261,9 @@ import { ENV } from './env.js';
   }
 
   async function renderLeaderboard() {
-    const board = await DataAdapter.getLeaderboard();
     const el = document.getElementById('leaderboardList');
+    if (!el) return;
+    const board = await DataAdapter.getLeaderboard();
     if (board.length === 0) {
       el.innerHTML = `<p class="text-[11.5px] text-ink-700/40 col-span-2">还没有公众账号积分记录，登录并完成一次审核通过的观测即可上榜。</p>`;
       return;
@@ -270,15 +278,19 @@ import { ENV } from './env.js';
   }
 
   async function renderHeroStats() {
+    const heroStatObs = document.getElementById('heroStatObs');
+    if (!heroStatObs) return;
     const stats = await DataAdapter.getDashboardStats();
     document.getElementById('heroStatObs').textContent = stats.cards.totalObservations;
     document.getElementById('heroStatUrgent').textContent = stats.cards.activeReports;
   }
 
   async function renderDashboardAccess() {
+    const dashLocked = document.getElementById('dashLocked');
+    if (!dashLocked) return;
     const user = await DataAdapter.getCurrentUser();
     const unlocked = !!(user && user.role === 'admin');
-    document.getElementById('dashLocked').classList.toggle('hidden', unlocked);
+    dashLocked.classList.toggle('hidden', unlocked);
     document.getElementById('dashUnlocked').classList.toggle('hidden', !unlocked);
     if (unlocked) await renderDashboard();
   }
@@ -327,7 +339,8 @@ import { ENV } from './env.js';
     renderScatterMap(await DataAdapter.getObservations({ status: 'approved' }));
   }
 
-  function renderCharts(chartData) {
+  async function renderCharts(chartData) {
+    const { default: Chart } = await import('chart.js/auto');
     const trendCtx = document.getElementById('trendChart').getContext('2d');
     const pieCtx = document.getElementById('pieChart').getContext('2d');
     if (trendChart) trendChart.destroy();

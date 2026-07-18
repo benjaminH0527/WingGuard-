@@ -1,0 +1,453 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>控制台 - 红檬智型 WingGuard</title>
+
+<!-- 引入所需字体: 衬线体 Fraunces (展示) + Noto Serif SC (中文)，无衬线体 Manrope + Inter -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600&family=Noto+Serif+SC:wght@400;500;600;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<!-- 弃用 emoji，采用 Lucide / FontAwesome 图标库 -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<!-- Tailwind 基础样式注入 -->
+<link rel="stylesheet" href="/src/style.css">
+
+<style>
+  /* 
+   * Tufte/Editorial 风格基底：
+   * 纸张色底 #F5F0E8，墨黑文字 #191919，品牌深绿（Canopy）#14BF96点缀
+   */
+  :root {
+    --bg-paper: #F5F0E8;
+    --text-ink: #191919;
+    --accent-canopy: #14BF96;
+    --border-hairline: rgba(0,0,0,0.08);
+  }
+  
+  body {
+    background-color: var(--bg-paper);
+    color: var(--text-ink);
+    font-family: 'Inter', -apple-system, sans-serif;
+    -webkit-font-smoothing: antialiased;
+  }
+  
+  .font-serif-sc {
+    font-family: 'Fraunces', 'Noto Serif SC', serif;
+  }
+  
+  .font-mono-num {
+    font-family: 'JetBrains Mono', monospace;
+    font-variant-numeric: tabular-nums;
+  }
+
+  /* 极致发丝边框分割 (Hairline Divider) */
+  .hairline-border {
+    border-color: var(--border-hairline);
+  }
+
+  /* 高级动效: Staggered Fade-up (配合 JS 使用) */
+  .stagger-item {
+    opacity: 0;
+    transform: translateY(10px);
+    transition: opacity 0.8s cubic-bezier(0.16, 1, 0.3, 1), transform 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+  .stagger-item.visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  /* 数据墨水比优化：去掉图表和模块不必要的阴影与色块 */
+  .tufte-panel {
+    border-top: 1px solid var(--text-ink);
+    padding-top: 1.5rem;
+    padding-bottom: 2rem;
+  }
+
+  .tufte-label {
+    font-size: 0.65rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    font-weight: 600;
+    color: rgba(25, 25, 25, 0.6);
+  }
+  
+  .badge-gov {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.25rem;
+    font-size: 0.65rem;
+    background: rgba(20, 191, 150, 0.1);
+    color: #0c7a5f;
+    padding: 0.2rem 0.5rem;
+    border-radius: 2px;
+    font-weight: 600;
+  }
+
+  /* Echarts 容器最小高度 */
+  .chart-container {
+    height: 280px;
+    width: 100%;
+  }
+  
+  /* 自定义极简滚动条 */
+  ::-webkit-scrollbar { width: 4px; height: 4px; }
+  ::-webkit-scrollbar-track { background: transparent; }
+  ::-webkit-scrollbar-thumb { background: rgba(0,0,0,0.1); border-radius: 4px; }
+</style>
+</head>
+
+<body>
+
+<!-- ============================= NAV ============================= -->
+<header class="border-b hairline-border sticky top-0 z-40 bg-[#F5F0E8]/90 backdrop-blur-md">
+  <div class="max-w-7xl mx-auto px-5 md:px-8 py-4 flex items-center justify-between">
+    <a href="index.html" class="flex items-center gap-2">
+      <img src="/logo.png" alt="Logo" class="w-7 h-7 object-contain opacity-90">
+      <span class="font-serif-sc font-bold text-lg leading-none tracking-tight text-[#191919]">
+        WingGuard 控制台
+      </span>
+    </a>
+    <div class="flex items-center gap-6 text-sm font-medium">
+      <a href="index.html" class="text-[#191919]/60 hover:text-[#191919] transition-colors">返回前台</a>
+      <div id="adminUserPill" class="hidden items-center gap-2">
+        <i class="fa-regular fa-circle-user text-lg text-[#14BF96]"></i>
+        <span id="adminUserName" class="font-mono-num font-semibold">Admin</span>
+        <button onclick="DataAdapter.signOut().then(()=>window.location.reload())" class="text-xs text-[#191919]/40 hover:text-[#191919] ml-2">退出</button>
+      </div>
+    </div>
+  </div>
+</header>
+
+<!-- ============================= LOCKED STATE ============================= -->
+<section id="dashLocked" class="max-w-2xl mx-auto px-5 py-32 text-center">
+  <i class="fa-solid fa-lock text-4xl text-[#191919]/20 mb-6 block"></i>
+  <h2 class="font-serif-sc text-3xl font-bold mb-4">需要系统授权</h2>
+  <p class="text-sm text-[#191919]/70 leading-relaxed mb-8">
+    生态数据后台涉及敏感坐标与系统档案，必须持有管理部门授权的密钥登录。公众账号无访问权限。
+  </p>
+  <button onclick="openAuthModal('admin')" class="bg-[#191919] text-white px-6 py-2.5 text-sm font-semibold hover:bg-black transition-colors">
+    管理员登录入口
+  </button>
+</section>
+
+<!-- ============================= UNLOCKED DASHBOARD ============================= -->
+<main id="dashUnlocked" class="hidden max-w-7xl mx-auto px-5 md:px-8 py-12 space-y-16">
+  
+  <!-- 标题与全盘概览 -->
+  <header class="stagger-item">
+    <h1 class="font-serif-sc text-4xl md:text-5xl font-bold tracking-tight mb-3">区域生态环境实时研报</h1>
+    <div class="flex items-center gap-4 text-sm text-[#191919]/60 border-b hairline-border pb-6">
+      <span>生成时间: <span id="reportTime" class="font-mono-num text-[#191919]"></span></span>
+      <span class="text-[#191919]/30">|</span>
+      <span>基准定位: <span class="font-mono-num text-[#191919]">31.230°N, 121.474°E (福田红树林)</span></span>
+      <button onclick="window.print()" class="ml-auto flex items-center gap-2 hover:text-[#191919] transition-colors">
+        <i class="fa-solid fa-print"></i> 打印报告
+      </button>
+    </div>
+  </header>
+
+  <div class="grid grid-cols-1 lg:grid-cols-12 gap-12">
+    
+    <!-- 左侧主视觉数据区 (8 col) -->
+    <div class="lg:col-span-8 space-y-12">
+      
+      <!-- 模块 A & B：环境底盘与感知地图 -->
+      <section class="tufte-panel stagger-item">
+        <div class="flex justify-between items-baseline mb-6">
+          <h2 class="font-serif-sc text-2xl font-bold">“天-空-地”一体化态势感知</h2>
+          <div class="badge-gov">
+            <i class="fa-solid fa-shield-halved"></i> 融合政府/研究院/国际组织公开数据
+          </div>
+        </div>
+        
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+          <!-- 真实感生态地图 (Carousel) -->
+          <div class="md:col-span-2 relative h-64 border hairline-border overflow-hidden bg-[#e6e6e6]" id="mapCarouselContainer">
+            <!-- ArcGIS World Imagery (Satellite) -->
+            <img src="https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/export?bbox=113.8,22.45,114.05,22.58&f=image" alt="Shenzhen Bay Satellite" class="map-slide absolute inset-0 w-full h-full object-cover transition-opacity duration-1000 opacity-100">
+            <!-- ArcGIS World Topo Map -->
+            <img src="https://server.arcgisonline.com/ArcGIS/rest/services/World_Topo_Map/MapServer/export?bbox=113.8,22.45,114.05,22.58&f=image" alt="Shenzhen Bay Topography" class="map-slide absolute inset-0 w-full h-full object-cover transition-opacity duration-1000 opacity-0">
+            <!-- ArcGIS World Street Map -->
+            <img src="https://server.arcgisonline.com/ArcGIS/rest/services/World_Street_Map/MapServer/export?bbox=113.8,22.45,114.05,22.58&f=image" alt="Shenzhen Bay Street Map" class="map-slide absolute inset-0 w-full h-full object-cover transition-opacity duration-1000 opacity-0">
+            
+            <!-- 热力/标注覆盖层 -->
+            <svg class="absolute inset-0 w-full h-full z-10 pointer-events-none" viewBox="0 0 400 200" preserveAspectRatio="none">
+              <!-- 候鸟热点 (羽化暖色) -->
+              <circle cx="280" cy="140" r="40" fill="rgba(204, 120, 92, 0.4)" filter="blur(12px)"></circle>
+              <circle cx="120" cy="160" r="25" fill="rgba(204, 120, 92, 0.3)" filter="blur(8px)"></circle>
+              <!-- 飞行轨迹 -->
+              <path d="M50,20 Q150,50 280,140" fill="none" stroke="#14BF96" stroke-width="2" stroke-dasharray="4 4" opacity="0.8"></path>
+            </svg>
+            
+            <div class="absolute top-4 left-4 z-20 bg-[#F5F0E8]/90 px-2 py-1 text-[10px] font-mono-num border hairline-border flex gap-2">
+              <span class="text-[#191919]/60">图层:</span>
+              <span id="mapLayerName" class="font-semibold text-[#14BF96]">生态红线卫星图</span>
+            </div>
+            
+            <div class="absolute bottom-4 right-4 z-20 bg-[#F5F0E8]/90 px-2 py-1 text-[10px] font-mono-num border hairline-border">
+              活跃区: 凤塘河口
+            </div>
+          </div>
+          
+          <!-- 模块 A: 真实气象数据 -->
+          <div class="flex flex-col justify-between border-l hairline-border pl-6">
+            <div class="mb-2 badge-gov w-max text-[9px]"><i class="fa-solid fa-tower-broadcast"></i> 深圳市政府公开实时数据接入</div>
+            <div class="space-y-4">
+              <div>
+                <div class="tufte-label">当前气温 (实时)</div>
+                <div class="font-mono-num text-3xl font-light" id="weatherTemp">--°C</div>
+              </div>
+              <div>
+                <div class="tufte-label">相对湿度</div>
+                <div class="font-mono-num text-2xl font-light" id="weatherHumidity">--%</div>
+              </div>
+              <div>
+                <div class="tufte-label">风速情况</div>
+                <div class="font-mono-num text-sm mt-1" id="weatherWind">-- km/h</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- 模块 C：重点种群规模监测 -->
+      <section class="tufte-panel stagger-item">
+        <div class="flex justify-between items-baseline mb-4">
+          <h2 class="font-serif-sc text-2xl font-bold">黑脸琵鹭种群数量稳步上升，突破三百大关</h2>
+          <div class="badge-gov">
+            <i class="fa-solid fa-chart-line"></i> 深圳市政府公开实时数据接入
+          </div>
+        </div>
+        <p class="text-sm text-[#191919]/80 mb-6 max-w-2xl">
+          基于年度同步调查数据的时序分析。数据显示，过去五年间，作为湿地生态健康指示物种的旗舰鸟类，其越冬栖息规模呈现出高度显著的正向增长趋势。
+        </p>
+        <div id="populationChart" class="chart-container"></div>
+      </section>
+
+      <!-- 模块 F：物种生态档案库 (CRUD) -->
+      <section class="tufte-panel stagger-item">
+        <div class="flex justify-between items-baseline mb-6">
+          <h2 class="font-serif-sc text-2xl font-bold">核心物种名录与保护级别管理</h2>
+          <button onclick="openSpeciesModal()" class="text-xs border hairline-border px-3 py-1.5 hover:bg-[#191919] hover:text-white transition-colors font-semibold">
+            <i class="fa-solid fa-plus mr-1"></i> 新增名录
+          </button>
+        </div>
+        <div class="overflow-x-auto">
+          <table class="w-full text-left text-sm whitespace-nowrap">
+            <thead class="border-b border-[#191919]">
+              <tr>
+                <th class="py-3 pr-4 font-semibold text-[#191919]/60">物种名 (学名 / 俗名)</th>
+                <th class="py-3 px-4 font-semibold text-[#191919]/60">保护级别</th>
+                <th class="py-3 px-4 font-semibold text-[#191919]/60">操作</th>
+              </tr>
+            </thead>
+            <tbody id="speciesTableBody" class="divide-y hairline-border font-mono-num">
+              <!-- JS Render -->
+            </tbody>
+          </table>
+        </div>
+      </section>
+      
+    </div>
+
+    <!-- 右侧动态信息流区 (4 col) -->
+    <div class="lg:col-span-4 space-y-12">
+      
+      <!-- 模块 D：多源监测与巡护数据流 -->
+      <section class="tufte-panel stagger-item h-[400px] flex flex-col">
+        <div class="mb-4">
+          <h2 class="font-serif-sc text-xl font-bold mb-2">多源设备监控日志</h2>
+          <div class="badge-gov">
+            <i class="fa-solid fa-satellite-dish"></i> 深圳市政府公开实时数据接入
+          </div>
+        </div>
+        <!-- 日志流滚动区 -->
+        <div class="flex-1 overflow-y-auto pr-2 space-y-3 font-mono-num text-xs leading-relaxed" id="sensorFeed">
+          <!-- JS Render -->
+        </div>
+      </section>
+
+      <!-- 模块 E：联合执法与异常响应大厅 -->
+      <section class="tufte-panel stagger-item">
+        <h2 class="font-serif-sc text-xl font-bold mb-4">异常事件响应大厅</h2>
+        <div id="incidentQueue" class="space-y-4">
+          <!-- JS Render -->
+        </div>
+      </section>
+
+    </div>
+  </div>
+
+  <!-- 下方延展区：观测审批与积分管理 -->
+  <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 pt-8">
+    
+    <!-- 模块 G：公众观测数据审核队列 -->
+    <section class="tufte-panel stagger-item">
+      <div class="flex justify-between items-baseline mb-6">
+        <h2 class="font-serif-sc text-2xl font-bold">公众观测数据审核队列</h2>
+      </div>
+      <div class="overflow-x-auto">
+        <table class="w-full text-left text-sm whitespace-nowrap">
+          <thead class="border-b border-[#191919]">
+            <tr>
+              <th class="py-3 pr-4 font-semibold text-[#191919]/60">上报人</th>
+              <th class="py-3 pr-4 font-semibold text-[#191919]/60">物种 (数量)</th>
+              <th class="py-3 pr-4 font-semibold text-[#191919]/60">坐标</th>
+              <th class="py-3 px-4 font-semibold text-[#191919]/60 text-right">管理操作</th>
+            </tr>
+          </thead>
+          <tbody id="observationTableBody" class="divide-y hairline-border font-mono-num">
+            <!-- JS Render -->
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- 模块 H：市民积分与档案大盘 -->
+    <section class="tufte-panel stagger-item">
+      <div class="flex justify-between items-baseline mb-6">
+        <h2 class="font-serif-sc text-2xl font-bold">市民护鸟积分库</h2>
+        <div class="badge-gov">
+          <i class="fa-solid fa-users"></i> 实时用户数据
+        </div>
+      </div>
+      <div class="overflow-x-auto">
+        <table class="w-full text-left text-sm whitespace-nowrap">
+          <thead class="border-b border-[#191919]">
+            <tr>
+              <th class="py-3 pr-4 font-semibold text-[#191919]/60">系统代号 (邮箱)</th>
+              <th class="py-3 px-4 font-semibold text-[#191919]/60">当前积分</th>
+              <th class="py-3 px-4 font-semibold text-[#191919]/60">荣誉等级</th>
+              <th class="py-3 px-4 font-semibold text-[#191919]/60 text-right">操作</th>
+            </tr>
+          </thead>
+          <tbody id="usersTableBody" class="divide-y hairline-border font-mono-num">
+            <!-- JS Render -->
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+  </div>
+</main>
+
+<!-- ============================= MODAL: 物种 CRUD ============================= -->
+<div id="speciesModal" class="hidden fixed inset-0 bg-[#F5F0E8]/90 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+  <div class="bg-white border hairline-border shadow-2xl p-8 w-full max-w-lg">
+    <div class="flex justify-between items-center mb-6">
+      <h3 class="font-serif-sc text-2xl font-bold" id="speciesModalTitle">新增物种档案</h3>
+      <button onclick="closeSpeciesModal()" class="text-[#191919]/40 hover:text-[#191919]"><i class="fa-solid fa-xmark text-xl"></i></button>
+    </div>
+    <form id="speciesForm" onsubmit="handleSpeciesSubmit(event)" class="space-y-4">
+      <input type="hidden" id="spId">
+      <div class="grid grid-cols-2 gap-4">
+        <div>
+          <label class="tufte-label block mb-1">学名 (Scientific Name)</label>
+          <input type="text" id="spScientific" required class="w-full border hairline-border px-3 py-2 text-sm bg-transparent">
+        </div>
+        <div>
+          <label class="tufte-label block mb-1">俗名 (Common Name)</label>
+          <input type="text" id="spCommon" required class="w-full border hairline-border px-3 py-2 text-sm bg-transparent">
+        </div>
+      </div>
+      <div>
+        <label class="tufte-label block mb-1">保护级别</label>
+        <select id="spStatus" class="w-full border hairline-border px-3 py-2 text-sm bg-transparent">
+          <option value="国家一级">国家一级</option>
+          <option value="国家二级">国家二级</option>
+          <option value="三有保护">三有保护</option>
+          <option value="无级别">无级别</option>
+        </select>
+      </div>
+      <div>
+        <label class="tufte-label block mb-1">栖息环境</label>
+        <input type="text" id="spHabitat" class="w-full border hairline-border px-3 py-2 text-sm bg-transparent">
+      </div>
+      <button type="submit" class="w-full bg-[#191919] text-white py-3 text-sm font-semibold hover:bg-black mt-4 transition-colors">保存档案</button>
+    </form>
+  </div>
+</div>
+
+<!-- ============================= MODAL: AUTH (Admin Login & Signup) ============================= -->
+<div id="authModal" class="hidden fixed inset-0 bg-[#F5F0E8]/90 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+  <div class="bg-white border hairline-border shadow-2xl p-8 w-full max-w-sm relative">
+    <button onclick="closeModal('authModal')" class="absolute right-5 top-5 text-[#191919]/40 hover:text-[#191919]"><i class="fa-solid fa-xmark text-lg"></i></button>
+    <h3 class="font-serif-sc text-2xl font-bold mb-2">系统通行</h3>
+    <div class="badge-gov mb-6"><i class="fa-solid fa-shield-halved"></i> 仅限授权管理人员</div>
+
+    <div class="flex gap-6 border-b hairline-border pb-3 mb-5 text-[13px] font-semibold">
+      <button id="tabSignin" onclick="switchAuthTab('signin')" class="text-[#14BF96] border-b-2 border-[#14BF96] pb-2 -mb-[13px]">登录</button>
+      <button id="tabSignup" onclick="switchAuthTab('signup')" class="text-[#191919]/40 pb-2">注册</button>
+    </div>
+    
+    <form id="authForm" onsubmit="handleAuthSubmit(event)" class="space-y-4">
+      <input type="hidden" id="authRole" value="admin">
+      <div>
+        <label class="tufte-label block mb-1">管理员邮箱</label>
+        <input type="email" id="authEmail" required class="w-full border hairline-border px-3 py-2 text-sm bg-transparent">
+      </div>
+      <div>
+        <label class="tufte-label block mb-1">访问密钥 (密码)</label>
+        <input type="password" id="authPassword" required class="w-full border hairline-border px-3 py-2 text-sm bg-transparent">
+      </div>
+      
+      <div id="authSignupFields" class="hidden space-y-4">
+        <div>
+          <label class="tufte-label block mb-1">系统代号 (昵称)</label>
+          <input type="text" id="authNickname" class="w-full border hairline-border px-3 py-2 text-sm bg-transparent">
+        </div>
+        <div>
+          <label class="tufte-label block mb-1 text-red-600">部门授权码 (邀请码)</label>
+          <input type="text" id="authInviteCode" placeholder="输入 ADMIN2026" class="w-full border border-red-500/30 px-3 py-2 text-sm bg-transparent">
+        </div>
+      </div>
+      
+      <button type="submit" id="authSubmitBtn" class="w-full bg-[#191919] text-white py-2.5 text-sm font-semibold hover:bg-black mt-2 transition-colors">安全登录</button>
+    </form>
+  </div>
+</div>
+
+<!-- Scripts -->
+<script src="https://cdn.jsdelivr.net/npm/echarts@5.5.0/dist/echarts.min.js"></script>
+<script type="module" src="/src/admin.js"></script>
+<script>
+  window.openAuthModal = function() {
+    document.getElementById('authModal').classList.remove('hidden');
+    window.switchAuthTab('signin');
+  };
+  window.closeModal = function(id) {
+    document.getElementById('authModal').classList.add('hidden');
+  };
+  window.switchAuthTab = function(tab) {
+    const isSignup = tab === 'signup';
+    document.getElementById('authSignupFields').classList.toggle('hidden', !isSignup);
+    document.getElementById('authNickname').required = isSignup;
+    document.getElementById('authInviteCode').required = isSignup;
+    document.getElementById('authSubmitBtn').innerText = isSignup ? '提交注册' : '安全登录';
+    
+    document.getElementById('tabSignin').className = isSignup ? 'text-[#191919]/40 pb-2' : 'text-[#14BF96] border-b-2 border-[#14BF96] pb-2 -mb-[13px]';
+    document.getElementById('tabSignup').className = !isSignup ? 'text-[#191919]/40 pb-2' : 'text-[#14BF96] border-b-2 border-[#14BF96] pb-2 -mb-[13px]';
+    
+    // Store current state to be read by admin.js
+    document.getElementById('authForm').dataset.mode = tab;
+  };
+  window.openSpeciesModal = function(id = '') {
+    document.getElementById('speciesModal').classList.remove('hidden');
+    document.getElementById('speciesForm').reset();
+    document.getElementById('spId').value = id;
+    document.getElementById('speciesModalTitle').innerText = id ? '编辑物种档案' : '新增物种档案';
+    
+    // 如果有 id，说明是编辑，触发全局事件让 admin.js 去填充数据
+    if(id) {
+      document.dispatchEvent(new CustomEvent('edit-species', { detail: { id }}));
+    }
+  };
+  window.closeSpeciesModal = function() {
+    document.getElementById('speciesModal').classList.add('hidden');
+  };
+</script>
+
+</body>
+</html>

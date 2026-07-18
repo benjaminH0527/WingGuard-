@@ -546,6 +546,107 @@ try {
     },
 
     /**
+     * 添加新物种
+     * @param {Object} data 
+     * @returns {Promise<Object>}
+     */
+    async addSpecies(data) {
+      if (supabaseClient) {
+        const record = {
+          scientific_name: data.scientificName,
+          common_name: data.commonName,
+          conservation_status: data.conservationStatus || '无保护级别',
+          habitat: data.habitat || '',
+          description: data.description || '',
+          image_url: data.imageUrl || '/default-bird.webp'
+        };
+        const { data: inserted, error } = await supabaseClient.from('species').insert(record).select().single();
+        if (error) throw error;
+        return {
+          id: inserted.id,
+          scientificName: inserted.scientific_name,
+          commonName: inserted.common_name,
+          conservationStatus: inserted.conservation_status,
+          habitat: inserted.habitat,
+          description: inserted.description,
+          imageUrl: inserted.image_url
+        };
+      }
+      
+      const list = readLS(LS_KEYS.species);
+      const newSpecies = {
+        id: uid("sp"),
+        scientificName: data.scientificName,
+        commonName: data.commonName,
+        conservationStatus: data.conservationStatus || '无保护级别',
+        habitat: data.habitat || '',
+        description: data.description || '',
+        imageUrl: data.imageUrl || '/default-bird.webp'
+      };
+      list.push(newSpecies);
+      writeLS(LS_KEYS.species, list);
+      return newSpecies;
+    },
+
+    /**
+     * 更新物种信息
+     * @param {string} id 
+     * @param {Object} data 
+     * @returns {Promise<Object>}
+     */
+    async updateSpecies(id, data) {
+      if (supabaseClient && !String(id).startsWith("sp-")) {
+        const updateData = {};
+        if (data.scientificName) updateData.scientific_name = data.scientificName;
+        if (data.commonName) updateData.common_name = data.commonName;
+        if (data.conservationStatus) updateData.conservation_status = data.conservationStatus;
+        if (data.habitat) updateData.habitat = data.habitat;
+        if (data.description) updateData.description = data.description;
+        if (data.imageUrl) updateData.image_url = data.imageUrl;
+
+        const { data: updated, error } = await supabaseClient.from('species').update(updateData).eq('id', id).select().single();
+        if (error) throw error;
+        return {
+          id: updated.id,
+          scientificName: updated.scientific_name,
+          commonName: updated.common_name,
+          conservationStatus: updated.conservation_status,
+          habitat: updated.habitat,
+          description: updated.description,
+          imageUrl: updated.image_url
+        };
+      }
+
+      const list = readLS(LS_KEYS.species);
+      const idx = list.findIndex(s => s.id === id);
+      if (idx === -1) throw new Error("未找到该物种");
+      
+      const current = list[idx];
+      list[idx] = {
+        ...current,
+        ...data
+      };
+      writeLS(LS_KEYS.species, list);
+      return list[idx];
+    },
+
+    /**
+     * 删除物种
+     * @param {string} id 
+     */
+    async deleteSpecies(id) {
+      if (supabaseClient && !String(id).startsWith("sp-")) {
+        const { error } = await supabaseClient.from('species').delete().eq('id', id);
+        if (error) throw error;
+        return;
+      }
+      
+      const list = readLS(LS_KEYS.species);
+      const filtered = list.filter(s => s.id !== id);
+      writeLS(LS_KEYS.species, filtered);
+    },
+
+    /**
      * 提交异常举报（受伤/非法捕猎等）
      * @param {{type:string, location:string, description:string, photoUrl?:string}} data
      * @returns {Promise<Object>}
@@ -683,6 +784,50 @@ try {
         merged.push(current);
       }
       return merged.sort((a, b) => (b.points || 0) - (a.points || 0)).slice(0, 10);
+    },
+
+    /**
+     * 获取所有用户 (Admin 管理用)
+     * @returns {Promise<Array>}
+     */
+    async getAllUsers() {
+      if (supabaseClient) {
+        const { data, error } = await supabaseClient.from('profiles').select('*').eq('role', 'public').order('created_at', { ascending: false });
+        if (!error && data) {
+          // 合并本地演示账号（如果有）
+          const localAccounts = readLS(LS_KEYS.localAccounts).filter(a => a.role === "public");
+          const merged = [...data];
+          localAccounts.forEach(la => {
+            if (!merged.find(m => m.email === la.email)) {
+              merged.push(la);
+            }
+          });
+          return merged;
+        }
+      }
+      return readLS(LS_KEYS.localAccounts).filter(a => a.role === "public");
+    },
+
+    /**
+     * 更新用户积分 (Admin 管理用)
+     * @param {string} userId
+     * @param {number} points
+     * @returns {Promise<void>}
+     */
+    async updateUserPoints(userId, points) {
+      if (supabaseClient && !String(userId).startsWith("mock-user-") && !String(userId).startsWith("local-user-")) {
+        const nextLevel = Math.floor(points / 300) + 1;
+        const { error } = await supabaseClient.from("profiles").update({ points: points, level: nextLevel }).eq("id", userId);
+        if (error) throw error;
+      } else {
+        const accounts = readLS(LS_KEYS.localAccounts);
+        const acc = accounts.find((a) => a.id === userId);
+        if (acc) {
+          acc.points = points;
+          acc.level = Math.floor(points / 300) + 1;
+          writeLS(LS_KEYS.localAccounts, accounts);
+        }
+      }
     },
 
     /**
