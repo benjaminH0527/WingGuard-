@@ -8,7 +8,8 @@
 import * as THREE from 'three';
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js';
 
-const REDUCED = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+// const REDUCED = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+const REDUCED = false; // 用户反馈模型静态，强制开启以保障沉浸式体验
 const R = 2;                 // globe radius
 const TEX = '/textures/';
 const MODEL_URL = '/models/Stork.glb';

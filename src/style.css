@@ -229,7 +229,7 @@ body {
 .hero-scrollhint-line { width: 1px; height: 30px; background: rgba(238,245,239,0.35); }
 
 @media (max-width: 640px){ .hero-globe { height: 400vh; } .hero-caption { bottom: 80px; } }
-@media (prefers-reduced-motion: reduce){ .hero-globe { height: 100svh; } .hero-pin { position: relative; } }
+/* 移除了针对 prefers-reduced-motion 导致首屏不置顶滚动的限制，以保证候鸟起飞动画的完整体验 */
 
 /* ---------- Typography ---------- */
 * { scrollbar-width: thin; scrollbar-color: rgba(18,42,34,0.2) transparent; }
