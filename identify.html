@@ -43,7 +43,6 @@
             border-bottom: 1px solid rgba(0,0,0,0.05);
         }
 
-        /* FAB Button */
         .fab {
             position: absolute;
             bottom: calc(30px + env(safe-area-inset-bottom, 0px));
@@ -65,6 +64,58 @@
         .fab:hover {
             transform: scale(1.05);
             background: #d35400;
+        }
+
+        /* Secondary FAB for AI Sidebar */
+        .secondary-fab {
+            position: absolute;
+            bottom: calc(105px + env(safe-area-inset-bottom, 0px));
+            right: 35px;
+            width: 48px;
+            height: 48px;
+            border-radius: 50%;
+            background: #fff;
+            color: #e67e22;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+            cursor: pointer;
+            z-index: 40;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+            transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1), background 0.3s;
+        }
+        .secondary-fab:hover {
+            transform: scale(1.05);
+            background: #fdfbf7;
+        }
+
+        /* Fullscreen Image Preview */
+        .fullscreen-preview {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0, 0, 0, 0.9);
+            z-index: 9999;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            transition: opacity 0.3s;
+            cursor: zoom-out;
+        }
+        .fullscreen-preview.show {
+            opacity: 1;
+        }
+        .fullscreen-preview img {
+            max-width: 90%;
+            max-height: 90%;
+            border-radius: 8px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+            transform: scale(0.9);
+            transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+        .fullscreen-preview.show img {
+            transform: scale(1);
         }
 
         /* AI Interface Sidebar */
@@ -387,10 +438,15 @@
 <!-- Map Container -->
 <div id="map-container"></div>
 
-<!-- FAB Button to open AI -->
-<div class="fab" id="fabBtn" onclick="toggleSidebar()">
-    <i class="fa-solid fa-camera"></i>
+<!-- Secondary FAB to open AI -->
+<div class="secondary-fab" id="aiToggleBtn" onclick="toggleSidebar()" title="呼唤 WingGuard AI">
+    <i class="fa-solid fa-robot"></i>
 </div>
+
+<!-- Main FAB Button (Camera/Album) -->
+<label class="fab" id="fabBtn" for="fileInput" title="拍照或从相册选择">
+    <i class="fa-solid fa-camera"></i>
+</label>
 
 <!-- AI Sidebar -->
 <div class="ai-sidebar" id="aiSidebar">
@@ -430,7 +486,7 @@
                     <path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"></path>
                     <circle cx="12" cy="13" r="4"></circle>
                 </svg>
-                <input type="file" id="fileInput" accept="image/*" capture="environment">
+                <input type="file" id="fileInput" accept="image/*">
             </div>
             <input type="text" id="textInput" class="text-input" placeholder="输入你想问的问题..." onkeypress="handleEnter(event)">
             <button class="send-btn" onclick="sendMessage()">
@@ -541,11 +597,14 @@
             
             if (response.ok) {
                 console.log("✅ 图片成功备份至 Nextcloud");
+                return url;
             } else {
                 console.error("❌ Nextcloud 上传失败，状态码:", response.status);
+                return null;
             }
         } catch (err) {
             console.error("❌ Nextcloud 上传抛出错误:", err);
+            return null;
             // 可能会因为跨域 (CORS) 拦截
         }
     }
@@ -555,19 +614,18 @@
         const file = e.target.files[0];
         if (!file) return;
 
-        // 异步静默上传到 Nextcloud
-        uploadToNextcloud(file);
+        // 异步静默上传到 Nextcloud 并保留引用
+        const uploadPromise = uploadToNextcloud(file);
 
         const reader = new FileReader();
-        reader.onload = function(event) {
+        reader.onload = async function(event) {
             currentBase64Image = event.target.result;
             // 在聊天框预览图片
-            addMessage('User', '', currentBase64Image);
+            addMessage('User', '请识别这张图片', currentBase64Image);
             
-            // 自动填充提示词，方便用户直接发送
-            if (!textInput.value) {
-                textInput.value = "请帮我识别图片中的这只鸟";
-            }
+            textInput.value = "";
+            const uploadedUrl = await uploadPromise; // 阻塞等待图片上传完成拿到远程URL
+            await sendMessage(true, uploadedUrl); 
         };
         reader.readAsDataURL(file);
     });
@@ -652,12 +710,17 @@
         if (indicator) indicator.remove();
     }
 
-    window.sendMessage = async function() {
-        const text = textInput.value.trim();
+    window.sendMessage = async function(isAuto = false, uploadedUrl = null) {
+        let text = textInput.value.trim();
+        // 如果是自动触发，且没有 text，就默认
+        if (isAuto && !text) {
+             text = "请识别这张图片";
+        }
+
         if (!text && !currentBase64Image) return;
 
         // 显示用户消息
-        if (text) {
+        if (text && !isAuto) {
              addMessage('User', text);
         }
 
@@ -672,20 +735,41 @@
             content.push({ type: "text", text: "请识别这张图片" });
         }
         
-        if (currentBase64Image) {
+        // 缓存好当前图片
+        const photoToUpload = currentBase64Image;
+
+        if (photoToUpload) {
             content.push({
                 type: "image_url",
-                image_url: { url: currentBase64Image }
+                image_url: { url: photoToUpload }
             });
         }
 
-        // 获取最新位置 (如果没有)
+        // 获取最新位置 (鲁棒性获取，包含10秒超时)
         let finalLocation = currentLocation;
-        if (!finalLocation && geolocation) {
-            console.log("正在重新获取定位...");
+        if (photoToUpload && geolocation) {
+            console.log("正在强制重新获取精确定位...");
             finalLocation = await new Promise((resolve) => {
+                let timeoutId = setTimeout(() => {
+                    console.warn("定位请求超时，使用缓存位置");
+                    resolve(currentLocation);
+                }, 10000); // 10秒超时
+
                 geolocation.getCurrentPosition((status, result) => {
-                    resolve(status === 'complete' ? result.position : null);
+                    clearTimeout(timeoutId);
+                    if (status === 'complete') {
+                        resolve(result.position);
+                    } else {
+                        console.warn("高德定位失败，尝试回退:", result.message);
+                        // 如果因为安全环境等原因失败，尝试使用缓存
+                        if (currentLocation) {
+                             resolve(currentLocation);
+                        } else {
+                             // 实在没有，给个提示并给默认坐标
+                             alert("精确定位失败 (请确保开启定位权限或在HTTPS环境下运行)。将使用默认位置。");
+                             resolve([114.05956, 22.54286]);
+                        }
+                    }
                 });
             });
             if (finalLocation) {
@@ -722,9 +806,10 @@
             removeTypingIndicator();
             await addMessageTypewriter('AI', aiText);
             
-            // 简单逻辑：如果发了图片而且有定位，就在地图上打点并入库
-            if (currentBase64Image && finalLocation) {
-                await dropPin(finalLocation, "新发现鸟类", aiText, currentBase64Image);
+            // 如果发了图片而且有定位，就在地图上打点并入库
+            if (photoToUpload && finalLocation) {
+                const markerImgUrl = uploadedUrl || photoToUpload;
+                await dropPin(finalLocation, "新发现鸟类", aiText, markerImgUrl);
             }
 
             // 清空当前图片状态
@@ -764,6 +849,7 @@
                     <i class="fa-solid fa-user" style="font-size:8px;"></i> ${currentUser} 记录
                 </div>
                 <div style="font-weight: bold; color: #f0c060;">${shortName}</div>
+                ${photoUrl ? `<img src="${photoUrl}" style="width: 100%; height: 40px; object-fit: cover; border-radius: 4px; margin-top: 4px; cursor: pointer;" onclick="showFullScreenPreview('${photoUrl}')">` : ''}
             </div>
         `;
         
@@ -793,6 +879,29 @@
             console.warn("自动入库失败，可能未登录或数据格式错误", e);
         }
     }
+
+    // 全屏预览函数
+    window.showFullScreenPreview = function(url) {
+        let previewContainer = document.getElementById('fullscreenPreview');
+        if (!previewContainer) {
+            previewContainer = document.createElement('div');
+            previewContainer.id = 'fullscreenPreview';
+            previewContainer.className = 'fullscreen-preview';
+            previewContainer.innerHTML = `<img src="${url}" id="fullscreenImg">`;
+            
+            previewContainer.onclick = function() {
+                previewContainer.classList.remove('show');
+                setTimeout(() => previewContainer.remove(), 300);
+            };
+            document.body.appendChild(previewContainer);
+        } else {
+            document.getElementById('fullscreenImg').src = url;
+        }
+        
+        // Trigger reflow for transition
+        void previewContainer.offsetWidth;
+        previewContainer.classList.add('show');
+    };
 
 </script>
 </body>
