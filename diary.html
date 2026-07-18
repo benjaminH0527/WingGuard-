@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="zh-CN">
 <head>
 <meta charset="UTF-8">
@@ -240,6 +240,17 @@
     cursor: zoom-in;
   }
   
+  /* Mobile Typography Fixes */
+  .bird-name { text-wrap: balance; }
+  .bird-desc { text-wrap: pretty; }
+  
+  @media (max-width: 768px) {
+    .bird-name { font-size: 2.5rem; }
+    .bird-desc { font-size: 1rem; }
+    .panel { padding: 6rem 1.5rem 4rem; } /* Added top padding to prevent overlap with fixed nav */
+    .text-block { padding: 1.5rem; }
+    nav .tracking-widest { display: none; } /* Prevent nav overlap */
+  }
 </style>
 </head>
 <body>
@@ -249,9 +260,6 @@
   <div class="flex gap-6">
     <a href="/index.html" class="flex items-center gap-2 hover:opacity-70 transition">
       <i class="fa-solid fa-arrow-left"></i> 生态决策后台
-    </a>
-    <a href="/story.html" class="flex items-center gap-2 hover:text-emerald-700 transition">
-      <i class="fa-solid fa-book-open"></i> 返回宏观故事
     </a>
   </div>
   <div class="font-mono text-sm tracking-widest uppercase">Shenzhen Bay · Migratory Diary</div>
@@ -415,7 +423,7 @@
           <p class="bird-desc text-xl mt-2 italic text-slate-800/50">今年也平安到达了。</p>
           <p class="bird-desc text-xl mt-2 italic text-slate-800/50">明年还会来。</p>
           <div class="mt-16">
-            <a href="/index.html" class="inline-block border border-white/30 text-slate-800 px-8 py-3 rounded-full hover:bg-white hover:text-black transition-all">参与生态观测</a>
+            <a href="/story.html" class="inline-block border border-white/30 text-slate-800 px-8 py-3 rounded-full hover:bg-white hover:text-black transition-all">前往宏观故事</a>
           </div>
         </div>
       </div>

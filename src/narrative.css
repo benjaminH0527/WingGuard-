@@ -299,3 +299,61 @@ p, li, .section-body {
 .timeline-item { position: relative; margin-bottom: 48px; }
 .timeline-item::before { content: ''; position: absolute; left: -39px; top: 6px; width: 12px; height: 12px; border-radius: 50%; background: var(--accent-terracotta); border: 2px solid var(--bg-paper); }
 .timeline-date { font-size: 0.85em; color: var(--accent-terracotta); font-weight: 600; margin-bottom: 8px; }
+
+/* ========== 移动端适配 ========== */
+.nav-toggle {
+    display: none;
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    width: 30px;
+    height: 24px;
+    position: relative;
+    z-index: 1001;
+}
+.nav-toggle span {
+    display: block;
+    width: 100%;
+    height: 2px;
+    background: var(--text-ink);
+    position: absolute;
+    left: 0;
+    transition: all 0.3s var(--easing-expo);
+}
+.nav-toggle span:nth-child(1) { top: 0; }
+.nav-toggle span:nth-child(2) { top: 11px; }
+.nav-toggle span:nth-child(3) { top: 22px; }
+
+@media (max-width: 768px) {
+    .nav-bar { padding: 0 24px; }
+    .nav-toggle { display: block; }
+    .nav-links {
+        position: fixed;
+        top: var(--nav-height);
+        left: 0;
+        right: 0;
+        background: rgba(245, 240, 232, 0.98);
+        flex-direction: column;
+        padding: 24px;
+        gap: 16px;
+        transform: translateY(-100%);
+        opacity: 0;
+        pointer-events: none;
+        transition: all 0.4s var(--easing-expo);
+        box-shadow: 0 10px 20px rgba(0,0,0,0.05);
+    }
+    .nav-links.open {
+        transform: translateY(0);
+        opacity: 1;
+        pointer-events: auto;
+    }
+    .hero { padding: 100px 24px 60px; }
+    .hero-title { font-size: 2.5em; }
+    .section, .section-wide { padding: 60px 24px; }
+    .route-container { padding: 0 24px; }
+    .route-stats { flex-direction: column; gap: 24px; }
+    .pull-quote { margin: 40px 0; padding-left: 20px; font-size: 1.2em; }
+    .cta-section { padding: 60px 24px; }
+    .footer { padding: 40px 24px; }
+    .footer-links { flex-direction: column; gap: 16px; }
+}
