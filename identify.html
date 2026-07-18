@@ -8,6 +8,7 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600;9..144,700&family=Manrope:wght@400;500;600;700;800&family=IBM+Plex+Mono:wght@400;500;600&family=Noto+Serif+SC:wght@400;500;600;700;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="/src/narrative.css">
 
     <!-- 高德地图安全密钥 -->
     <script type="text/javascript">
@@ -18,17 +19,17 @@
 
     <style>
     :root{
-        --gold:#F0C674; --gold-2:#E3A34D;
-        --cyan:#7FE9D6; --cyan-2:#57c9b6;
-        --hud: rgba(12,16,18,0.66);
-        --hud-2: rgba(16,22,24,0.82);
-        --line: rgba(255,255,255,0.12);
-        --line-2: rgba(255,255,255,0.07);
-        --txt:#EAF1EE; --txt-dim: rgba(234,241,238,0.6);
+        --gold: var(--accent-terracotta, #CC785C); --gold-2: var(--accent-hover, #b8644a);
+        --cyan: var(--blue-ocean, #2F6B4F); --cyan-2: var(--blue-deep, #1B4633);
+        --hud: rgba(255,255,255,0.66);
+        --hud-2: rgba(255,255,255,0.82);
+        --line: var(--border-light, #e6e2da);
+        --line-2: rgba(0,0,0,0.07);
+        --txt: var(--text-ink, #191919); --txt-dim: var(--text-muted, #66635e);
         --ease: cubic-bezier(0.16,1,0.3,1);
     }
     *{ margin:0; padding:0; box-sizing:border-box; }
-    html,body{ width:100%; height:100%; overflow:hidden; background:#0A0E10; }
+    html,body{ width:100%; height:100%; overflow:hidden; background:var(--bg-paper, #F5F0E8); }
     body{ font-family:'Manrope','PingFang SC',sans-serif; color:var(--txt); -webkit-font-smoothing:antialiased; }
     .serif{ font-family:'Fraunces','Noto Serif SC',serif; }
     .mono{ font-family:'IBM Plex Mono',monospace; }
@@ -39,18 +40,19 @@
     /* darken + edge-seat the map so the HUD reads */
     #scrim{ position:absolute; inset:0; z-index:1; pointer-events:none;
         background:
-          radial-gradient(120% 80% at 50% 0%, rgba(6,10,12,0.72), transparent 42%),
-          radial-gradient(120% 90% at 50% 100%, rgba(6,10,12,0.85), transparent 46%),
-          radial-gradient(80% 60% at 50% 50%, transparent 60%, rgba(6,10,12,0.4)); }
+          radial-gradient(120% 80% at 50% 0%, rgba(245,240,232,0.72), transparent 42%),
+          radial-gradient(120% 90% at 50% 100%, rgba(245,240,232,0.85), transparent 46%),
+          radial-gradient(80% 60% at 50% 50%, transparent 60%, rgba(245,240,232,0.4)); }
     #particles{ position:absolute; inset:0; z-index:2; pointer-events:none; }
 
     /* ---- glass ---- */
     .glass{
-        background:linear-gradient(150deg, var(--hud-2), var(--hud));
+        background: var(--glass-2, linear-gradient(150deg, rgba(255,255,255,0.86), rgba(255,255,255,0.66)));
         backdrop-filter:blur(22px) saturate(140%);
         -webkit-backdrop-filter:blur(22px) saturate(140%);
-        border:1px solid var(--line);
-        box-shadow:0 1px 0 rgba(255,255,255,0.06) inset, 0 30px 60px -30px rgba(0,0,0,0.8);
+        border:1px solid var(--glass-brd, rgba(255,255,255,0.65));
+        box-shadow:0 1px 0 rgba(255,255,255,0.7) inset, 0 22px 48px -30px rgba(18,42,34,0.32);
+        color: var(--txt);
     }
 
     /* ================= TOP HUD ================= */
@@ -253,18 +255,24 @@
 <canvas id="particles"></canvas>
 
 <!-- ================= TOP HUD ================= -->
-<div class="hud">
-    <a href="index.html" class="brand">
-        <img src="/logo.png" alt="Logo">
-        <span class="t"><b>WingGuard</b><small>AI Vision · 智能识鸟</small></span>
+<nav class="nav-bar" id="navbar">
+    <a href="index.html" class="nav-logo">
+        <img src="/logo.png" class="logo-icon" alt="Logo">
+        <span class="t" style="display:flex; flex-direction:column; margin-left:8px; line-height:1.2;">
+            <b style="font-family:'Manrope',sans-serif; font-size:15px; font-weight:600; letter-spacing:.5px;">WingGuard</b>
+            <small style="font-size:9px; letter-spacing:.28em; color:var(--gold); text-transform:uppercase;">AI Vision</small>
+        </span>
     </a>
-    <div class="hud-links">
-        <a href="index.html">首页</a>
-        <a href="birds.html">鸟类图鉴</a>
-        <a href="story.html">迁徙故事</a>
-        <a href="protect.html">保护行动</a>
-    </div>
-    <div class="hud-right">
+    <button class="nav-toggle" id="navToggle" aria-label="菜单">
+        <span></span><span></span><span></span>
+    </button>
+    <ul class="nav-links" id="navLinks" style="margin-left: auto; margin-right: 24px;">
+        <li><a href="index.html">首页</a></li>
+        <li><a href="birds.html">鸟类图鉴</a></li>
+        <li><a href="story.html">迁徙故事</a></li>
+        <li><a href="protect.html">保护行动</a></li>
+    </ul>
+    <div class="hud-right" style="display:flex; align-items:center; gap:10px;">
         <div class="chip glass" id="locChip"><span class="status-dot"></span><span id="locText">定位中…</span></div>
         <div class="user-pill glass" id="userPill" style="display:none" onclick="scrollToProfile()">
             <span class="av" id="userAv">你</span>
@@ -273,7 +281,7 @@
         </div>
         <button class="login-btn" id="loginBtn" onclick="openAuth()">登录 / 注册</button>
     </div>
-</div>
+</nav>
 
 <!-- ================= BOTTOM CAPTURE CONSOLE ================= -->
 <div class="console glass">
@@ -403,13 +411,13 @@ import { DataAdapter } from '/src/DataAdapter.js';
         for(let i=0;i<pts.length;i++){
             const a=pts[i];
             ctx.beginPath(); ctx.arc(a.x,a.y,a.r,0,7);
-            ctx.fillStyle = boost? 'rgba(127,233,214,0.7)' : 'rgba(240,198,116,0.55)'; ctx.fill();
+            ctx.fillStyle = boost? 'rgba(204,120,92,0.7)' : 'rgba(47,107,79,0.55)'; ctx.fill();
             for(let j=i+1;j<pts.length;j++){
                 const b=pts[j]; const dx=a.x-b.x, dy=a.y-b.y; const d=Math.hypot(dx,dy);
                 if(d<linkDist){
                     ctx.beginPath(); ctx.moveTo(a.x,a.y); ctx.lineTo(b.x,b.y);
                     const al=(1-d/linkDist)*(boost?0.28:0.14);
-                    ctx.strokeStyle = boost? `rgba(127,233,214,${al})` : `rgba(240,198,116,${al})`;
+                    ctx.strokeStyle = boost? `rgba(204,120,92,${al})` : `rgba(47,107,79,${al})`;
                     ctx.lineWidth = dpr*0.6; ctx.stroke();
                 }
             }
@@ -419,9 +427,9 @@ import { DataAdapter } from '/src/DataAdapter.js';
     resize(); window.addEventListener('resize', resize); tick();
 })();
 
-/* ================= MAP (dark tech style) ================= */
+/* ================= MAP (light tech style) ================= */
 let map, geolocation, currentLocation=null, lastPinPos=null;
-map = new AMap.Map('map', { zoom:14, center:[114.05956,22.54286], mapStyle:'amap://styles/dark', showLabel:true });
+map = new AMap.Map('map', { zoom:14, center:[114.05956,22.54286], mapStyle:'amap://styles/light', showLabel:true });
 map.on('click', ()=>closeChat());
 map.plugin('AMap.Geolocation', function(){
     geolocation = new AMap.Geolocation({ enableHighAccuracy:true, timeout:10000, showMarker:true, panToLocation:true, zoomToAccuracy:true, buttonPosition:'LB', buttonOffset:new AMap.Pixel(15,90) });
