@@ -1,6 +1,6 @@
 # 红檬智型 (WingGuard) — 数据接口契约 (API Contract)
 
-所有数据读写都必须经过 `js/DataAdapter.js` 中的统一接口，UI 层永远不直接操作
+所有数据读写都必须经过 `src/DataAdapter.js` 中的统一接口，UI 层永远不直接操作
 `localStorage` 或 Supabase 客户端。字段命名参考 [GBIF Darwin Core](https://dwc.tdwg.org/)
 规范，方便未来无缝切换到真实生态管理部门 API：只需替换方法体内部实现（把
 localStorage 读写换成 `fetch('/api/...')`），保持函数签名与返回结构不变即可，
